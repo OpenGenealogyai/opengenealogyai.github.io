@@ -269,8 +269,11 @@ def build_podcasts() -> None:
                 'Licence wording updated to CC0 to match the <a href="/license/">published licence</a>; '
                 'where a detail differs from the current schemas, the <a href="/schemas/">schema pages</a> are authoritative.</p>')
         body = note + md(text) + '<p><a href="/podcasts/">← All episodes</a></p>'
+        stem = name.replace("-StudyGuide", "")
+        ep_title = next((t for _, s, t, *_ in EPISODES if s == stem), None) or stem.replace("-", " ")
+        title = f"Study guide: {ep_title}"
         write(SITE / "podcasts" / "study-guides" / name / "index.html",
-              layout(name.replace("-", " "), body, "/podcasts/", f"Study guide for the MAXGEN podcast episode {name}.",
+              layout(title, body, "/podcasts/", f"Practice questions, essay prompts and glossary for the MAXGEN podcast episode '{ep_title}'.",
                      path=f"/podcasts/study-guides/{name}/"))
 
     # RSS feed
