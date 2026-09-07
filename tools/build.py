@@ -30,7 +30,7 @@ CHANGELOG = Path(r"C:\Users\stock\dev\opengenealogyai\docs\SCHEMA_CHANGELOG.md")
 AUDIO_SRC = Path(r"E:\BuildGenealogy\podcast-scripts\audio")
 
 BASE_URL = "https://opengenealogyai.org"
-MEDIA_BASE = "https://media.opengenealogyai.org/podcasts"   # SiteGround subdomain for MP3s
+MEDIA_BASE = f"{BASE_URL}/podcasts/audio"   # MP3s ship inside the site repo (GitHub Pages); absolute so the RSS enclosures validate
 
 NAV = [
     ("The Standard", "/standard/"),

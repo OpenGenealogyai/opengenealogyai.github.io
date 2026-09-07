@@ -15,72 +15,72 @@
     <description>Why genealogy data needs a common language, the seven schemas, and the design philosophy behind them.</description>
     <link>https://opengenealogyai.org/podcasts/#ep0</link>
     <guid isPermaLink="false">maxgen-podcast-0</guid>
-    <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-00-overview-all-schemas.mp3" length="41730483" type="audio/mpeg"/>
+    <enclosure url="https://opengenealogyai.org/podcasts/audio/MAXGEN-00-overview-all-schemas.mp3" length="41730483" type="audio/mpeg"/>
     <itunes:duration>21:37</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:16:25 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 18:58:45 +0000</pubDate>
   </item>
   <item>
     <title>MaxRecord — Source documents as written</title>
     <description>Evidence versus interpretation, and why the clerk who wrote &#x27;Makeswell&#x27; must never be corrected.</description>
     <link>https://opengenealogyai.org/podcasts/#ep1</link>
     <guid isPermaLink="false">maxgen-podcast-1</guid>
-    <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-01-maxrecord.mp3" length="49556371" type="audio/mpeg"/>
+    <enclosure url="https://opengenealogyai.org/podcasts/audio/MAXGEN-01-maxrecord.mp3" length="49556371" type="audio/mpeg"/>
     <itunes:duration>25:40</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:16:25 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 18:58:45 +0000</pubDate>
   </item>
   <item>
     <title>MaxPerson — The person who might be your ancestor</title>
     <description>Assertions not facts, probabilistic parents, composite confidence, and the merge model.</description>
     <link>https://opengenealogyai.org/podcasts/#ep2</link>
     <guid isPermaLink="false">maxgen-podcast-2</guid>
-    <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-02-maxperson-v2.mp3" length="43958964" type="audio/mpeg"/>
+    <enclosure url="https://opengenealogyai.org/podcasts/audio/MAXGEN-02-maxperson-v2.mp3" length="43958964" type="audio/mpeg"/>
     <itunes:duration>22:46</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:16:25 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 18:58:45 +0000</pubDate>
   </item>
   <item>
     <title>MaxTask — Distributing the work</title>
     <description>Task types, the verdict vocabulary, acceptance criteria, and the anti-hallucination rule.</description>
     <link>https://opengenealogyai.org/podcasts/#ep3</link>
     <guid isPermaLink="false">maxgen-podcast-3</guid>
-    <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-03-maxtask.mp3" length="47286056" type="audio/mpeg"/>
+    <enclosure url="https://opengenealogyai.org/podcasts/audio/MAXGEN-03-maxtask.mp3" length="47286056" type="audio/mpeg"/>
     <itunes:duration>24:29</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:16:25 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 18:58:45 +0000</pubDate>
   </item>
   <item>
     <title>MaxDNA — Genetic evidence without giving up privacy</title>
     <description>Hashed kit IDs, consent, endogamy, phasing, and how DNA boosts documentary confidence.</description>
     <link>https://opengenealogyai.org/podcasts/#ep4</link>
     <guid isPermaLink="false">maxgen-podcast-4</guid>
-    <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-04-maxdna.mp3" length="45161413" type="audio/mpeg"/>
+    <enclosure url="https://opengenealogyai.org/podcasts/audio/MAXGEN-04-maxdna.mp3" length="45161413" type="audio/mpeg"/>
     <itunes:duration>23:23</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:16:25 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 18:58:45 +0000</pubDate>
   </item>
   <item>
     <title>MaxSource — The routing brain</title>
     <description>Where records hide: coverage, access, provenance, and semantic search over sources.</description>
     <link>https://opengenealogyai.org/podcasts/#ep5</link>
     <guid isPermaLink="false">maxgen-podcast-5</guid>
-    <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-05-maxsource.mp3" length="35269268" type="audio/mpeg"/>
+    <enclosure url="https://opengenealogyai.org/podcasts/audio/MAXGEN-05-maxsource.mp3" length="35269268" type="audio/mpeg"/>
     <itunes:duration>18:16</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:16:25 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 18:58:45 +0000</pubDate>
   </item>
   <item>
     <title>MaxRecognition — Teaching machines to read</title>
     <description>OCR and handwriting provenance, word-level confidence, labelled inference, and consensus.</description>
     <link>https://opengenealogyai.org/podcasts/#ep6</link>
     <guid isPermaLink="false">maxgen-podcast-6</guid>
-    <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-06-maxrecognition.mp3" length="48937591" type="audio/mpeg"/>
+    <enclosure url="https://opengenealogyai.org/podcasts/audio/MAXGEN-06-maxrecognition.mp3" length="48937591" type="audio/mpeg"/>
     <itunes:duration>25:21</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:16:25 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 18:58:45 +0000</pubDate>
   </item>
   <item>
     <title>MaxName — Why Maxwell and Makeswell are the same family</title>
     <description>Variants, cognates, phonetic keys, and the council design process behind the newest schema.</description>
     <link>https://opengenealogyai.org/podcasts/#ep7</link>
     <guid isPermaLink="false">maxgen-podcast-7</guid>
-    <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-07-maxname.mp3" length="45419257" type="audio/mpeg"/>
+    <enclosure url="https://opengenealogyai.org/podcasts/audio/MAXGEN-07-maxname.mp3" length="45419257" type="audio/mpeg"/>
     <itunes:duration>23:31</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:16:25 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 18:58:45 +0000</pubDate>
   </item>
 </channel>
 </rss>
