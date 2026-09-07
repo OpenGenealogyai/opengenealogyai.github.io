@@ -12,7 +12,7 @@ MAXGEN is dedicated to the public domain. Anyone can use it, fork it, extend it,
 
 ## Today: a steward
 
-The standard's author, Garlon Maxwell, is the steward. The steward has final say on what enters the canonical schemas. Every decision is public, reasoned, and recorded in the [changelog](/versions/#changelog). This is the same arrangement most successful standards began with, including the OpenAPI specification before it moved to a foundation.
+The standard's author, Garlon Maxwell, is the steward: the technical lead who has final say on what enters the canonical schemas until the advisory board exists. Every decision is public, reasoned, and recorded in the [changelog](/versions/#changelog). This is the same arrangement most successful standards began with, including the OpenAPI specification before it moved to a foundation, and the page below says exactly when and how it ends.
 
 ## How to propose a change
 
@@ -43,6 +43,20 @@ A standard controlled by one person is a standard institutions hesitate to adopt
 **What the steward keeps.** A tie-breaking vote and custody of the name and the canonical address. The steward may be **overruled on a major version by a two-thirds vote**. That clause is the point: it is the guarantee that the standard cannot be held hostage by its author.
 
 **Openness.** Meetings are announced in advance, minutes are published on this site, and every vote is recorded.
+
+**How seats are filled.** The first board is appointed by the steward from people who have actually implemented or adopted MAXGEN, announced publicly with a 30-day objection period. After that, seats are two-year terms; the sitting board fills vacancies by simple majority from public nominations. Anyone may nominate anyone, including themselves.
+
+**Quorum and voting.** A quorum is a majority of seats. Additive changes pass by simple majority of those voting. Major versions and changes to the privacy rules need two-thirds of all seats. Every vote is recorded with names.
+
+**Emergency fixes.** A security or privacy defect in a schema may be patched immediately by the steward as a patch release, with a public notice the same day and retrospective board review within 30 days. Nothing else skips the process.
+
+## Continuity: what happens if the steward is gone
+
+A standard that dies with one person is not a standard. Three safeguards:
+
+1. **The licence is CC0.** Nobody needs permission to carry on. If the canonical site went dark, every schema file and this whole site could be republished by anyone, from the public git history, the same day.
+2. **A named successor.** The steward keeps a named successor on file with the board (or, before the board exists, publicly in the repository). If the steward is unreachable for 90 days, the successor, or the board by majority, assumes stewardship and the name.
+3. **Frozen releases.** Every version is archived at a permanent address, so an adopter never depends on the steward being available to fetch the files they validated against.
 
 ## What the steward does not control
 

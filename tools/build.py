@@ -265,7 +265,10 @@ def build_podcasts() -> None:
         text = f.read_text(encoding="utf-8")
         text = re.sub(r"\bCC-BY\b", "CC0", text)  # guides were written before the licence wording was settled
         name = f.stem
-        body = md(text) + '<p><a href="/podcasts/">← All episodes</a></p>'
+        note = ('<p class="muted">Study guide generated from the episode script (MAXGEN v1.11). '
+                'Licence wording updated to CC0 to match the <a href="/license/">published licence</a>; '
+                'where a detail differs from the current schemas, the <a href="/schemas/">schema pages</a> are authoritative.</p>')
+        body = note + md(text) + '<p><a href="/podcasts/">← All episodes</a></p>'
         write(SITE / "podcasts" / "study-guides" / name / "index.html",
               layout(name.replace("-", " "), body, "/podcasts/", f"Study guide for the MAXGEN podcast episode {name}.",
                      path=f"/podcasts/study-guides/{name}/"))
