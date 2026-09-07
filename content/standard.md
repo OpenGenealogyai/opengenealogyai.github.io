@@ -72,7 +72,7 @@ GEDCOM is the 1984 file format that almost every genealogy program can import an
 | Transcription provenance | None | MaxRecognition, down to word-level confidence |
 | Name variants across languages | None | MaxName |
 | AI readiness | Not designed for it | Embedding text fields, structured evidence, anti-hallucination rules in MaxTask |
-| Control | A steering committee | Public domain (CC0); anyone may use, fork, or extend |
+| Control | A steering committee | Open licence (CC-BY 4.0); anyone may use, fork, or extend with credit |
 
 MAXGEN event types map to GEDCOM tags (RESI, EMIG, IMMI, CENS, NATU, PROB, WILL, MILI) so conversion in both directions is possible.
 

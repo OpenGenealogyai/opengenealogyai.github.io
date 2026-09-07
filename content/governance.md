@@ -6,7 +6,7 @@ description: Who decides how MAXGEN changes, how to propose a change, and the pu
 <p class="eyebrow">How the standard changes</p>
 # Governance
 
-MAXGEN is dedicated to the public domain. Anyone can use it, fork it, extend it, or build on it without asking. What is stewarded is the **canonical version**: the one set of files at `opengenealogyai.org/schemas/maxgen/` that may be called MAXGEN. This page says who decides what goes into it, how, and how that will change as the community grows.
+MAXGEN is licensed CC-BY 4.0. Anyone can use it, fork it, extend it, or build on it without asking, as long as they credit OpenGenealogyAI. What is stewarded is the **canonical version**: the one set of files at `opengenealogyai.org/schemas/maxgen/` that may be called MAXGEN. This page says who decides what goes into it, how, and how that will change as the community grows.
 
 > "MAXGEN is open because anyone can use it and build on it. It is not open to fragmentation. One canonical version. One steward. Every change earns its place in the record." — Garlon Maxwell
 
@@ -54,7 +54,7 @@ A standard controlled by one person is a standard institutions hesitate to adopt
 
 A standard that dies with one person is not a standard. Three safeguards:
 
-1. **The licence is CC0.** Nobody needs permission to carry on. If the canonical site went dark, every schema file and this whole site could be republished by anyone, from the public git history, the same day.
+1. **The licence is CC-BY.** Nobody needs permission to carry on; credit is the only condition. If the canonical site went dark, every schema file and this whole site could be republished by anyone, from the public git history, the same day.
 2. **A named successor.** The steward keeps a named successor on file with the board (or, before the board exists, publicly in the repository). If the steward is unreachable for 90 days, the successor, or the board by majority, assumes stewardship and the name.
 3. **Frozen releases.** Every version is archived at a permanent address, so an adopter never depends on the steward being available to fetch the files they validated against.
 

@@ -80,7 +80,7 @@ ORG_JSONLD = {
     "url": BASE_URL + "/",
     "logo": f"{BASE_URL}/assets/img/ogai-logo.png",
     "sameAs": ["https://github.com/OpenGenealogyai"],
-    "description": "Steward of MAXGEN, the open, public-domain genealogy data standard.",
+    "description": "Steward of MAXGEN, the open genealogy data standard (CC-BY 4.0).",
 }
 
 
@@ -95,7 +95,7 @@ def layout(title: str, body: str, active: str = "", description: str = "", extra
         f'<a href="{href}"{" class=\"active\"" if href == active else ""}>{label}</a>'
         for label, href in NAV
     )
-    desc = html.escape(description or "MAXGEN — the open, probabilistic genealogy data standard. Seven JSON schemas, CC0.")
+    desc = html.escape(description or "MAXGEN — the open, probabilistic genealogy data standard. Seven JSON schemas, CC-BY 4.0.")
     full_title = html.escape(f"{title} — MAXGEN · OpenGenealogyAI")
     url = BASE_URL + path
     return f"""<!DOCTYPE html>
@@ -134,9 +134,9 @@ def layout(title: str, body: str, active: str = "", description: str = "", extra
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v{CURRENT}</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v{CURRENT}</a>. The standard and its schemas are free to use with credit under <a href="/license/">CC-BY 4.0</a>.</p>
     <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
-    <p class="muted">© {YEAR} OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+    <p class="muted">© {YEAR} OpenGenealogyAI. Site text CC-BY 4.0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
   </div>
 </footer>
 </body>
@@ -266,10 +266,9 @@ def build_podcasts() -> None:
         if f.stem.replace("-StudyGuide", "") not in published:
             continue  # superseded recording (e.g. MaxPerson v1) — not linked from the site
         text = f.read_text(encoding="utf-8")
-        text = re.sub(r"\bCC-BY\b", "CC0", text)  # guides were written before the licence wording was settled
         name = f.stem
         note = ('<p class="muted">Study guide generated from the episode script (MAXGEN v1.11). '
-                'Licence wording updated to CC0 to match the <a href="/license/">published licence</a>; '
+                'The standard is licensed <a href="/license/">CC-BY 4.0</a>; '
                 'where a detail differs from the current schemas, the <a href="/schemas/">schema pages</a> are authoritative.</p>')
         body = note + md(text) + '<p><a href="/podcasts/">← All episodes</a></p>'
         stem = name.replace("-StudyGuide", "")
@@ -359,7 +358,7 @@ def build_schemas() -> None:
             "@type": "TechArticle", "headline": f"{meta['title']} — MAXGEN schema v{CURRENT}",
             "description": meta.get("description", meta["tagline"]), "url": f"{BASE_URL}/schemas/{slug}/",
             "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": f"{BASE_URL}/#org"},
-            "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": f"{BASE_URL}/#standard"},
+            "license": "https://creativecommons.org/licenses/by/4.0/", "isPartOf": {"@id": f"{BASE_URL}/#standard"},
             "encoding": {"@type": "MediaObject", "contentUrl": canonical, "encodingFormat": "application/schema+json"},
         })
         write(SITE / "schemas" / slug / "index.html",
@@ -376,7 +375,7 @@ def build_schemas() -> None:
     standard_ld = {
         "@type": "Dataset", "@id": f"{BASE_URL}/#standard", "name": f"MAXGEN — The Maxwell Genealogy Standard v{CURRENT}",
         "description": "Seven JSON Schema files (MaxRecord, MaxPerson, MaxTask, MaxDNA, MaxSource, MaxRecognition, MaxName) defining an open, probabilistic genealogy data standard.",
-        "url": f"{BASE_URL}/schemas/", "version": CURRENT, "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "url": f"{BASE_URL}/schemas/", "version": CURRENT, "license": "https://creativecommons.org/licenses/by/4.0/",
         "creator": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": f"{BASE_URL}/#org"}, "isAccessibleForFree": True,
         "distribution": [{"@type": "DataDownload", "name": f"{t} schema", "contentUrl": f"{BASE_URL}/schemas/maxgen/v1/{n}.schema.json", "encodingFormat": "application/schema+json"} for _, t, _, n in pages],
     }
@@ -427,7 +426,7 @@ def build_llms_txt(pages) -> None:
     lines = [
         "# MAXGEN — The Maxwell Genealogy Standard",
         "",
-        f"> MAXGEN is an open, public-domain (CC0) data standard for genealogy, stewarded by OpenGenealogyAI. Current release v{CURRENT}. "
+        f"> MAXGEN is an open data standard, free to use with attribution (CC-BY 4.0), for genealogy, stewarded by OpenGenealogyAI. Current release v{CURRENT}. "
         "Seven JSON Schema files describe evidence (MaxRecord), probable identities (MaxPerson), research work (MaxTask), DNA evidence (MaxDNA), "
         "where records live (MaxSource), transcription provenance (MaxRecognition) and name variants (MaxName). Every claim carries a source and a 0-1 confidence score; "
         "conflicting evidence is kept, nothing is deleted, and records about living people are private by rule.",
@@ -439,7 +438,7 @@ def build_llms_txt(pages) -> None:
         f"- [FAQ]({BASE_URL}/faq/)",
         f"- [Versioning policy and changelog]({BASE_URL}/versions/)",
         f"- [Governance]({BASE_URL}/governance/)",
-        f"- [Licence (CC0)]({BASE_URL}/license/)",
+        f"- [Licence (CC-BY 4.0)]({BASE_URL}/license/)",
         "",
         "## Schemas (canonical JSON Schema files)",
     ]
