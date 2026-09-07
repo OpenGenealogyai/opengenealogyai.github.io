@@ -1,5 +1,6 @@
 ---
 title: Versions
+toc: true
 description: MAXGEN versioning policy, the stability promise, and every released version of the seven schemas with permanent download links.
 ---
 <p class="eyebrow">Releases · current v<!--CURRENT--></p>

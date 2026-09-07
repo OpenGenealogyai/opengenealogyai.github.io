@@ -4,93 +4,69 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Standard — MAXGEN · OpenGenealogyAI</title>
-<meta name="description" content="What MAXGEN is, the ideas behind it, and how it differs from GEDCOM.">
+<meta name="description" content="The Maxwell Genealogy Standard explained in plain English: what MAXGEN is, how it differs from GEDCOM, the seven schemas, confidence scores, examples, file extensions, versioning, why JSON, how to contribute, and governance.">
 <link rel="canonical" href="https://opengenealogyai.org/standard/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
 <meta property="og:title" content="The Standard">
-<meta property="og:description" content="What MAXGEN is, the ideas behind it, and how it differs from GEDCOM.">
+<meta property="og:description" content="The Maxwell Genealogy Standard explained in plain English: what MAXGEN is, how it differs from GEDCOM, the seven schemas, confidence scores, examples, file extensions, versioning, why JSON, how to contribute, and governance.">
 <meta property="og:url" content="https://opengenealogyai.org/standard/">
 <meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/css/site.css">
 <link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open genealogy data standard (CC-BY 4.0)."}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MAXGEN", "item": "https://opengenealogyai.org/"}, {"@type": "ListItem", "position": 2, "name": "The Standard", "item": "https://opengenealogyai.org/standard/"}]}</script>
 
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span class="brand-text"><span class="wordmark wordmark-sm">Maxwell Genealogy Standard</span><small>MAXGEN · by OpenGenealogyAI</small></span></a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
     <nav id="nav" class="nav"><a href="/standard/" class="active">The Standard</a><a href="/schemas/">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
   </div>
 </header>
 <main id="main" class="wrap">
-<p class="eyebrow">The Maxwell Genealogy Standard · v1.13</p>
-<h1 id="the-standard-in-plain-english">The Standard, in plain English</h1>
-<p>MAXGEN is a language for describing family-history evidence. It is not a product, not a database, and not a website. It is a set of seven schemas (written rule-sets for data records) that any program can read and write, so that research done in one place can be understood everywhere else.</p>
-<h2 id="five-ideas-that-define-it">Five ideas that define it</h2>
-<h3 id="1-uncertainty-is-data">1. Uncertainty is data</h3>
-<p>Every claim in MAXGEN carries a confidence score from 0.0 to 1.0. The scores mean something specific:</p>
-<table>
-<thead>
-<tr>
-<th>Score</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0.95 and above</td>
-<td>Documented certainty. The fact appears verbatim in a source with no ambiguity.</td>
-</tr>
-<tr>
-<td>0.70 to 0.95</td>
-<td>Well attested, with some ambiguity (a spelling variant, a self-reported age).</td>
-</tr>
-<tr>
-<td>0.50 to 0.70</td>
-<td>Plausible but needing more evidence.</td>
-</tr>
-<tr>
-<td>Below 0.50</td>
-<td>Speculative. Recorded so it is not lost, not so it is believed.</td>
-</tr>
-</tbody>
-</table>
-<p>Scores must be honest. A consistent 0.4 is worth more than an inflated 0.9. Dates are stored as ranges (<code>year_min</code>, <code>year_max</code>) because a census age is a guess and "spring 1847" is not a day.</p>
-<h3 id="2-evidence-and-interpretation-are-kept-apart">2. Evidence and interpretation are kept apart</h3>
-<p><strong>MaxRecord</strong> holds what a document says, exactly as written, including the clerk's misspellings. <strong>MaxPerson</strong> holds what we think it means. You can change your mind about a person without touching the document, and add a document without touching your conclusions. This is how science keeps its data clean, and it is how a future AI can re-read the same evidence and reach its own conclusion.</p>
-<h3 id="3-nothing-is-ever-deleted">3. Nothing is ever deleted</h3>
-<p>A merge that turns out to be wrong is reversed, not erased. A disputed reading gets a <code>disputed_by</code> entry. A dead link is marked <code>dead_link</code>. Every change has a who, a when, and a why.</p>
-<h3 id="4-privacy-is-built-into-the-schema-not-bolted-on">4. Privacy is built into the schema, not bolted on</h3>
-<p>A record about a person who may be alive carries <code>is_living: true</code> and is locked to the most restrictive licence, <code>tier2-private</code>. Public endpoints return "not found" for it. DNA records are always <code>tier2-private</code> and can never contain raw genetic data. These rules travel with the data when it moves between systems, so a forgetful application cannot leak what the standard protects.</p>
-<h3 id="5-extensions-are-the-escape-hatch">5. Extensions are the escape hatch</h3>
-<p>Each schema is closed: unknown fields are rejected, which makes validation exact. But every schema also has an <code>extensions{}</code> object that accepts anything. Add your own fields there. You never need to fork the standard, and your records still validate.</p>
-<h2 id="how-the-seven-schemas-fit-together">How the seven schemas fit together</h2>
-<pre><code>  document image ──► MaxRecognition (who read it, how confident, word by word)
-                            │
-                            ▼
-                       MaxRecord (the document, exactly as written)
-                            │  cited by
-                            ▼
-   MaxName ◄──────────  MaxPerson  ◄────── MaxDNA (genetic evidence, always private)
- (is &quot;Makeswell&quot;      (a probable person:     
-  the same name?)      every claim scored)
-                            │  spawns
-                            ▼
-                        MaxTask (work for a human or an AI, with proof required)
-                            ▲
-                            │  where to look next
-                        MaxSource (a catalogue of where records live)
-</code></pre>
-<p>Each schema can be adopted on its own. An archive that only wants to publish transcriptions with provenance can use MaxRecognition alone. The full pipeline, from a scanned page to a scored ancestor, appears only when they work together.</p>
-<h2 id="how-maxgen-differs-from-gedcom">How MAXGEN differs from GEDCOM</h2>
-<p>GEDCOM is the 1984 file format that almost every genealogy program can import and export. It is one of the great successes of the field: forty years of trees have moved between programs because of it, and GEDCOM 7 continues to modernise it. MAXGEN is not a replacement for exchanging finished trees. It is a companion for exchanging the <strong>evidence and reasoning</strong> behind a tree, which is a job GEDCOM was never asked to do. The two are meant to work together, and MAXGEN's event types map to GEDCOM tags so conversion runs both ways.</p>
+<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc">
+<ul>
+<li><a href="#1-what-is-maxgen">1. What is MAXGEN?</a></li>
+<li><a href="#2-how-maxgen-differs-from-gedcom">2. How MAXGEN differs from GEDCOM</a></li>
+<li><a href="#3-the-seven-schemas">3. The seven schemas</a></li>
+<li><a href="#4-the-confidence-score">4. The confidence score</a></li>
+<li><a href="#5-json-examples">5. JSON examples</a><ul>
+<li><a href="#5b-contributor-attribution">5b. Contributor attribution</a></li>
+</ul>
+</li>
+<li><a href="#6-file-extensions">6. File extensions</a></li>
+<li><a href="#7-versioning">7. Versioning</a></li>
+<li><a href="#8-why-json">8. Why JSON?</a></li>
+<li><a href="#9-how-to-contribute">9. How to contribute</a></li>
+<li><a href="#10-governance">10. Governance</a></li>
+</ul>
+</div>
+</aside><div class="content"><p class="eyebrow">The Maxwell Genealogy Standard · v1.13 · CC0</p>
+<h1 id="the-standard">The Standard</h1>
+<p>MAXGEN is a language for describing family-history evidence. It is not a product, not a database, and not a website. It is a set of seven schemas (written rule-sets for data records) that any program can read and write, so that research done in one place can be understood everywhere else. This page is the whole standard in plain English. The exact rules live in the <a href="/schemas/">schema files</a>.</p>
+<h2 id="1-what-is-maxgen">1. What is MAXGEN?</h2>
+<p>MAXGEN is an open JSON standard for representing genealogical evidence and the people it describes in a way that is <strong>honest about uncertainty</strong>.</p>
+<p>Some or most genealogy formats today can hold one answer per fact. When two records disagree about who someone's father was, one has to win and the other is set aside. MAXGEN takes a different approach: <strong>every claim is an assertion</strong> with a confidence score, a source, and a timestamp. Nothing is overwritten. Several possible parents can coexist. Conflicting birth years both survive. The uncertainty is the data.</p>
+<p>Five ideas define it:</p>
+<ol>
+<li><strong>Uncertainty is data.</strong> Every claim carries a 0-to-1 confidence score (section 4) and dates are ranges, because a census age is a guess and "spring 1847" is not a day.</li>
+<li><strong>Evidence and interpretation are kept apart.</strong> MaxRecord holds what a document says, exactly as written. MaxPerson holds what we think it means. You can change your mind about a person without touching the document.</li>
+<li><strong>Nothing is ever deleted.</strong> A wrong merge is reversed, not erased. A disputed reading gets a <code>disputed_by</code> entry. Every change has a who, a when, and a why.</li>
+<li><strong>Privacy is built into the schema.</strong> A record about a person who may be alive is locked to the most restrictive licence, <code>tier2-private</code>, and public systems answer "not found". DNA records are always private and never hold raw genetic data.</li>
+<li><strong>Extensions are the escape hatch.</strong> Each schema is closed, so validation is exact, but every schema has an <code>extensions{}</code> object that accepts anything. You never need to fork.</li>
+</ol>
+<blockquote>
+<p><strong>The core principle:</strong> an assertion with low confidence and a real source is worth more than a certain-looking answer with no source. MAXGEN never invents. When the document is unclear, the confidence score says so.</p>
+</blockquote>
+<h2 id="2-how-maxgen-differs-from-gedcom">2. How MAXGEN differs from GEDCOM</h2>
+<p>GEDCOM is the 1984 file format that almost every genealogy program can import and export. It is one of the great successes of the field: forty years of trees have moved between programs because of it, and GEDCOM 7 continues to modernise it. MAXGEN is not a replacement for exchanging finished trees. It is a companion for exchanging the <strong>evidence and reasoning</strong> behind a tree, a job GEDCOM was never asked to do. The two are meant to work together.</p>
 <table>
 <thead>
 <tr>
@@ -107,12 +83,12 @@
 </tr>
 <tr>
 <td>Relationships</td>
-<td>One answer forced</td>
+<td>One answer</td>
 <td>Several candidates, each with a confidence score</td>
 </tr>
 <tr>
 <td>Uncertainty</td>
-<td>Lost</td>
+<td>Not represented</td>
 <td>The point of the design</td>
 </tr>
 <tr>
@@ -127,7 +103,7 @@
 </tr>
 <tr>
 <td>Conflicts</td>
-<td>Overwritten</td>
+<td>Resolved before saving</td>
 <td>Preserved and flagged</td>
 </tr>
 <tr>
@@ -147,44 +123,176 @@
 </tr>
 <tr>
 <td>AI readiness</td>
-<td>Not designed for it</td>
-<td>Embedding text fields, structured evidence, anti-hallucination rules in MaxTask</td>
+<td>Predates it</td>
+<td>Embedding text, structured evidence, anti-hallucination rules in MaxTask</td>
 </tr>
 <tr>
 <td>Control</td>
 <td>A steering committee</td>
-<td>Open licence (CC-BY 4.0); anyone may use, fork, or extend with credit</td>
+<td>Public domain (CC0); anyone may use, fork, or extend</td>
 </tr>
 </tbody>
 </table>
-<p>MAXGEN event types map to GEDCOM tags (RESI, EMIG, IMMI, CENS, NATU, PROB, WILL, MILI) so conversion in both directions is possible.</p>
-<h2 id="why-this-matters-for-ai">Why this matters for AI</h2>
-<p>Genealogy is moving into a period where AI models read handwriting, match records across archives and draft research leads. Those models need three things a single-answer format cannot give them: an honest confidence on every claim, a source they can be checked against, and the losing candidates as well as the winner. Two findings from our own benchmarks shaped the design:</p>
+<p>MAXGEN event types map to GEDCOM tags (RESI, EMIG, IMMI, CENS, NATU, PROB, WILL, MILI) so conversion runs in both directions.</p>
+<h2 id="3-the-seven-schemas">3. The seven schemas</h2>
+<p>A schema is a written rule-set that says exactly what fields a record has and what each one means. MAXGEN began with three record types and has grown to seven, each covering one layer of the research process. Each has <a href="/schemas/">its own page</a> with fields, an example and a podcast episode.</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>What one record is</th>
+<th>Page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MaxRecord</strong></td>
+<td>One source document exactly as found, uninterpreted</td>
+<td><a href="/schemas/maxrecord/">MaxRecord</a></td>
+</tr>
+<tr>
+<td><strong>MaxPerson</strong></td>
+<td>One probable person: a bundle of scored, sourced assertions</td>
+<td><a href="/schemas/maxperson/">MaxPerson</a></td>
+</tr>
+<tr>
+<td><strong>MaxTask</strong></td>
+<td>One unit of research work for a human or an AI, with proof required</td>
+<td><a href="/schemas/maxtask/">MaxTask</a></td>
+</tr>
+<tr>
+<td><strong>MaxDNA</strong></td>
+<td>DNA match evidence linked to a person, always private</td>
+<td><a href="/schemas/maxdna/">MaxDNA</a></td>
+</tr>
+<tr>
+<td><strong>MaxSource</strong></td>
+<td>One place where records live, with coverage and access details</td>
+<td><a href="/schemas/maxsource/">MaxSource</a></td>
+</tr>
+<tr>
+<td><strong>MaxRecognition</strong></td>
+<td>One transcription of one image: who read it and how sure they were</td>
+<td><a href="/schemas/maxrecognition/">MaxRecognition</a></td>
+</tr>
+<tr>
+<td><strong>MaxName</strong></td>
+<td>One name and every form it has taken, with sources</td>
+<td><a href="/schemas/maxname/">MaxName</a></td>
+</tr>
+</tbody>
+</table>
+<p>How they fit together:</p>
+<pre><code>  document image ──► MaxRecognition (who read it, how confident, word by word)
+                            │
+                            ▼
+                       MaxRecord (the document, exactly as written)
+                            │  cited by
+                            ▼
+   MaxName ◄──────────  MaxPerson  ◄────── MaxDNA (genetic evidence, always private)
+ (is &quot;Makeswell&quot;      (a probable person:
+  the same name?)      every claim scored)
+                            │  spawns
+                            ▼
+                        MaxTask (work for a human or an AI, with proof required)
+                            ▲
+                            │  where to look next
+                        MaxSource (a catalogue of where records live)
+</code></pre>
+<p>Each schema can be adopted on its own. An archive that only wants to publish transcriptions with provenance can use MaxRecognition alone.</p>
+<h2 id="4-the-confidence-score">4. The confidence score</h2>
+<p>Every assertion carries a <code>confidence</code> value from 0.0 to 1.0. The numbers are anchored, not decorative:</p>
+<table>
+<thead>
+<tr>
+<th>Score</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.90 to 1.00</td>
+<td>The field appears verbatim in the source with no ambiguity.</td>
+</tr>
+<tr>
+<td>0.70 to 0.89</td>
+<td>Minor spelling or transcription variation; well attested.</td>
+</tr>
+<tr>
+<td>0.50 to 0.69</td>
+<td>Inferred from context, not stated explicitly.</td>
+</tr>
+<tr>
+<td>0.30 to 0.49</td>
+<td>Ambiguous or damaged source.</td>
+</tr>
+<tr>
+<td>0.00 to 0.29</td>
+<td>Best guess only. Recorded so it is not lost, not so it is believed.</td>
+</tr>
+</tbody>
+</table>
+<p>Scores must be honest. A consistent 0.4 is more valuable than an inflated 0.9. A person's <code>composite_confidence</code> combines all assertions, weighted by source quality, using a noisy-OR rule: independent sources that agree raise confidence, but never to certainty, and two assertions that trace to the same document are not counted twice.</p>
+<p>Why this matters for AI: models that read handwriting, match records and draft leads need an honest confidence on every claim, a source they can be checked against, and the losing candidates as well as the winner. In our own benchmarks, ordinary keyword search returned 0 to 5 percent of the right records for queries with a partial name and an approximate year; meaning-based search over embedded text is the baseline for this field. That is why every schema has an <code>embedding_text</code> field or equivalent, why every claim cites a <code>source_record_id</code>, and why MaxTask requires an AI to return the evidence it found rather than a summary of what it believes.</p>
+<h2 id="5-json-examples">5. JSON examples</h2>
+<p>A MaxPerson is a set of assertion arrays. Every field that says something about the person is an array, never a single value:</p>
+<pre><code class="language-json">{
+  &quot;person_id&quot;: &quot;b1000000-0006-4000-8000-000000000006&quot;,
+  &quot;schema_version&quot;: &quot;&lt;!--CURRENT--&gt;&quot;,
+  &quot;is_living&quot;: false,
+  &quot;composite_confidence&quot;: 0.95,
+  &quot;name_assertions&quot;: [
+    { &quot;name_as_written&quot;: &quot;Mary Todd&quot;, &quot;name_type&quot;: &quot;birth&quot;, &quot;confidence&quot;: 0.95,
+      &quot;source_record_id&quot;: &quot;a1b2c3d4-0003-4000-8000-000000000003&quot;,
+      &quot;asserted_by&quot;: &quot;extractor-agent-haiku-001&quot;, &quot;asserted_at&quot;: &quot;2026-05-01T14:00:00Z&quot; },
+    { &quot;name_as_written&quot;: &quot;Mary Lincoln&quot;, &quot;name_type&quot;: &quot;married&quot;, &quot;confidence&quot;: 0.99,
+      &quot;source_record_id&quot;: &quot;a1b2c3d4-0003-4000-8000-000000000003&quot;,
+      &quot;asserted_by&quot;: &quot;extractor-agent-haiku-001&quot;, &quot;asserted_at&quot;: &quot;2026-05-01T14:00:00Z&quot; }
+  ],
+  &quot;birth_assertions&quot;: [
+    { &quot;year_min&quot;: 1818, &quot;year_max&quot;: 1818, &quot;month&quot;: 12, &quot;day&quot;: 13, &quot;place_as_written&quot;: &quot;Lexington, Kentucky&quot;,
+      &quot;confidence&quot;: 0.98, &quot;source_record_id&quot;: &quot;a1b2c3d4-0003-4000-8000-000000000003&quot;,
+      &quot;asserted_by&quot;: &quot;extractor-agent-haiku-001&quot;, &quot;asserted_at&quot;: &quot;2026-05-01T14:00:00Z&quot; }
+  ],
+  &quot;redistribution_license&quot;: &quot;public-domain&quot;,
+  &quot;asserted_by&quot;: &quot;extractor-agent-haiku-001&quot;,
+  &quot;asserted_at&quot;: &quot;2026-05-01T14:00:00Z&quot;
+}
+</code></pre>
+<p>Every schema page carries a full, validated example: <a href="/schemas/maxrecord/">MaxRecord</a>, <a href="/schemas/maxperson/">MaxPerson</a>, <a href="/schemas/maxtask/">MaxTask</a>, <a href="/schemas/maxsource/">MaxSource</a>, <a href="/schemas/maxrecognition/">MaxRecognition</a>, <a href="/schemas/maxname/">MaxName</a>. Paste any record into the <a href="/validator/">validator</a> to check it.</p>
+<h3 id="5b-contributor-attribution">5b. Contributor attribution</h3>
+<p>Credit travels with the data, not in a site footer. A MaxRecord carries an <code>attribution{}</code> object naming the contributor (<code>contributor_name</code>, <code>contributor_url</code>, <code>contributor_role</code>) and the organisation the document came from (<code>source_organization</code>, <code>source_organization_url</code>). Every assertion in a MaxPerson names who made it (<code>asserted_by</code>) and when (<code>asserted_at</code>), and cites the record it came from, so a person's page can list every contributor whose work touched that person. A MaxRecognition names its transcriber, human or model, with credentials. Attribution is part of the record and stays with it wherever the record is copied.</p>
+<h2 id="6-file-extensions">6. File extensions</h2>
+<p>MAXGEN uses two file extensions so record types can be told apart at a glance:</p>
+<ul>
+<li><strong><code>.maxgen</code></strong> for MaxPerson records: <code>william_whitfield_1842.maxgen</code></li>
+<li><strong><code>.mxrecord</code></strong> for MaxRecord source documents: <code>1880_census_ohio_p42.mxrecord</code></li>
+</ul>
+<p>Both are ordinary JSON files. MaxTask records live in a work queue and are not usually stored as standalone files. Any <code>.json</code> file that validates against a schema is also a valid MAXGEN record; the extensions are a convenience, not a requirement.</p>
+<h2 id="7-versioning">7. Versioning</h2>
+<p>All seven schemas share one version number and move together. Within a major version, fields are never renamed or removed; changes are additive only. A breaking change means a new major version, a new address space, a migration guide, and a 30-day public comment period. Records written to any version stay readable forever. The full policy, the stability promise, and every released version with permanent download links are on the <a href="/versions/">versions page</a>.</p>
+<h2 id="8-why-json">8. Why JSON?</h2>
+<ul>
+<li><strong>Human-readable and machine-readable.</strong> No proprietary parser required; you can open a record in a text editor.</li>
+<li><strong>Supported everywhere.</strong> Every modern programming language reads and writes JSON natively.</li>
+<li><strong>Validated by JSON Schema 2020-12.</strong> Structure is enforced at the moment a record is written, not discovered later.</li>
+<li><strong>Embeddable.</strong> A MAXGEN record can be fed to an AI embedding model without conversion, which is what makes meaning-based search possible.</li>
+<li><strong>Version-control friendly.</strong> Records can be diffed, reviewed and merged exactly like source code, so a community can review each other's work.</li>
+<li><strong>No lock-in.</strong> Export your data at any time with zero loss.</li>
+</ul>
+<h2 id="9-how-to-contribute">9. How to contribute</h2>
+<p>Ask a question, report a problem, propose a change, or build something on the standard. You do not need permission for any of it. The <a href="/contribute/">contribute page</a> has the details; the short version is: open a GitHub Issue using the <em>Schema Change Proposal</em> template (problem, proposed change, backward compatibility, examples) or write to maxgen@opengenealogyai.org.</p>
+<h2 id="10-governance">10. Governance</h2>
+<p>MAXGEN is public domain, so anyone can use it, fork it, or extend it. What is stewarded is the canonical version: the one set of files at this address that may be called MAXGEN. Today the author, Garlon Maxwell, is the steward, with a public proposal process (7-day comment for minor changes, 30-day for major) and written decisions. A published charter describes the advisory board that takes over major-version decisions once there are independent adopters, including how it can overrule the steward. What the steward never controls: your forks, your extensions, your tools, or your records. Read the full <a href="/governance/">governance page</a>.</p>
 <blockquote>
-<p>Ordinary keyword search (the BM25 and full-text index that most databases use) returned 0 to 5 percent of the right records for genealogy queries with a partial name and an approximate year. Meaning-based search over embedded text is not optional for this field; it is the baseline.</p>
-<p>A low-confidence assertion with a real source is worth more than a certain-looking answer with no source. Scores drive the matching engine, the task dispatcher and the display. They are not decoration.</p>
-</blockquote>
-<p>That is why every MAXGEN schema has an <code>embedding_text</code> or equivalent, why every claim cites a <code>source_record_id</code>, and why MaxTask requires an AI to return the evidence it found rather than a summary of what it believes.</p>
-<h2 id="what-adopting-maxgen-means">What "adopting MAXGEN" means</h2>
-<ul>
-<li><strong>You write records</strong> that validate against the schema files at their canonical addresses (<code>https://opengenealogyai.org/schemas/maxgen/v1/…</code>).</li>
-<li><strong>You keep your own fields</strong> inside <code>extensions{}</code>.</li>
-<li><strong>You respect three normative rules</strong>: living-person records stay private, DNA records stay private and never hold raw genotypes, and tasks about living people are never sent to outside contributors.</li>
-<li><strong>You may call your data MAXGEN</strong> as long as it validates against the canonical schemas. A diverging fork may not use the name.</li>
-</ul>
-<h2 id="where-to-go-next">Where to go next</h2>
-<ul>
-<li><a href="/schemas/">The seven schemas</a>, each with fields, an example, and a podcast.</li>
-<li><a href="/versions/">Versions and the stability promise</a>.</li>
-<li><a href="/governance/">How the standard changes</a> and how to propose a change.</li>
-<li><a href="/faq/">Frequently asked questions</a>.</li>
-</ul>
+<p>"MAXGEN is open because anyone can use it and build on it. It is not open to fragmentation. One canonical version. One steward. Every change earns its place in the record." — Garlon Maxwell</p>
+</blockquote></div></div>
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are free to use with credit under <a href="/license/">CC-BY 4.0</a>.</p>
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
     <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
-    <p class="muted">© 2026 OpenGenealogyAI. Site text CC-BY 4.0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
   </div>
 </footer>
 </body>

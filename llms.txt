@@ -1,6 +1,6 @@
 # MAXGEN — The Maxwell Genealogy Standard
 
-> MAXGEN is an open data standard, free to use with attribution (CC-BY 4.0), for genealogy, stewarded by OpenGenealogyAI. Current release v1.13. Seven JSON Schema files describe evidence (MaxRecord), probable identities (MaxPerson), research work (MaxTask), DNA evidence (MaxDNA), where records live (MaxSource), transcription provenance (MaxRecognition) and name variants (MaxName). Every claim carries a source and a 0-1 confidence score; conflicting evidence is kept, nothing is deleted, and records about living people are private by rule.
+> MAXGEN is an open, public-domain (CC0) data standard for genealogy, stewarded by OpenGenealogyAI. Current release v1.13. Seven JSON Schema files describe evidence (MaxRecord), probable identities (MaxPerson), research work (MaxTask), DNA evidence (MaxDNA), where records live (MaxSource), transcription provenance (MaxRecognition) and name variants (MaxName). Every claim carries a source and a 0-1 confidence score; conflicting evidence is kept, nothing is deleted, and records about living people are private by rule.
 
 MAXGEN is designed to work alongside existing genealogy sites, archives and the GEDCOM format, not to replace them.
 
@@ -9,7 +9,7 @@ MAXGEN is designed to work alongside existing genealogy sites, archives and the 
 - [FAQ](https://opengenealogyai.org/faq/)
 - [Versioning policy and changelog](https://opengenealogyai.org/versions/)
 - [Governance](https://opengenealogyai.org/governance/)
-- [Licence (CC-BY 4.0)](https://opengenealogyai.org/license/)
+- [Licence (CC0)](https://opengenealogyai.org/license/)
 
 ## Schemas (canonical JSON Schema files)
 - [MaxRecord](https://opengenealogyai.org/schemas/maxrecord/): A source document exactly as it was found. No interpretation added. — file: https://opengenealogyai.org/schemas/maxgen/v1/raw-record.schema.json

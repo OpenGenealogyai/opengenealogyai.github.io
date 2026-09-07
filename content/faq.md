@@ -10,7 +10,7 @@ Grouped by who is asking. If your question is not here, [ask it](/contribute/) a
 
 ## I'm a genealogist
 
-<details><summary>What is MAXGEN in one sentence?</summary><p>A free, openly licensed way of writing down family-history evidence so that every fact keeps its source and an honest confidence score, and conflicting evidence is kept rather than deleted.</p></details>
+<details><summary>What is MAXGEN in one sentence?</summary><p>A free, public-domain way of writing down family-history evidence so that every fact keeps its source and an honest confidence score, and conflicting evidence is kept rather than deleted.</p></details>
 
 <details><summary>Do I need to be technical to benefit from it?</summary><p>No. MAXGEN is what software uses underneath. What you notice is the behaviour: a tree that shows two possible fathers with their scores instead of silently picking one, a search that finds "Makeswell" when you typed "Maxwell", and a document that is never "corrected" away from what the clerk wrote.</p></details>
 
@@ -26,7 +26,7 @@ Grouped by who is asking. If your question is not here, [ask it](/contribute/) a
 
 <details><summary>Can AI make things up in a MAXGEN record?</summary><p>It can try, and the standard is built to catch it. Every claim must cite a source record. Every research task lists the evidence it must return (a link to the actual birth record, the exact search used). Results are reviewed by someone other than the contributor, and "fabricated or hallucinated" is a formal rejection reason that lowers a contributor's standing over time.</p></details>
 
-<details><summary>Does it cost anything?</summary><p>No. The standard is free under a Creative Commons Attribution licence (CC-BY 4.0): use it for anything, including commercial products, as long as you credit OpenGenealogyAI. The schemas, the specification, and the podcasts on this site cost nothing.</p></details>
+<details><summary>Does it cost anything?</summary><p>No. The standard is dedicated to the public domain (CC0): use it for anything, including commercial products, with no conditions. The schemas, the specification, and the podcasts on this site cost nothing.</p></details>
 
 ## I'm a developer
 
@@ -56,11 +56,11 @@ Grouped by who is asking. If your question is not here, [ask it](/contribute/) a
 
 <details><summary>What would adopting MAXGEN commit us to?</summary><p>Only to publishing records that validate against the public schemas and to honouring the three privacy rules. There is no membership, no fee, no agreement to sign, and no obligation to use the whole standard: an archive that only wants to publish transcriptions with provenance can use MaxRecognition alone.</p></details>
 
-<details><summary>Who owns the standard?</summary><p>OpenGenealogyAI holds the copyright and licenses it to everyone under CC-BY 4.0, which means anyone may use, copy, change and redistribute it with credit. The canonical version is stewarded by its author today, with a published path to an advisory board that includes an archive or library seat and can overrule the steward on major versions by a two-thirds vote. See <a href="/governance/">governance</a>.</p></details>
+<details><summary>Who owns the standard?</summary><p>Nobody, legally: it is dedicated to the public domain under CC0, so anyone may use, copy, change and redistribute it with no conditions. The canonical version is stewarded by its author today, with a published path to an advisory board that includes an archive or library seat and can overrule the steward on major versions by a two-thirds vote. See <a href="/governance/">governance</a>.</p></details>
 
 <details><summary>Can we keep our own catalogue numbers and internal fields?</summary><p>Yes. MaxRecord has <code>archive_ref</code> for your reference, <code>repository</code> and <code>collection</code> for where the item sits, and <code>extensions{}</code> for anything else. MaxSource's <code>access{}</code> block records how you want to be accessed, including crawl etiquette that robots.txt cannot express.</p></details>
 
-<details><summary>How does it handle attribution and licensing of our records?</summary><p>Every record declares its own licence (CC0, public domain, CC-BY, CC-BY-SA, or never-redistribute) and carries an <code>attribution{}</code> object for the credit line your licence requires. The standard itself is CC-BY 4.0; your data stays under whatever terms you set.</p></details>
+<details><summary>How does it handle attribution and licensing of our records?</summary><p>Every record declares its own licence (CC0, public domain, CC-BY, CC-BY-SA, or never-redistribute) and carries an <code>attribution{}</code> object for the credit line your licence requires. The standard itself is public domain; your data stays under whatever terms you set.</p></details>
 
 <details><summary>We have transcriptions made by volunteers over decades. Is that work preserved?</summary><p>That is what MaxRecognition is for. Each transcription gets a provenance record: who read it, their credentials and specialties, how confident they were word by word, and which readings were direct and which were inferred. The work becomes citable and its quality trackable, instead of being flattened into a text field.</p></details>
 

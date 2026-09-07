@@ -1,29 +1,26 @@
 ---
 title: Licence
-description: MAXGEN schemas and specification text are licensed CC-BY 4.0. Free to use, build on and redistribute with credit to OpenGenealogyAI. Records carry their own licence. Repository code is MIT.
+toc: true
+description: MAXGEN schemas and specification text are dedicated to the public domain under CC0. Records carry their own licence. Repository code is MIT.
 ---
 <p class="eyebrow">Legal</p>
 # Licence
 
-## The standard: CC-BY 4.0
+## The standard: CC0
 
-The seven MAXGEN schema files and the text of the standard on this site are licensed under [Creative Commons Attribution 4.0 International (CC-BY 4.0)](https://creativecommons.org/licenses/by/4.0/). You may copy, change, redistribute and build on them for any purpose, commercial or not, without asking. The one condition is credit: say that your work uses or is derived from MAXGEN by OpenGenealogyAI, and link to this site or the licence.
+The seven MAXGEN schema files and the text of the standard on this site are dedicated to the public domain under the [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) dedication. You may copy, change, redistribute and build on them for any purpose, commercial or not, without asking and without attribution.
 
-That is the whole obligation. There is no fee, no registration, no share-alike requirement (you do not have to open-source your own work), and no restriction on commercial use.
+Why CC0 rather than a licence that requires credit? Because a standard only works when adopting it costs nothing, legally or administratively. An archive's counsel should be able to approve MAXGEN in one reading. Credit is welcome, never required.
 
-### How to give credit
+### If you want to credit us anyway
 
-Any of these satisfies the licence:
-
-- In software or documentation: *"Uses the MAXGEN standard by OpenGenealogyAI (opengenealogyai.org), CC-BY 4.0."*
-- In a dataset or file: keep the `schema_version` field and the `$id` reference to `opengenealogyai.org` that every MAXGEN record already carries. That is attribution.
+- In software or documentation: *"Uses the MAXGEN standard by OpenGenealogyAI (opengenealogyai.org)."*
+- In a dataset: the `schema_version` field and the `$id` reference to `opengenealogyai.org` in every MAXGEN record already say where it came from.
 - In a paper or article: cite as shown at the bottom of this page.
-
-Why attribution rather than the public domain? So that wherever the standard travels, people can find its home, its current version, and the process for proposing changes. A standard is only useful if adopters can find each other.
 
 ## Records: each carries its own
 
-Every record written in MAXGEN declares its own `redistribution_license`: `CC0`, `public-domain`, `CC-BY`, `CC-BY-SA`, or `tier2-private` (never redistribute). Where a source requires attribution, the `attribution{}` object in the record holds the credit. The licence on the standard says nothing about the licence on your data; your records stay under whatever terms their owner sets.
+Every record written in MAXGEN declares its own `redistribution_license`: `CC0`, `public-domain`, `CC-BY`, `CC-BY-SA`, or `tier2-private` (never redistribute). Where a source requires attribution, the `attribution{}` object in the record holds the credit. The standard is public domain; the data written in it is whatever its owner says it is.
 
 ## Code: MIT
 
@@ -35,4 +32,4 @@ The validators, fixtures and tooling in the schema repository are released under
 
 ## How to cite
 
-> Maxwell, G. *MAXGEN: The Maxwell Genealogy Standard*, version <!--CURRENT-->. OpenGenealogyAI. https://opengenealogyai.org/ — licensed CC-BY 4.0.
+> Maxwell, G. *MAXGEN: The Maxwell Genealogy Standard*, version <!--CURRENT-->. OpenGenealogyAI. https://opengenealogyai.org/ — CC0 1.0.

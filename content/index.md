@@ -1,10 +1,12 @@
 ---
 title: MAXGEN
-description: MAXGEN is an open, freely licensed (CC-BY) data standard for genealogy that treats uncertainty as data. Seven JSON schemas, explained in plain English and in podcasts.
+description: MAXGEN is an open, public-domain data standard for genealogy that treats uncertainty as data. Seven JSON schemas, explained in plain English and in podcasts.
 ---
 <div class="hero">
 <div>
-<p class="eyebrow">An open standard · free to use (CC-BY) · current release v<!--CURRENT--></p>
+<p class="wordmark wordmark-lg">Maxwell Genealogy Standard</p>
+<div class="chain" aria-hidden="true"><span class="link"></span><span class="link"></span><span class="link"></span><span class="link"></span><span class="link"></span><span class="link"></span><span class="link"></span></div>
+<p class="eyebrow">MAXGEN · an open standard · public domain · current release v<!--CURRENT--></p>
 <h1>Genealogy data that is honest about what it doesn't know.</h1>
 <p class="lede">MAXGEN is a free, open data standard for family history. Every fact carries its source and a confidence score. Conflicting evidence is kept, not deleted. Anyone can use it, build on it, or extend it. No permission required.</p>
 <div class="doors">
@@ -42,4 +44,4 @@ A schema is a written rule-set that says exactly what fields a record has and wh
 - **Genealogists and archivists** deciding whether to trust it: the [plain-English guide](/standard/), the [FAQ](/faq/), and the [podcasts](/podcasts/).
 - **Institutions** who need to know how it is governed before adopting it: the [governance page](/governance/) and the [licence](/license/).
 
-<p class="muted">MAXGEN is short for the Maxwell Genealogy Standard, named for its author, Garlon Maxwell. It is stewarded by OpenGenealogyAI and licensed CC-BY 4.0, free for anyone to use with credit.</p>
+<p class="muted">MAXGEN is short for the Maxwell Genealogy Standard, named for its author, Garlon Maxwell. It is stewarded by OpenGenealogyAI and dedicated to the public domain (CC0).</p>

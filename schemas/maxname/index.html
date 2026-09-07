@@ -15,22 +15,23 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/css/site.css">
 <link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open genealogy data standard (CC-BY 4.0)."}, {"@type": "TechArticle", "headline": "MaxName — MAXGEN schema v1.13", "description": "MaxName is a structured record of one canonical name and all its historical variants, cognates across languages, and phonetic keys, each with provenance, time scope and confidence.", "url": "https://opengenealogyai.org/schemas/maxname/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/licenses/by/4.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/name.schema.json", "encodingFormat": "application/schema+json"}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxName — MAXGEN schema v1.13", "description": "MaxName is a structured record of one canonical name and all its historical variants, cognates across languages, and phonetic keys, each with provenance, time scope and confidence.", "url": "https://opengenealogyai.org/schemas/maxname/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/name.schema.json", "encodingFormat": "application/schema+json"}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MAXGEN", "item": "https://opengenealogyai.org/"}, {"@type": "ListItem", "position": 2, "name": "Schemas", "item": "https://opengenealogyai.org/schemas/"}, {"@type": "ListItem", "position": 3, "name": "MaxName", "item": "https://opengenealogyai.org/schemas/maxname/"}]}</script>
 
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span class="brand-text"><span class="wordmark wordmark-sm">Maxwell Genealogy Standard</span><small>MAXGEN · by OpenGenealogyAI</small></span></a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
     <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
   </div>
 </header>
 <main id="main" class="wrap">
-<div class="schema-head">
+<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc"><ul><li class="lvl2"><a href="#why-maxwell-and-makeswell-are-the-same-family">Why Maxwell and Makeswell are the same family</a></li><li class="lvl2"><a href="#what-it-is">What it is</a></li><li class="lvl2"><a href="#two-pass-cognates-new-in-v113">Two-pass cognates (new in v1.13)</a></li><li class="lvl2"><a href="#the-maxwell-example">The Maxwell example</a></li><li class="lvl2"><a href="#variant-types">Variant types</a></li><li class="lvl2"><a href="#fields">Fields</a></li><li class="lvl2"><a href="#example">Example</a></li><li class="lvl2"><a href="#listen">Listen</a></li></ul></div></aside><div class="content"><div class="schema-head">
   <p class="eyebrow">MAXGEN schema · v1.13</p>
   <h1>MaxName</h1>
   <p class="tagline">One name, every form it has ever taken, with sources.</p>
@@ -177,14 +178,14 @@
   <div class="ep-head"><span class="ep-num">Episode 7</span><h3>MaxName — Why Maxwell and Makeswell are the same family</h3><span class="ep-len">23:31</span></div>
   <p>Variants, cognates, phonetic keys, and the council design process behind the newest schema.</p>
   <audio controls preload="none" src="https://opengenealogyai.org/podcasts/audio/MAXGEN-07-maxname.mp3"></audio>
-  <p class="ep-links"><a href="https://opengenealogyai.org/podcasts/audio/MAXGEN-07-maxname.mp3">Download MP3</a> · <a href="/podcasts/study-guides/MAXGEN-07-maxname-StudyGuide/">Study guide</a></p>
-</div><p class="backlink"><a href="/schemas/">← All seven schemas</a></p>
+  <p class="ep-links"><a href="https://opengenealogyai.org/podcasts/audio/MAXGEN-07-maxname.mp3">Download MP3</a> (45 MB)</p>
+</div><p class="backlink"><a href="/schemas/">← All seven schemas</a></p></div></div>
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are free to use with credit under <a href="/license/">CC-BY 4.0</a>.</p>
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
     <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
-    <p class="muted">© 2026 OpenGenealogyAI. Site text CC-BY 4.0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
   </div>
 </footer>
 </body>

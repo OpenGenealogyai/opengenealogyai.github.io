@@ -126,6 +126,49 @@ details p { margin: 0.5rem 0; }
 #result.bad { background: #f7e6e2; border: 1px solid #b04a3a; }
 #result ul { margin: 0.4rem 0 0 1rem; padding: 0; }
 
+/* wordmark — logo concept 04: engraved serif, ancient-coin italic, metallic gold */
+.wordmark {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.1;
+  background: linear-gradient(180deg, #ffe88a 0%, #d4a828 30%, #8a6010 60%, #3d2a06 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #b8871e; /* fallback when background-clip is unsupported */
+  filter: drop-shadow(1px 1px 0 rgba(255,220,80,0.55)) drop-shadow(-1px -1px 0 rgba(0,0,0,0.85)) drop-shadow(0 0 18px rgba(180,130,20,0.3));
+  margin: 0;
+}
+.wordmark-lg { font-size: clamp(1.6rem, 4.2vw, 3rem); letter-spacing: 0.18em; text-wrap: balance; }
+.wordmark-sm { font-size: 1.05rem; letter-spacing: 0.1em; display: block; }
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+.brand-text small { font-family: var(--font-sans); font-weight: 400; font-size: 0.68rem; letter-spacing: 0.08em; color: var(--gold-muted); text-transform: uppercase; margin-top: 0.15rem; }
+@media (max-width: 760px) { .wordmark-sm { font-size: 0.9rem; letter-spacing: 0.06em; } }
+
+/* chain-link motif */
+.chain { display: flex; align-items: center; gap: 3px; margin: 0.5rem 0 1rem; }
+.chain .link { width: 16px; height: 9px; border: 2px solid; border-color: #c8922a #7a5010 #7a5010 #c8922a; border-radius: 50%; background: linear-gradient(135deg, #e8c040, #7a5010); opacity: 0.9; }
+.chain .link:nth-child(even) { transform: scaleX(0.6); opacity: 0.7; }
+
+/* side table of contents */
+.with-toc { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 2.5rem; align-items: start; }
+.toc-side { position: sticky; top: 1rem; font-family: var(--font-sans); font-size: 0.86rem; border-right: 1px solid var(--border); padding-right: 1rem; max-height: calc(100vh - 2rem); overflow-y: auto; }
+.toc-title { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.68rem; color: var(--grove); font-weight: 700; margin: 1.2rem 0 0.4rem; }
+.toc-side ul { list-style: none; margin: 0; padding: 0; }
+.toc-side ul ul { padding-left: 0.9rem; }
+.toc-side li { margin: 0.25rem 0; }
+.toc-side li.lvl3 { padding-left: 0.9rem; font-size: 0.8rem; }
+.toc-side a { color: var(--text); text-decoration: none; display: block; padding: 0.1rem 0; border-left: 2px solid transparent; padding-left: 0.5rem; margin-left: -0.5rem; }
+.toc-side a:hover { color: var(--gold-deep); border-left-color: var(--gold); }
+.content > h1:first-child, .content > .eyebrow:first-child { margin-top: 0.5rem; }
+@media (max-width: 900px) {
+  .with-toc { display: block; }
+  .toc-side { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--border); padding: 0 0 0.8rem; margin-bottom: 1rem; }
+  .toc-side ul { columns: 2; column-gap: 1.5rem; }
+}
+
 /* footer */
 .site-footer { background: var(--ink); color: #cfc9b8; font-family: var(--font-sans); font-size: 0.88rem; padding: 2rem 0; margin-top: 2rem; }
 .site-footer a { color: var(--gold-muted); }

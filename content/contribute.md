@@ -1,5 +1,6 @@
 ---
 title: Contribute
+toc: true
 nav: /contribute/
 description: How to ask a question about MAXGEN, report a problem, propose a change, or build something on the standard.
 ---

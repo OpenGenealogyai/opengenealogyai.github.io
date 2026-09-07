@@ -43,12 +43,33 @@ NAV = [
 ]
 
 MD = markdown.Markdown(extensions=["tables", "fenced_code", "toc", "attr_list", "md_in_html"],
-                       extension_configs={"toc": {"permalink": False}})
+                       extension_configs={"toc": {"permalink": False, "toc_depth": "2-3"}})
 
 
 def md(text: str) -> str:
     MD.reset()
     return MD.convert(text)
+
+
+def md_toc(text: str) -> tuple[str, str]:
+    """Convert Markdown and also return the generated table of contents (h2/h3) as HTML."""
+    MD.reset()
+    body = MD.convert(text)
+    toc = MD.toc if MD.toc and "<li>" in MD.toc else ""
+    return body, toc
+
+
+def toc_from_html(body_html: str) -> str:
+    """Build a table of contents from h2/h3 tags that already carry ids (for pages assembled from parts)."""
+    items = re.findall(r'<h([23]) id="([^"]+)">(.*?)</h\1>', body_html, flags=re.S)
+    if not items:
+        return ""
+    out = ['<div class="toc"><ul>']
+    for level, hid, text in items:
+        text = re.sub(r"<[^>]+>", "", text)
+        out.append(f'<li class="lvl{level}"><a href="#{hid}">{text}</a></li>')
+    out.append("</ul></div>")
+    return "".join(out)
 
 
 def front_matter(text: str) -> tuple[dict, str]:
@@ -80,7 +101,7 @@ ORG_JSONLD = {
     "url": BASE_URL + "/",
     "logo": f"{BASE_URL}/assets/img/ogai-logo.png",
     "sameAs": ["https://github.com/OpenGenealogyai"],
-    "description": "Steward of MAXGEN, the open genealogy data standard (CC-BY 4.0).",
+    "description": "Steward of MAXGEN, the open, public-domain genealogy data standard.",
 }
 
 
@@ -89,15 +110,34 @@ def jsonld(*objs) -> str:
     return '<script type="application/ld+json">' + json.dumps(graph, ensure_ascii=False) + "</script>"
 
 
+def breadcrumb_ld(path: str, title: str) -> str:
+    crumbs = [{"@type": "ListItem", "position": 1, "name": "MAXGEN", "item": BASE_URL + "/"}]
+    parts = [p for p in path.strip("/").split("/") if p]
+    acc = ""
+    for i, part in enumerate(parts):
+        acc += "/" + part
+        name = title if i == len(parts) - 1 else part.replace("-", " ").title()
+        crumbs.append({"@type": "ListItem", "position": i + 2, "name": name, "item": f"{BASE_URL}{acc}/"})
+    if len(crumbs) == 1:
+        return ""
+    return '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": crumbs}, ensure_ascii=False) + "</script>"
+
+
 def layout(title: str, body: str, active: str = "", description: str = "", extra_head: str = "",
-           path: str = "/", ld: str = "") -> str:
+           path: str = "/", ld: str = "", toc: str = "") -> str:
     nav = "".join(
         f'<a href="{href}"{" class=\"active\"" if href == active else ""}>{label}</a>'
         for label, href in NAV
     )
-    desc = html.escape(description or "MAXGEN — the open, probabilistic genealogy data standard. Seven JSON schemas, CC-BY 4.0.")
+    desc = html.escape(description or "MAXGEN — the open, probabilistic genealogy data standard. Seven JSON schemas, CC0.")
     full_title = html.escape(f"{title} — MAXGEN · OpenGenealogyAI")
     url = BASE_URL + path
+    if toc:
+        main_inner = f'<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p>{toc}</aside><div class="content">{body}</div></div>'
+    else:
+        main_inner = body
+    body = main_inner
+    ld = ld + breadcrumb_ld(path, title)
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,6 +155,7 @@ def layout(title: str, body: str, active: str = "", description: str = "", extra
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/css/site.css">
 <link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
 {ld}
@@ -124,7 +165,7 @@ def layout(title: str, body: str, active: str = "", description: str = "", extra
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span class="brand-text"><span class="wordmark wordmark-sm">Maxwell Genealogy Standard</span><small>MAXGEN · by OpenGenealogyAI</small></span></a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
     <nav id="nav" class="nav">{nav}<a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
   </div>
@@ -134,9 +175,9 @@ def layout(title: str, body: str, active: str = "", description: str = "", extra
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v{CURRENT}</a>. The standard and its schemas are free to use with credit under <a href="/license/">CC-BY 4.0</a>.</p>
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v{CURRENT}</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
     <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
-    <p class="muted">© {YEAR} OpenGenealogyAI. Site text CC-BY 4.0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+    <p class="muted">© {YEAR} OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
   </div>
 </footer>
 </body>
@@ -233,12 +274,11 @@ def mmss(sec: int) -> str:
 
 def player(ep) -> str:
     n, stem, title, blurb, secs, size = ep
-    guide = f"/podcasts/study-guides/{stem}-StudyGuide/"
     return f"""<div class="episode" id="ep{n}">
   <div class="ep-head"><span class="ep-num">Episode {n}</span><h3>{html.escape(title)}</h3><span class="ep-len">{mmss(secs)}</span></div>
   <p>{html.escape(blurb)}</p>
   <audio controls preload="none" src="{MEDIA_BASE}/{stem}.mp3"></audio>
-  <p class="ep-links"><a href="{MEDIA_BASE}/{stem}.mp3">Download MP3</a> · <a href="{guide}">Study guide</a></p>
+  <p class="ep-links"><a href="{MEDIA_BASE}/{stem}.mp3">Download MP3</a> ({size // 1_000_000} MB)</p>
 </div>"""
 
 
@@ -260,23 +300,7 @@ def build_podcasts() -> None:
     write(SITE / "podcasts" / "index.html",
           layout("Podcasts", body, "/podcasts/", intro_meta.get("description", ""), path="/podcasts/", ld=jsonld(ORG_JSONLD, series, *eps)))
 
-    # study guides
-    published = {s for _, s, *_ in EPISODES}
-    for f in sorted(AUDIO_SRC.glob("*-StudyGuide.md")):
-        if f.stem.replace("-StudyGuide", "") not in published:
-            continue  # superseded recording (e.g. MaxPerson v1) — not linked from the site
-        text = f.read_text(encoding="utf-8")
-        name = f.stem
-        note = ('<p class="muted">Study guide generated from the episode script (MAXGEN v1.11). '
-                'The standard is licensed <a href="/license/">CC-BY 4.0</a>; '
-                'where a detail differs from the current schemas, the <a href="/schemas/">schema pages</a> are authoritative.</p>')
-        body = note + md(text) + '<p><a href="/podcasts/">← All episodes</a></p>'
-        stem = name.replace("-StudyGuide", "")
-        ep_title = next((t for _, s, t, *_ in EPISODES if s == stem), None) or stem.replace("-", " ")
-        title = f"Study guide: {ep_title}"
-        write(SITE / "podcasts" / "study-guides" / name / "index.html",
-              layout(title, body, "/podcasts/", f"Practice questions, essay prompts and glossary for the MAXGEN podcast episode '{ep_title}'.",
-                     path=f"/podcasts/study-guides/{name}/"))
+    # (study guides are deliberately not published — Garlon, 2026-09-07)
 
     # RSS feed
     now = format_datetime(datetime.now(timezone.utc))
@@ -327,7 +351,8 @@ def build_versions() -> None:
     changelog = re.sub(r"\]\((?!https?://|/)([A-Za-z0-9_./-]+\.md)\)",
                        r"](https://github.com/OpenGenealogyai/opengenealogyai/blob/main/docs/\1)", changelog)
     body = md(intro).replace("<!--CURRENT-->", CURRENT).replace("<!--VERSIONS-->", table) + "<h2 id=\"changelog\">Changelog</h2>" + md(changelog)
-    write(SITE / "versions" / "index.html", layout("Versions", body, "/versions/", meta.get("description", ""), path="/versions/", ld=jsonld(ORG_JSONLD)))
+    write(SITE / "versions" / "index.html", layout("Versions", body, "/versions/", meta.get("description", ""), path="/versions/", ld=jsonld(ORG_JSONLD),
+                                                   toc=toc_from_html(body)))
 
 
 # ---------------------------------------------------------------- schemas
@@ -358,11 +383,12 @@ def build_schemas() -> None:
             "@type": "TechArticle", "headline": f"{meta['title']} — MAXGEN schema v{CURRENT}",
             "description": meta.get("description", meta["tagline"]), "url": f"{BASE_URL}/schemas/{slug}/",
             "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": f"{BASE_URL}/#org"},
-            "license": "https://creativecommons.org/licenses/by/4.0/", "isPartOf": {"@id": f"{BASE_URL}/#standard"},
+            "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": f"{BASE_URL}/#standard"},
             "encoding": {"@type": "MediaObject", "contentUrl": canonical, "encodingFormat": "application/schema+json"},
         })
         write(SITE / "schemas" / slug / "index.html",
-              layout(meta["title"], page, "/schemas/", meta.get("description", meta["tagline"]), path=f"/schemas/{slug}/", ld=ld))
+              layout(meta["title"], page, "/schemas/", meta.get("description", meta["tagline"]), path=f"/schemas/{slug}/", ld=ld,
+                     toc=toc_from_html(body_html)))
         pages.append((slug, meta["title"], meta["tagline"], name))
 
     # index of schemas
@@ -375,7 +401,7 @@ def build_schemas() -> None:
     standard_ld = {
         "@type": "Dataset", "@id": f"{BASE_URL}/#standard", "name": f"MAXGEN — The Maxwell Genealogy Standard v{CURRENT}",
         "description": "Seven JSON Schema files (MaxRecord, MaxPerson, MaxTask, MaxDNA, MaxSource, MaxRecognition, MaxName) defining an open, probabilistic genealogy data standard.",
-        "url": f"{BASE_URL}/schemas/", "version": CURRENT, "license": "https://creativecommons.org/licenses/by/4.0/",
+        "url": f"{BASE_URL}/schemas/", "version": CURRENT, "license": "https://creativecommons.org/publicdomain/zero/1.0/",
         "creator": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": f"{BASE_URL}/#org"}, "isAccessibleForFree": True,
         "distribution": [{"@type": "DataDownload", "name": f"{t} schema", "contentUrl": f"{BASE_URL}/schemas/maxgen/v1/{n}.schema.json", "encodingFormat": "application/schema+json"} for _, t, _, n in pages],
     }
@@ -400,13 +426,15 @@ def build_pages() -> None:
         meta, text = front_matter(f.read_text(encoding="utf-8"))
         out = meta.get("out", f"{f.stem}/index.html")
         path = "/" + out.replace("index.html", "")
-        body = md(text)
+        body, toc = md_toc(text)
         body = body.replace("<!--CURRENT-->", CURRENT)
+        if meta.get("toc") != "true":
+            toc = ""
         ld_objs = [ORG_JSONLD]
         if f.stem == "faq":
             ld_objs.append(faq_ld(body))
         write(SITE / out, layout(meta.get("title", f.stem.title()), body, meta.get("nav", path), meta.get("description", ""),
-                                 path=path, ld=jsonld(*ld_objs)))
+                                 path=path, ld=jsonld(*ld_objs), toc=toc))
 
 
 def build_home(pages) -> None:
@@ -426,7 +454,7 @@ def build_llms_txt(pages) -> None:
     lines = [
         "# MAXGEN — The Maxwell Genealogy Standard",
         "",
-        f"> MAXGEN is an open data standard, free to use with attribution (CC-BY 4.0), for genealogy, stewarded by OpenGenealogyAI. Current release v{CURRENT}. "
+        f"> MAXGEN is an open, public-domain (CC0) data standard for genealogy, stewarded by OpenGenealogyAI. Current release v{CURRENT}. "
         "Seven JSON Schema files describe evidence (MaxRecord), probable identities (MaxPerson), research work (MaxTask), DNA evidence (MaxDNA), "
         "where records live (MaxSource), transcription provenance (MaxRecognition) and name variants (MaxName). Every claim carries a source and a 0-1 confidence score; "
         "conflicting evidence is kept, nothing is deleted, and records about living people are private by rule.",
@@ -438,7 +466,7 @@ def build_llms_txt(pages) -> None:
         f"- [FAQ]({BASE_URL}/faq/)",
         f"- [Versioning policy and changelog]({BASE_URL}/versions/)",
         f"- [Governance]({BASE_URL}/governance/)",
-        f"- [Licence (CC-BY 4.0)]({BASE_URL}/license/)",
+        f"- [Licence (CC0)]({BASE_URL}/license/)",
         "",
         "## Schemas (canonical JSON Schema files)",
     ]
@@ -463,8 +491,39 @@ def main() -> None:
     sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + \
          "".join(f"  <url><loc>{BASE_URL}{u}</loc></url>\n" for u in urls) + "</urlset>\n"
     write(SITE / "sitemap.xml", sm)
-    write(SITE / "robots.txt", f"User-agent: *\nAllow: /\nSitemap: {BASE_URL}/sitemap.xml\n")
+    robots = [
+        "# opengenealogyai.org — everything here is public and meant to be read by people, search engines and AI.",
+        "# The MAXGEN standard is CC0. Crawl freely; a machine-readable summary is at /llms.txt and the full text at /llms-full.txt.",
+        "User-agent: *", "Allow: /", "",
+    ]
+    for bot in ["Googlebot", "Bingbot", "GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web", "anthropic-ai",
+                "Google-Extended", "PerplexityBot", "CCBot", "Applebot", "Applebot-Extended", "DuckDuckBot", "Amazonbot", "Bytespider", "meta-externalagent"]:
+        robots += [f"User-agent: {bot}", "Allow: /", ""]
+    robots += [f"Sitemap: {BASE_URL}/sitemap.xml", ""]
+    write(SITE / "robots.txt", "\n".join(robots))
+    build_llms_full()
     print(f"built {len(urls)} pages (MAXGEN v{CURRENT})")
+
+
+def build_llms_full() -> None:
+    """One plain-text file with the whole site's prose, for AI systems that prefer a single fetch."""
+    order = ["index.md", "standard.md", "schemas-index.md", "faq.md", "versions.md", "governance.md", "contribute.md", "license.md", "podcasts.md"]
+    parts = [f"# MAXGEN — The Maxwell Genealogy Standard (v{CURRENT}) — full text of opengenealogyai.org", ""]
+    files = [CONTENT / n for n in order] + sorted((CONTENT / "schemas").glob("*.md"))
+    for f in files:
+        if not f.exists():
+            continue
+        meta, text = front_matter(f.read_text(encoding="utf-8"))
+        text = text.replace("<!--CURRENT-->", CURRENT)
+        text = re.sub(r"<!--[A-Z:_a-z]+-->", "", text)
+        text = re.sub(r"<script.*?</script>", "", text, flags=re.S)
+        text = re.sub(r"<[^>]+>", "", text)
+        parts += [f"\n\n---\n## {meta.get('title', f.stem)}\n", text.strip()]
+    parts += ["\n\n---\n## Schema files (JSON Schema 2020-12)\n"]
+    for v in INDEX["versions"][:1]:
+        for s in v["schemas"]:
+            parts.append(f"- {BASE_URL}/schemas/maxgen/v1/{s}.schema.json")
+    write(SITE / "llms-full.txt", "\n".join(parts) + "\n")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,844 @@
+# MAXGEN — The Maxwell Genealogy Standard (v1.13) — full text of opengenealogyai.org
+
+
+
+---
+## MAXGEN
+
+Maxwell Genealogy Standard
+
+MAXGEN · an open standard · public domain · current release v1.13
+Genealogy data that is honest about what it doesn't know.
+MAXGEN is a free, open data standard for family history. Every fact carries its source and a confidence score. Conflicting evidence is kept, not deleted. Anyone can use it, build on it, or extend it. No permission required.
+
+ReadWhat the standard is and why it exists
+ListenEight podcast episodes, one per schema
+DownloadThe seven schema files, every version
+
+
+
+
+
+## The problem it solves
+
+Genealogy has never had more to work with. Close to two billion records are online, archives scan more every year, volunteers transcribe registers by the million, and DNA testing has added a whole new kind of evidence. The formats we exchange that work in were designed for a simpler time: one birth year, one birthplace, one set of parents, written down as settled fact. Real family history rarely arrives that clean. A census says 1843; a gravestone says 1844. A father could be one of three men with the same name.
+
+MAXGEN writes the doubt down. It stores **what the document says** separately from **what we think it means**, keeps every claim with its source and a 0-to-1 confidence score, and never overwrites anything. Several possible parents can coexist until the evidence resolves them. Every uncertainty becomes a lead worth chasing instead of a dead end, and as each new source corroborates a name or a date you watch the confidence climb. People can read it, researchers can check it, and AI can work with it without inventing anything, because confidence is a machine's native language.
+
+MAXGEN is built to sit alongside the archives, record sites, and communities researchers already rely on, not to replace them. It is a shared language they can all speak. Every ancestor. Every source. Every honest doubt.
+
+## The seven schemas
+
+A schema is a written rule-set that says exactly what fields a record has and what each one means, so that any program can read a record written by any other program. MAXGEN has seven, and each has its own page and its own podcast episode.
+
+
+
+## Three promises
+
+1. **Nothing is ever deleted.** A retracted claim gets a retraction note; it does not vanish. The audit trail is permanent.
+2. **Living people are protected by the schema itself.** A record about a person who may be alive is locked private no matter what any application does.
+3. **Old records stay readable forever.** Within a major version, fields are never renamed or removed. See the [versioning policy](/versions/).
+
+## Who it is for
+
+- **Developers** building genealogy tools or AI agents: seven JSON Schema files at stable addresses, a changelog, fixtures, and a [validator](/validator/) that runs in your browser.
+- **Genealogists and archivists** deciding whether to trust it: the [plain-English guide](/standard/), the [FAQ](/faq/), and the [podcasts](/podcasts/).
+- **Institutions** who need to know how it is governed before adopting it: the [governance page](/governance/) and the [licence](/license/).
+
+MAXGEN is short for the Maxwell Genealogy Standard, named for its author, Garlon Maxwell. It is stewarded by OpenGenealogyAI and dedicated to the public domain (CC0).
+
+
+---
+## The Standard
+
+The Maxwell Genealogy Standard · v1.13 · CC0
+# The Standard
+
+MAXGEN is a language for describing family-history evidence. It is not a product, not a database, and not a website. It is a set of seven schemas (written rule-sets for data records) that any program can read and write, so that research done in one place can be understood everywhere else. This page is the whole standard in plain English. The exact rules live in the [schema files](/schemas/).
+
+## 1. What is MAXGEN?
+
+MAXGEN is an open JSON standard for representing genealogical evidence and the people it describes in a way that is **honest about uncertainty**.
+
+Some or most genealogy formats today can hold one answer per fact. When two records disagree about who someone's father was, one has to win and the other is set aside. MAXGEN takes a different approach: **every claim is an assertion** with a confidence score, a source, and a timestamp. Nothing is overwritten. Several possible parents can coexist. Conflicting birth years both survive. The uncertainty is the data.
+
+Five ideas define it:
+
+1. **Uncertainty is data.** Every claim carries a 0-to-1 confidence score (section 4) and dates are ranges, because a census age is a guess and "spring 1847" is not a day.
+2. **Evidence and interpretation are kept apart.** MaxRecord holds what a document says, exactly as written. MaxPerson holds what we think it means. You can change your mind about a person without touching the document.
+3. **Nothing is ever deleted.** A wrong merge is reversed, not erased. A disputed reading gets a `disputed_by` entry. Every change has a who, a when, and a why.
+4. **Privacy is built into the schema.** A record about a person who may be alive is locked to the most restrictive licence, `tier2-private`, and public systems answer "not found". DNA records are always private and never hold raw genetic data.
+5. **Extensions are the escape hatch.** Each schema is closed, so validation is exact, but every schema has an `extensions{}` object that accepts anything. You never need to fork.
+
+> **The core principle:** an assertion with low confidence and a real source is worth more than a certain-looking answer with no source. MAXGEN never invents. When the document is unclear, the confidence score says so.
+
+## 2. How MAXGEN differs from GEDCOM
+
+GEDCOM is the 1984 file format that almost every genealogy program can import and export. It is one of the great successes of the field: forty years of trees have moved between programs because of it, and GEDCOM 7 continues to modernise it. MAXGEN is not a replacement for exchanging finished trees. It is a companion for exchanging the **evidence and reasoning** behind a tree, a job GEDCOM was never asked to do. The two are meant to work together.
+
+| | GEDCOM | MAXGEN |
+|---|---|---|
+| Format | Custom plain text (`.ged`) | JSON, validated by JSON Schema |
+| Relationships | One answer | Several candidates, each with a confidence score |
+| Uncertainty | Not represented | The point of the design |
+| Source for each fact | Optional | Required on every assertion |
+| Dates | A single value | Ranges (`year_min` / `year_max`) |
+| Conflicts | Resolved before saving | Preserved and flagged |
+| Living people | No enforcement | Locked private by the schema |
+| Transcription provenance | None | MaxRecognition, down to word-level confidence |
+| Name variants across languages | None | MaxName |
+| AI readiness | Predates it | Embedding text, structured evidence, anti-hallucination rules in MaxTask |
+| Control | A steering committee | Public domain (CC0); anyone may use, fork, or extend |
+
+MAXGEN event types map to GEDCOM tags (RESI, EMIG, IMMI, CENS, NATU, PROB, WILL, MILI) so conversion runs in both directions.
+
+## 3. The seven schemas
+
+A schema is a written rule-set that says exactly what fields a record has and what each one means. MAXGEN began with three record types and has grown to seven, each covering one layer of the research process. Each has [its own page](/schemas/) with fields, an example and a podcast episode.
+
+| Schema | What one record is | Page |
+|---|---|---|
+| **MaxRecord** | One source document exactly as found, uninterpreted | [MaxRecord](/schemas/maxrecord/) |
+| **MaxPerson** | One probable person: a bundle of scored, sourced assertions | [MaxPerson](/schemas/maxperson/) |
+| **MaxTask** | One unit of research work for a human or an AI, with proof required | [MaxTask](/schemas/maxtask/) |
+| **MaxDNA** | DNA match evidence linked to a person, always private | [MaxDNA](/schemas/maxdna/) |
+| **MaxSource** | One place where records live, with coverage and access details | [MaxSource](/schemas/maxsource/) |
+| **MaxRecognition** | One transcription of one image: who read it and how sure they were | [MaxRecognition](/schemas/maxrecognition/) |
+| **MaxName** | One name and every form it has taken, with sources | [MaxName](/schemas/maxname/) |
+
+How they fit together:
+
+```
+  document image ──► MaxRecognition (who read it, how confident, word by word)
+                            │
+                            ▼
+                       MaxRecord (the document, exactly as written)
+                            │  cited by
+                            ▼
+   MaxName ◄──────────  MaxPerson  ◄────── MaxDNA (genetic evidence, always private)
+ (is "Makeswell"      (a probable person:
+  the same name?)      every claim scored)
+                            │  spawns
+                            ▼
+                        MaxTask (work for a human or an AI, with proof required)
+                            ▲
+                            │  where to look next
+                        MaxSource (a catalogue of where records live)
+```
+
+Each schema can be adopted on its own. An archive that only wants to publish transcriptions with provenance can use MaxRecognition alone.
+
+## 4. The confidence score
+
+Every assertion carries a `confidence` value from 0.0 to 1.0. The numbers are anchored, not decorative:
+
+| Score | Meaning |
+|---|---|
+| 0.90 to 1.00 | The field appears verbatim in the source with no ambiguity. |
+| 0.70 to 0.89 | Minor spelling or transcription variation; well attested. |
+| 0.50 to 0.69 | Inferred from context, not stated explicitly. |
+| 0.30 to 0.49 | Ambiguous or damaged source. |
+| 0.00 to 0.29 | Best guess only. Recorded so it is not lost, not so it is believed. |
+
+Scores must be honest. A consistent 0.4 is more valuable than an inflated 0.9. A person's `composite_confidence` combines all assertions, weighted by source quality, using a noisy-OR rule: independent sources that agree raise confidence, but never to certainty, and two assertions that trace to the same document are not counted twice.
+
+Why this matters for AI: models that read handwriting, match records and draft leads need an honest confidence on every claim, a source they can be checked against, and the losing candidates as well as the winner. In our own benchmarks, ordinary keyword search returned 0 to 5 percent of the right records for queries with a partial name and an approximate year; meaning-based search over embedded text is the baseline for this field. That is why every schema has an `embedding_text` field or equivalent, why every claim cites a `source_record_id`, and why MaxTask requires an AI to return the evidence it found rather than a summary of what it believes.
+
+## 5. JSON examples
+
+A MaxPerson is a set of assertion arrays. Every field that says something about the person is an array, never a single value:
+
+```json
+{
+  "person_id": "b1000000-0006-4000-8000-000000000006",
+  "schema_version": "1.13",
+  "is_living": false,
+  "composite_confidence": 0.95,
+  "name_assertions": [
+    { "name_as_written": "Mary Todd", "name_type": "birth", "confidence": 0.95,
+      "source_record_id": "a1b2c3d4-0003-4000-8000-000000000003",
+      "asserted_by": "extractor-agent-haiku-001", "asserted_at": "2026-05-01T14:00:00Z" },
+    { "name_as_written": "Mary Lincoln", "name_type": "married", "confidence": 0.99,
+      "source_record_id": "a1b2c3d4-0003-4000-8000-000000000003",
+      "asserted_by": "extractor-agent-haiku-001", "asserted_at": "2026-05-01T14:00:00Z" }
+  ],
+  "birth_assertions": [
+    { "year_min": 1818, "year_max": 1818, "month": 12, "day": 13, "place_as_written": "Lexington, Kentucky",
+      "confidence": 0.98, "source_record_id": "a1b2c3d4-0003-4000-8000-000000000003",
+      "asserted_by": "extractor-agent-haiku-001", "asserted_at": "2026-05-01T14:00:00Z" }
+  ],
+  "redistribution_license": "public-domain",
+  "asserted_by": "extractor-agent-haiku-001",
+  "asserted_at": "2026-05-01T14:00:00Z"
+}
+```
+
+Every schema page carries a full, validated example: [MaxRecord](/schemas/maxrecord/), [MaxPerson](/schemas/maxperson/), [MaxTask](/schemas/maxtask/), [MaxSource](/schemas/maxsource/), [MaxRecognition](/schemas/maxrecognition/), [MaxName](/schemas/maxname/). Paste any record into the [validator](/validator/) to check it.
+
+### 5b. Contributor attribution
+
+Credit travels with the data, not in a site footer. A MaxRecord carries an `attribution{}` object naming the contributor (`contributor_name`, `contributor_url`, `contributor_role`) and the organisation the document came from (`source_organization`, `source_organization_url`). Every assertion in a MaxPerson names who made it (`asserted_by`) and when (`asserted_at`), and cites the record it came from, so a person's page can list every contributor whose work touched that person. A MaxRecognition names its transcriber, human or model, with credentials. Attribution is part of the record and stays with it wherever the record is copied.
+
+## 6. File extensions
+
+MAXGEN uses two file extensions so record types can be told apart at a glance:
+
+- **`.maxgen`** for MaxPerson records: `william_whitfield_1842.maxgen`
+- **`.mxrecord`** for MaxRecord source documents: `1880_census_ohio_p42.mxrecord`
+
+Both are ordinary JSON files. MaxTask records live in a work queue and are not usually stored as standalone files. Any `.json` file that validates against a schema is also a valid MAXGEN record; the extensions are a convenience, not a requirement.
+
+## 7. Versioning
+
+All seven schemas share one version number and move together. Within a major version, fields are never renamed or removed; changes are additive only. A breaking change means a new major version, a new address space, a migration guide, and a 30-day public comment period. Records written to any version stay readable forever. The full policy, the stability promise, and every released version with permanent download links are on the [versions page](/versions/).
+
+## 8. Why JSON?
+
+- **Human-readable and machine-readable.** No proprietary parser required; you can open a record in a text editor.
+- **Supported everywhere.** Every modern programming language reads and writes JSON natively.
+- **Validated by JSON Schema 2020-12.** Structure is enforced at the moment a record is written, not discovered later.
+- **Embeddable.** A MAXGEN record can be fed to an AI embedding model without conversion, which is what makes meaning-based search possible.
+- **Version-control friendly.** Records can be diffed, reviewed and merged exactly like source code, so a community can review each other's work.
+- **No lock-in.** Export your data at any time with zero loss.
+
+## 9. How to contribute
+
+Ask a question, report a problem, propose a change, or build something on the standard. You do not need permission for any of it. The [contribute page](/contribute/) has the details; the short version is: open a GitHub Issue using the *Schema Change Proposal* template (problem, proposed change, backward compatibility, examples) or write to maxgen@opengenealogyai.org.
+
+## 10. Governance
+
+MAXGEN is public domain, so anyone can use it, fork it, or extend it. What is stewarded is the canonical version: the one set of files at this address that may be called MAXGEN. Today the author, Garlon Maxwell, is the steward, with a public proposal process (7-day comment for minor changes, 30-day for major) and written decisions. A published charter describes the advisory board that takes over major-version decisions once there are independent adopters, including how it can overrule the steward. What the steward never controls: your forks, your extensions, your tools, or your records. Read the full [governance page](/governance/).
+
+> "MAXGEN is open because anyone can use it and build on it. It is not open to fragmentation. One canonical version. One steward. Every change earns its place in the record." — Garlon Maxwell
+
+
+---
+## The seven schemas
+
+MAXGEN v1.13 · lockstep release
+# The seven schemas
+
+All seven files share one version number. When any of them changes, the whole standard moves to the next number, so you adopt "MAXGEN v1.13" as a set and never have to wonder which schema goes with which.
+
+
+
+## Canonical addresses
+
+Every schema file declares its own permanent address in its `$id` field. Tools that validate records fetch the schema from there.
+
+| Schema | Latest v1 (always current) | File |
+|---|---|---|
+| MaxRecord | `/schemas/maxgen/v1/raw-record.schema.json` | [download](/schemas/maxgen/v1/raw-record.schema.json) |
+| MaxPerson | `/schemas/maxgen/v1/person.schema.json` | [download](/schemas/maxgen/v1/person.schema.json) |
+| MaxTask | `/schemas/maxgen/v1/task-queue.schema.json` | [download](/schemas/maxgen/v1/task-queue.schema.json) |
+| MaxDNA | `/schemas/maxgen/v1/dna.schema.json` | [download](/schemas/maxgen/v1/dna.schema.json) |
+| MaxSource | `/schemas/maxgen/v1/source.schema.json` | [download](/schemas/maxgen/v1/source.schema.json) |
+| MaxRecognition | `/schemas/maxgen/v1/recognition.schema.json` | [download](/schemas/maxgen/v1/recognition.schema.json) |
+| MaxName | `/schemas/maxgen/v1/name.schema.json` | [download](/schemas/maxgen/v1/name.schema.json) |
+
+Frozen copies of every past release live under `/schemas/maxgen/v1.NN/` and are listed on the [versions page](/versions/). A machine-readable list is at [`/schemas/maxgen/index.json`](/schemas/maxgen/index.json).
+
+## Check a record
+
+Paste any JSON record into the [browser validator](/validator/) to see whether it conforms. Nothing you paste leaves your computer.
+
+
+---
+## FAQ
+
+Questions and answers
+# Frequently asked questions
+
+Grouped by who is asking. If your question is not here, [ask it](/contribute/) and it may be added.
+
+## I'm a genealogist
+
+What is MAXGEN in one sentence?A free, public-domain way of writing down family-history evidence so that every fact keeps its source and an honest confidence score, and conflicting evidence is kept rather than deleted.
+
+Do I need to be technical to benefit from it?No. MAXGEN is what software uses underneath. What you notice is the behaviour: a tree that shows two possible fathers with their scores instead of silently picking one, a search that finds "Makeswell" when you typed "Maxwell", and a document that is never "corrected" away from what the clerk wrote.
+
+Why keep several possible parents? Isn't the job to find the right one?Yes, and keeping the candidates is how you get there honestly. Real research often ends at "probably this man, possibly that one". A format that can hold only one answer has no room for the uncertainty a good genealogist would write in the margin. MAXGEN stores the margin note as data, so a new record can raise one candidate and lower another instead of overturning a false certainty.
+
+What do the confidence numbers mean?They are anchored, not decorative. 0.95 and above means the fact appears verbatim in a source with no ambiguity. 0.70 to 0.95 means well attested with some ambiguity, such as a self-reported census age. 0.50 to 0.70 means plausible but needing more evidence. Below 0.50 is speculative, recorded so it is not lost. Scores must be honest: a consistent 0.4 is more useful than an inflated 0.9.
+
+How does it handle a document that gets the spelling wrong?The document record (MaxRecord) keeps the spelling exactly as written. The interpretation ("that is the Maxwell family") lives separately in the person record, with a score and a source. And the name record (MaxName) can state, with citations, that Makeswell is a known variant of Maxwell in Scots records between 1600 and 1750, so searches find it.
+
+Will my existing GEDCOM files work?MAXGEN is not a replacement for GEDCOM as a way to move a finished tree between programs. It is a way to exchange the evidence and reasoning behind a tree. Its event types map to GEDCOM tags, so conversion tools can go in both directions; the difference is that a MAXGEN record can say "we are 0.6 sure" and a GEDCOM record cannot.
+
+What about living relatives?A record about a person who may be alive is locked private by the schema itself: public systems answer "not found". DNA records are always private and can never hold raw genetic data. Research tasks about living people can never be sent to outside volunteers or third-party AI services. These are rules of the standard, not settings an application can turn off.
+
+Can AI make things up in a MAXGEN record?It can try, and the standard is built to catch it. Every claim must cite a source record. Every research task lists the evidence it must return (a link to the actual birth record, the exact search used). Results are reviewed by someone other than the contributor, and "fabricated or hallucinated" is a formal rejection reason that lowers a contributor's standing over time.
+
+Does it cost anything?No. The standard is dedicated to the public domain (CC0): use it for anything, including commercial products, with no conditions. The schemas, the specification, and the podcasts on this site cost nothing.
+
+## I'm a developer
+
+What format is it?JSON, described by JSON Schema (draft 2020-12). Seven schema files, one per record type, all at the same version number. Records are plain JSON documents; the conventional file extensions are .maxgen for persons and .mxrecord for source documents, but any JSON file that validates is a MAXGEN record.
+
+Where do I get the schema files?At their canonical addresses, which are also each file's $id: https://opengenealogyai.org/schemas/maxgen/v1/&lt;name&gt;.schema.json. Frozen copies of every release live under /schemas/maxgen/v1.NN/. See the schemas page and versions.
+
+How do I validate a record?Any JSON Schema 2020-12 validator works: Ajv in JavaScript, jsonschema in Python, and equivalents in other languages. The schema repository ships validators and fixtures. Or paste a record into the browser validator on this site.
+
+Can I add my own fields?Yes, in extensions{}, which every schema has and which accepts anything. The core of each schema is closed (unknown top-level fields are rejected) so validation is exact; the extensions object is open so you never need to fork. Your records stay valid across releases.
+
+Will an update break my records?Not within a major version. Minor releases are additive only: new optional fields, new enum values, loosened constraints. Fields are never renamed or removed in v1.x. A breaking change means v2, a new address space, a migration guide, and a 30-day public comment period first. Read the stability promise.
+
+Why is one version number shared by all seven schemas?So there is never any doubt about which files go together. When any schema changes, all seven are stamped with the new number and released as a set. It is the model HL7 FHIR and GEDCOM use. Before v1.3 the schemas versioned independently and the skew was confusing; lockstep ended that.
+
+Which fields are required?Few, deliberately. A MaxPerson needs an ID, at least one name assertion, and who asserted it and when. A MaxRecord needs an ID, a record type, a licence, a source URL, an extraction confidence and the living flag. Each schema page lists its fields with the required ones marked.
+
+What are the normative rules I must implement?Three. A record with is_living: true is tier2-private and must not be exposed publicly. MaxDNA records are always tier2-private and raw_genotype_stored is always false. MaxTask contributor_eligibility defaults to first_party_only and any task about a living person must stay that way.
+
+How are confidence scores combined?The schemas store the evidence; the engine does the arithmetic. The reference approach is a noisy-OR combination weighted by source quality, which raises confidence when independent sources agree without ever reaching certainty. Because every assertion cites its source_record_id, an engine can detect two assertions that really come from one document and avoid double-counting.
+
+Is there an official library or package?Not yet. The schema repository contains JavaScript validators and fixtures. Packages for npm and PyPI are planned after launch; if you publish one, tell us and it will be listed.
+
+How do I propose a change?Open a GitHub Issue with the problem, the proposed fields, the backward-compatibility answer and a before-and-after example. Minor changes get at least a week of open discussion, major ones a month, then a written decision. Details on the governance page.
+
+## I run an archive, library or society
+
+What would adopting MAXGEN commit us to?Only to publishing records that validate against the public schemas and to honouring the three privacy rules. There is no membership, no fee, no agreement to sign, and no obligation to use the whole standard: an archive that only wants to publish transcriptions with provenance can use MaxRecognition alone.
+
+Who owns the standard?Nobody, legally: it is dedicated to the public domain under CC0, so anyone may use, copy, change and redistribute it with no conditions. The canonical version is stewarded by its author today, with a published path to an advisory board that includes an archive or library seat and can overrule the steward on major versions by a two-thirds vote. See governance.
+
+Can we keep our own catalogue numbers and internal fields?Yes. MaxRecord has archive_ref for your reference, repository and collection for where the item sits, and extensions{} for anything else. MaxSource's access{} block records how you want to be accessed, including crawl etiquette that robots.txt cannot express.
+
+How does it handle attribution and licensing of our records?Every record declares its own licence (CC0, public domain, CC-BY, CC-BY-SA, or never-redistribute) and carries an attribution{} object for the credit line your licence requires. The standard itself is public domain; your data stays under whatever terms you set.
+
+We have transcriptions made by volunteers over decades. Is that work preserved?That is what MaxRecognition is for. Each transcription gets a provenance record: who read it, their credentials and specialties, how confident they were word by word, and which readings were direct and which were inferred. The work becomes citable and its quality trackable, instead of being flattened into a text field.
+
+## About the project
+
+Why is it called MAXGEN?It stands for the Maxwell Genealogy Standard, after its author Garlon Maxwell. The name is a mark for the canonical version: use it for anything that validates against the public schemas, but not for a fork that diverges.
+
+What is OpenGenealogyAI, and what is The Probable Pedigree?OpenGenealogyAI is the organisation that stewards MAXGEN. The Probable Pedigree is a genealogy platform built on the standard that shows what it makes possible. The standard is designed to outlive any product, including that one: it has no special standing in the change process.
+
+Why seven schemas instead of one?Because evidence, interpretation, work, names, sources, transcription and DNA are different things with different privacy needs and different owners. Separating them lets a document be re-read without touching conclusions, lets DNA be locked down harder than everything else, and lets an organisation adopt only the layer it needs.
+
+Who made the podcasts?They were produced with an AI narration tool from scripts written by the standard's author and describe MAXGEN v1.11. Where a later release changed a detail, the schema pages on this site are authoritative. Each episode has a written study guide.
+
+How does this relate to FamilySearch, Ancestry, WikiTree and the other sites?They hold the records and the communities; MAXGEN is a format for describing evidence that any of them, and any tool built around them, could read and write. It is not a competing service and it does not replace anyone's database. A MaxPerson can carry scored links to the same person on FamilySearch, WikiTree or Find a Grave, so research done in different places can be reconciled instead of duplicated. The aim is a shared language, and the more sites speak it the more useful everyone's work becomes.
+
+Is MAXGEN trying to replace GEDCOM?No. GEDCOM moves finished trees between programs and has done so for forty years. MAXGEN carries the evidence and reasoning behind a tree, which GEDCOM was never designed to hold. Event types map to GEDCOM tags so conversion runs both ways, and a tool can happily support both.
+
+How do I follow changes?Every release is recorded in the changelog with the reason it happened. Proposals are discussed in public on GitHub. A mailing list is planned.
+
+
+---
+## Versions
+
+Releases · current v1.13
+# Versions and the stability promise
+
+## How versions work
+
+**One number for all seven schemas.** When any schema changes, the whole standard moves to the next number and every file is stamped with it, even the ones that did not change. You adopt "MAXGEN v1.13" as a set. This is how HL7 FHIR (the healthcare data standard) and GEDCOM release, and it makes it impossible for two files to disagree about which version they belong to.
+
+**Semantic versioning.** The number has the industry-standard meaning:
+
+| Change | Bump | Example |
+|---|---|---|
+| Wording, descriptions, a regex fix. No field changes. | patch: 1.13.0 → 1.13.1 | Clarifying that `output_text` may hold a JSON string |
+| Additive: a new optional field, a new enum value, a loosened constraint | minor: 1.13 → 1.14 | Adding `parent_source_id` to MaxSource |
+| Anything that could make an existing valid record invalid | major: v1 → v2 | Making a field required, renaming or removing a field |
+
+## The stability promise
+
+> Within a major version, **fields are never renamed or removed**. A field can be marked deprecated with a note, but it stays valid. Every record that validated against v1.3 validates against every later v1.x.
+
+A major version gets a new address space (`/schemas/maxgen/v2/`), a written migration guide, and the full [review process](/governance/) including the longer comment period. There is no forced migration: a tool that understands v2 must still read v1 records without failing silently.
+
+## Permanent addresses
+
+- `/schemas/maxgen/v1/.schema.json` always points at the **latest v1.x**. This is the `$id` inside every schema file.
+- `/schemas/maxgen/v1.NN/.schema.json` is a **frozen copy** of that release and never changes.
+- `/schemas/maxgen/index.json` lists every version for machines.
+
+
+
+## Release ritual
+
+Every release, in this order: bump the `schema_version` constant in all seven files, re-run every fixture through the validators, write the changelog entry, tag the release in git, copy the files to `/v1/` and `/v1.NN/` on this site, update the version badge, and regenerate any podcast episode whose schema changed.
+
+
+---
+## Governance
+
+How the standard changes
+# Governance
+
+MAXGEN is dedicated to the public domain (CC0). Anyone can use it, fork it, extend it, or build on it without asking. What is stewarded is the **canonical version**: the one set of files at `opengenealogyai.org/schemas/maxgen/` that may be called MAXGEN. This page says who decides what goes into it, how, and how that will change as the community grows.
+
+> "MAXGEN is open because anyone can use it and build on it. It is not open to fragmentation. One canonical version. One steward. Every change earns its place in the record." — Garlon Maxwell
+
+## Today: a steward
+
+The standard's author, Garlon Maxwell, is the steward: the technical lead who has final say on what enters the canonical schemas until the advisory board exists. Every decision is public, reasoned, and recorded in the [changelog](/versions/#changelog). This is the same arrangement most successful standards began with, including the OpenAPI specification before it moved to a foundation, and the page below says exactly when and how it ends.
+
+## How to propose a change
+
+1. **Open a GitHub Issue** in the schema repository using the *Schema Change Proposal* template. It asks four things:
+    - **Problem**: what real use the current schema fails to support.
+    - **Proposed change**: the new or altered fields, with type and description.
+    - **Backward compatibility**: does any existing valid record become invalid? If so, how would it migrate?
+    - **Examples**: at least one before-and-after JSON snippet.
+2. **Open discussion.** Anyone may comment. Minor (additive) changes stay open at least **7 days**; major (breaking) changes at least **30 days**.
+3. **Review.** The steward reads the proposal and the discussion, may ask for more examples, and may put the question to a wider vote.
+4. **Decision with reasons.** Accepted or declined, in writing, on the issue. Nothing merges without explicit sign-off.
+5. **Implementation.** The change is applied to the schema files, fixtures are re-validated, the changelog is written, and a new version is released under the [versioning policy](/versions/).
+
+Challenges that did **not** lead to a change are logged too. A rule that survived a good argument is worth knowing about.
+
+If you do not use GitHub, write to **maxgen@opengenealogyai.org** and the steward will open the issue on your behalf.
+
+## Tomorrow: an advisory board
+
+A standard controlled by one person is a standard institutions hesitate to adopt. The path to shared control is published now so that adopters can see it.
+
+**Trigger.** The board convenes when there are three or more independent implementations of MAXGEN, or when the first institution (an archive, a library, a genealogical society, a software vendor) adopts it, whichever comes first.
+
+**Composition.** Five to seven seats: the steward, working genealogists, developers who have shipped an implementation, and at least one representative of an archive or library. No single company may hold a majority.
+
+**What the board decides.** Major versions, additions to the core schemas, and changes to the normative privacy rules. Extensions need nobody's permission and are never voted on.
+
+**What the steward keeps.** A tie-breaking vote and custody of the name and the canonical address. The steward may be **overruled on a major version by a two-thirds vote**. That clause is the point: it is the guarantee that the standard cannot be held hostage by its author.
+
+**Openness.** Meetings are announced in advance, minutes are published on this site, and every vote is recorded.
+
+**How seats are filled.** The first board is appointed by the steward from people who have actually implemented or adopted MAXGEN, announced publicly with a 30-day objection period. After that, seats are two-year terms; the sitting board fills vacancies by simple majority from public nominations. Anyone may nominate anyone, including themselves.
+
+**Quorum and voting.** A quorum is a majority of seats. Additive changes pass by simple majority of those voting. Major versions and changes to the privacy rules need two-thirds of all seats. Every vote is recorded with names.
+
+**Emergency fixes.** A security or privacy defect in a schema may be patched immediately by the steward as a patch release, with a public notice the same day and retrospective board review within 30 days. Nothing else skips the process.
+
+## Continuity: what happens if the steward is gone
+
+A standard that dies with one person is not a standard. Three safeguards:
+
+1. **The licence is CC0.** Nobody needs permission to carry on. If the canonical site went dark, every schema file and this whole site could be republished by anyone, from the public git history, the same day.
+2. **A named successor.** The steward keeps a named successor on file with the board (or, before the board exists, publicly in the repository). If the steward is unreachable for 90 days, the successor, or the board by majority, assumes stewardship and the name.
+3. **Frozen releases.** Every version is archived at a permanent address, so an adopter never depends on the steward being available to fetch the files they validated against.
+
+## What the steward does not control
+
+- Private forks and extensions. Add fields in `extensions{}` or fork the files outright. No permission needed.
+- Tools built on MAXGEN. Commercial or free, open or closed.
+- Records you publish in MAXGEN format.
+- Proposals. All are welcome and all get an answer.
+
+What you may not do is call a diverging fork "MAXGEN". The name means the canonical version.
+
+## Conflict of interest
+
+The steward's own genealogy platform, The Probable Pedigree, implements MAXGEN. It gets no special treatment: its change requests go through the same public process, and anything specific to its business (pricing, payments, accounts) stays in `extensions{}` and never enters the standard. The MaxTask schema deliberately contains no payment fields for exactly this reason.
+
+
+---
+## Contribute
+
+Get involved
+# Contribute
+
+## Ask a question
+
+- **GitHub Discussions** on the [OpenGenealogyAI organisation](https://github.com/OpenGenealogyai): free to read, free account to post. Questions that keep coming up are promoted into the [FAQ](/faq/).
+- **Email**: maxgen@opengenealogyai.org, for anyone who would rather not use GitHub.
+
+## Report a problem
+
+Found a record that should validate but does not, a description that contradicts the field, or a fixture that is wrong? Open an issue in the schema repository with the JSON that shows it. A reproducible example is worth more than a paragraph.
+
+## Propose a change
+
+Follow the process on the [governance page](/governance/): problem, proposed change, backward compatibility, examples. Additive proposals that come with a fixture are the easiest to accept.
+
+## Build on it
+
+You do not need permission. Some useful starting points:
+
+- Validate records against the canonical schemas at `https://opengenealogyai.org/schemas/maxgen/v1/`, or try the [browser validator](/validator/).
+- Keep your own fields in `extensions{}` so your records stay valid across releases.
+- Honour the three normative rules: living people stay private, DNA stays private and never holds raw genotypes, and tasks about living people are never sent outside.
+- Tell us. Implementations are listed on this site, and three independent ones convene the advisory board.
+
+## Help with the content
+
+The podcast study guides, the FAQ and the schema pages are all improvable. Corrections and clearer wording are welcome as issues or pull requests against the website repository.
+
+
+---
+## Licence
+
+Legal
+# Licence
+
+## The standard: CC0
+
+The seven MAXGEN schema files and the text of the standard on this site are dedicated to the public domain under the [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) dedication. You may copy, change, redistribute and build on them for any purpose, commercial or not, without asking and without attribution.
+
+Why CC0 rather than a licence that requires credit? Because a standard only works when adopting it costs nothing, legally or administratively. An archive's counsel should be able to approve MAXGEN in one reading. Credit is welcome, never required.
+
+### If you want to credit us anyway
+
+- In software or documentation: *"Uses the MAXGEN standard by OpenGenealogyAI (opengenealogyai.org)."*
+- In a dataset: the `schema_version` field and the `$id` reference to `opengenealogyai.org` in every MAXGEN record already say where it came from.
+- In a paper or article: cite as shown at the bottom of this page.
+
+## Records: each carries its own
+
+Every record written in MAXGEN declares its own `redistribution_license`: `CC0`, `public-domain`, `CC-BY`, `CC-BY-SA`, or `tier2-private` (never redistribute). Where a source requires attribution, the `attribution{}` object in the record holds the credit. The standard is public domain; the data written in it is whatever its owner says it is.
+
+## Code: MIT
+
+The validators, fixtures and tooling in the schema repository are released under the [MIT licence](https://opensource.org/license/mit).
+
+## Names and logo
+
+"MAXGEN", "OpenGenealogyAI" and the star-tree logo identify the canonical standard and its steward. Use them to say your software implements MAXGEN. Do not use them for a fork that diverges from the canonical schemas, and do not imply that OpenGenealogyAI endorses your product unless it does.
+
+## How to cite
+
+> Maxwell, G. *MAXGEN: The Maxwell Genealogy Standard*, version 1.13. OpenGenealogyAI. https://opengenealogyai.org/ — CC0 1.0.
+
+
+---
+## Podcasts
+
+Listen · eight episodes · about 20 minutes each
+# The MAXGEN podcast
+
+Each schema gets one conversation. Start with the overview if you are new, or jump to the schema you care about. Every episode has a written study guide with practice questions and a glossary.
+
+Subscribe in any podcast app with the feed address **`https://opengenealogyai.org/podcasts/feed.xml`**.
+
+These episodes were produced with an AI narration tool from written scripts by the standard's author, and describe MAXGEN v1.11. Where a later release changed a detail, the schema pages on this site are authoritative.
+
+
+---
+## MaxRecord
+
+## The clerk who could not spell
+
+In 1743 a parish clerk in Dumfriesshire wrote a baptism into his register and spelled the father's surname "Makeswell". The family's name was Maxwell. He was not wrong in any way that matters: he wrote what he heard, in the spelling of his day. Three centuries later a search engine that does not know Makeswell is Maxwell will skip the entry, and a researcher will lose a branch of her family because of a spelling choice made by a man dead for 250 years.
+
+MaxRecord exists to keep that entry exactly as written. Not corrected. Not normalised. Not interpreted.
+
+## What it is
+
+MaxRecord is the **evidence layer**. One MaxRecord is one document: a baptism entry, a census page, a gravestone, a ship manifest, a newspaper notice, a will. It stores what is on the document, who is mentioned, when and where it was made, where the copy came from, and who transcribed it with what confidence.
+
+What it never does is say what the document *means*. The record says "Makeswell". Whether Makeswell is Maxwell is an interpretation, and interpretations live in [MaxPerson](/schemas/maxperson/). Keeping the two apart is what lets a future researcher, or a better AI model, look at the original evidence again.
+
+## How it is used
+
+1. A document image is transcribed; the who-read-it-and-how details go in a [MaxRecognition](/schemas/maxrecognition/) record.
+2. A MaxRecord is created from that transcription: the type of document, every person named (`persons_mentioned[]`, with their roles: subject, spouse, witness, officiant…), the date as a range, the place as written, the source URL, the licence.
+3. Every claim later made in a MaxPerson cites this record's `record_id`. If the document turns out to be a forgery, the record is retracted with a note. It keeps its ID and its history.
+
+## Things worth knowing
+
+- **Dates are ranges.** `year_min` / `year_max` with optional month and day. "Spring 1847" is honest as `1847–1847` with no month. A precise date that the document does not contain is a lie.
+- **Places are kept as written**, with optional normalised fields (country code, state, county, town) alongside.
+- **Everyone on the page is kept**, not just the "principal". Witnesses and neighbours are the social network of the document.
+- **Licence is mandatory.** `redistribution_license` is one of CC0, CC-BY, CC-BY-SA, public-domain, or `tier2-private` (never redistribute). If `is_living_flag` is true the record is private no matter what.
+- **`extensions{}`** holds source-specific fields (a groom's regiment, a cemetery plot, an archive's own reference) without forking the schema.
+
+## Record types
+
+
+
+## Fields
+
+
+
+## Example
+
+A marriage certificate, as a MaxRecord. This is one of the fixtures the schema is tested against.
+
+
+
+## Listen
+
+
+---
+## MaxPerson
+
+## You cannot ask the dead who they are
+
+Genealogy reconstructs people from fragments: names written by clerks who may have misspelled them, ages self-reported to a census taker, dates in calendars that no longer match ours. Most file formats can hold only one answer per fact, so the uncertainty has to be resolved before it can be saved: one John Maxwell, one father, and the doubt lives in a notebook instead of the data.
+
+MaxPerson keeps the uncertainty in the data, where software and researchers can work with it.
+
+## What it is
+
+A MaxPerson is a **probable identity**: a bundle of assertions, each saying *this source claims this, with this confidence, recorded by this agent on this date*. There are no bare facts in a MaxPerson. There are only assertions with evidence behind them.
+
+- `name_assertions[]`: every name this person was called, including the misspellings, each with its source.
+- `birth_assertions[]` and `death_assertions[]`: date ranges and places, one per source.
+- `parent_assertions[]` and `child_assertions[]`: **several candidates are normal.** A probable father at 0.75 and a possible father at 0.35 both stay in the record. The tree shows the likelier one; nothing is erased.
+- `spouse_assertions[]`: marriages with type, dates, place and how they ended. Kept in both spouses' records.
+- `event_assertions[]`: everything between the bookends: immigration, residence, military service, probate, burial. Event types map to GEDCOM tags.
+- `external_id_assertions[]`: scored links to the same person on FamilySearch, WikiTree, Find a Grave and others. Scored, not merged, because those databases contain duplicates too.
+- `dna_evidence[]`: DNA matches that touch this person as a candidate common ancestor, feeding the overall confidence.
+
+## Composite confidence
+
+`composite_confidence` is one number, 0 to 1, for how sure we are about the identity as a whole. It is computed from all the assertions, weighted by source quality, using a "noisy-OR" combination (two independent sources agreeing raise confidence more than either alone, but not as if they were certain). Because every assertion cites a `source_record_id`, the engine can notice when two assertions really come from the same underlying document and avoid double-counting.
+
+## The merge model
+
+When evidence shows two MaxPerson records are the same individual, one absorbs the other. `merge_history[]` records the confidence, method, signals, who merged and when. The absorbed record stays, marked `merge_status: merged_away`. If later evidence shows they were different people after all, the merge is reversed on the same quality of evidence that made it.
+
+## Privacy
+
+`is_living: true` locks the record. Public endpoints return "not found". The record still exists internally and can be researched, but it is never exposed. Linked DNA records inherit the same lock. This is a design requirement of the standard, not a policy any implementation can switch off.
+
+## Fields
+
+
+
+## Example
+
+Mary Todd Lincoln as a MaxPerson: two names (birth and married), an exact birth and death, one marriage, every claim citing the same marriage record.
+
+
+
+## Listen
+
+
+---
+## MaxTask
+
+## The work is irreducibly distributed
+
+The UK National Archives holds eleven million documents. The US National Archives holds thirteen billion pages. No organisation, model, or volunteer community can process all of it. Genealogical research will always be done by millions of people and machines in parallel, over decades. MaxTask is the standard way to describe one piece of that work.
+
+## What it is
+
+A task is a request: "transcribe this image", "decide whether the Johann Müller in record X is the John Miller in record Y", "search the Württemberg emigration lists for Müllers who left between 1840 and 1860", "resolve these two contradictory birth years". A task can go to an AI agent, a volunteer, or a specialist organisation. It can carry a cost cap, a deadline, dependencies on other tasks, and a review step before its result is accepted.
+
+## What makes it different
+
+- **Acceptance criteria** (`acceptance_criteria[]`): objective, checkable conditions that define "done" before work starts.
+- **Evidence required** (`evidence_required[]`): the anti-hallucination rule. A task that needs a birth record must return a link to the birth record. A search must return the exact query and what it found. An AI cannot pass by producing plausible text.
+- **A structured result**, not a text blob: what was tested, what was done, what was found, what changed, what to do next. Each step carries a **verdict**:
+
+| Verdict | Colour | Meaning |
+|---|---|---|
+| `key_finding` | green | Confirmed. |
+| `usable` | blue | A useful lead. |
+| `inconclusive` | amber | Mixed. |
+| `ruled_out` | red | Definitively disproved. A disproof is information, not a dead end. |
+| `dead_end` | grey | Searched, found nothing. |
+| `infra` | grey | Infrastructure work. |
+
+- **An independent review** (`review{}`): the reviewer must not be the contributor. Rejection reasons include `fabricated_or_hallucinated` and `privacy_violation`, which build a quality signal over time.
+- **A privacy gate** (`contributor_eligibility`): defaults to `first_party_only`. Any task about a living person can never be sent to outside volunteers or third-party AI services. This rule is part of the standard.
+
+## What is deliberately not in it
+
+Payment. An open standard must be neutral on business models. Who gets paid, how much, and how lives in `extensions{}`, so the standard describes the work and the quality gate while each implementation decides the economics.
+
+## Task types
+
+
+
+## Fields
+
+
+
+## Example
+
+A conflict-resolution task escalated to a stronger model because two candidate mothers were within 0.05 of each other.
+
+
+
+## Listen
+
+
+---
+## MaxDNA
+
+## Evidence that belongs to your relatives too
+
+More than fifty million people have taken a consumer DNA test. A 47-centimorgan match (a centimorgan is the unit used to measure how much DNA two people share) does not prove a relationship on its own, but combined with a documentary trail to the same ancestor it raises confidence sharply. Genetic data is also information about every biological relative you have, including people who never consented. MaxDNA is designed to capture the genealogical value while making a leak structurally impossible.
+
+## What it stores, and what it cannot
+
+MaxDNA stores **match metadata**: shared centimorgans, longest segment, segment count, optional chromosome segments for triangulation, haplogroups (deep ancestral lineages on the direct paternal or maternal line), ancestry composition, and kit metadata.
+
+It cannot store a genome. `raw_genotype_stored` is a constant `false` that cannot be set otherwise. There is no field for a raw file.
+
+## The privacy architecture
+
+- **Always `tier2-private`.** The licence field has exactly one allowed value. A MaxDNA record can never appear in a public dataset, API response, or embedding, even for people long dead, because a living tester's data describes their ancestors too.
+- **Hashed kit IDs.** `kit_id_hash` holds an HMAC-SHA-256 hash (a one-way scramble that uses a secret key, so it cannot be reversed by guessing) of the kit number. Matches store `match_kit_hash` the same way. You can triangulate without ever seeing your cousin's kit number.
+- **Consent is a required field.** Values include explicit opt-in, guardian consent, public-dataset redistribution allowed, deceased before 2000, pending, and withdrawn. `withdrawn` starts a 30-day purge; after that the record is deleted outright, which is the one place MAXGEN deletes anything.
+
+## Methodology fields most tools forget
+
+- `cm_map_version`: different recombination maps (HapMap, deCODE and others) give centimorgan values that differ by up to 15% for the same segment. Recording which map was used makes matches comparable.
+- `phasing_status`: whether a shared segment is on the paternal or maternal chromosome, both, unphased, or unknown. Essential for serious triangulation.
+- `endogamy_flag` and `endogamy_population`: communities that married within themselves for generations (Ashkenazi, Acadian, Mennonite, island populations) break the standard relationship estimates. The flag tells downstream tools to recalibrate.
+
+## How it connects to the rest
+
+`person_id` links the test to the [MaxPerson](/schemas/maxperson/) who took it. Confirmed common-ancestor candidates on a match carry a confidence and an inference method (manual, tree intersection, triangulation, shared surname and geography). Those flow into MaxPerson's `dna_evidence[]`, where they strengthen documentary relationship claims through the same noisy-OR combination used everywhere else.
+
+## Fields
+
+
+
+## Example
+
+Because MaxDNA records are private by definition, this site does not publish a real one. The [validator](/validator/) offers a synthetic minimal record you can inspect and check.
+
+## Listen
+
+
+---
+## MaxSource
+
+## The navigator's problem
+
+A researcher needs the church records of a Lutheran family in Württemberg in the 1840s. If she knows German genealogy, she knows the answer: Archion and Matricula for the parish books, the state archive and Ancestry for emigration lists, the FamilySearch Research Wiki for which parishes cover which years. If she does not know, finding that out takes hours of catalogues, link directories, forum posts and emails.
+
+MaxSource makes that knowledge machine-readable.
+
+## What it is
+
+MaxSource is **not** a database of records. It is a database of **where records live**. One MaxSource record describes one source: its name and URL, what kind of thing it is, what it covers, how to get in, and how we came to know about it.
+
+- **`source_type`**: directory index, research wiki, record catalogue, record database, archive, DNA database, library, newspaper archive, forum, blog, society, other. The type decides how a system interacts with the source.
+- **`coverage{}`**: places (with country, state, county, town), record types, a time period as `year_min` / `year_max`, languages, and ethnic or religious groups. It answers queries like "everything covering Bavaria, death records, 1840 to 1870".
+- **`access{}`**: free web, paid subscription, API, bulk download, scrape-only, or on-site only; whether a login is needed; the API base URL; whether robots.txt allows crawling; and crawl notes that hold the etiquette robots.txt does not ("batch 50 items per call, five seconds between requests").
+- **`embedding_text`**: a natural-language description built for a vector database (a search index that matches meaning rather than exact words), so "Lutheran records in Württemberg in the 1840s" finds Archion even though no keyword matched.
+- **`provenance{}`**: which seed source found this, its status (active, dead link, superseded, unverified), who asserted it and when it was last verified. Dead links are marked, not deleted.
+- **`parent_source_id`** and **`coverage.record_count_estimate`**: sub-collections link to their parent, and an estimated record count is the primary ranking signal between a national index and a single parish page.
+
+## The copyright question
+
+Some source catalogues are other people's curated work. MaxSource handles this with the licence field: an entry derived from a third-party directory is marked `tier2-private` and used internally for routing only. Openly licensed entries can be published. The standard makes the decision explicit and auditable; the operator makes the decision.
+
+## Source types
+
+
+
+## Fields
+
+
+
+## Example
+
+A FamilySearch Research Wiki article catalogued as a public MaxSource.
+
+
+
+## Listen
+
+
+---
+## MaxRecognition
+
+## The handwriting problem
+
+German Kurrent script was the everyday handwriting of German-speaking Europe from the 1500s to the mid-1900s. Its "e" looks nothing like an e; its "n" looks like a "u"; the word for mother looks like "Mnttev". The church registers that matter most for German-American research are written in it, by the million. Kurrent is one of many: Secretary Hand, Court Hand, Hebrew and Greek scribal hands, Arabic nastaliq, Cyrillic ustav.
+
+MaxRecognition records what happens when a machine or a trained human reads such a page, so that the reading is citable, checkable and improvable.
+
+## One schema for print and handwriting
+
+OCR (reading printed text) and HTR (reading handwriting) share more than 90% of their fields, so there is one schema with a `recognition_type` switch. Handwriting records add `script_type` and `approx_century` for routing to the right specialist; print records add `font_type` and `scan_dpi`.
+
+## Who did the reading
+
+`contributor{}` has a `contributor_type` of `human` or `ai`, and fields that follow from it.
+
+- **Humans** carry credentials, specialty scripts, languages and regions, `records_transcribed` (a reputation signal that accumulates), and training notes. A Kurrent reading by someone with fifteen thousand records and a Kurrent certification carries more weight than the same reading by a newcomer.
+- **AI models** carry model name, version, provider and type, the **exact prompt** used (a prompt that says "transcribe exactly, do not correct" is a different method from "extract the key facts"), and fine-tuning details. Storing the prompt makes the transcription reproducible.
+
+## Word-level confidence and labelled guesses
+
+`word_confidences[]` gives each word a score, a position, alternatives, and a **`reading_type`**:
+
+| `reading_type` | Meaning |
+|---|---|
+| `observed` | Read directly from the image. |
+| `inferred_context` | Filled in from surrounding entries. |
+| `inferred_pattern` | Filled in from a known naming convention. |
+| `partial_read` | Some characters legible, the rest inferred. |
+
+Traditional practice says "leave it blank if you cannot read it". MaxRecognition says: if you can make a reasonable inference, make it, **label it**, explain it in `inference_notes`, and give it a lower score. "Five other entries on this page read Maxwell; only 'Ma' is legible here; letterform height at position 3 fits 'xw' not 'rk'; inference Maxwell, 0.78." That is how a trained genealogist reasons, captured in a form a reviewer or a future model can audit.
+
+## Consensus and searchability
+
+- **`consensus_group_id`** links independent readings of the same image. `is_independent` says whether each run was blind to the others. Agreement raises confidence; disagreement flags the word for human review. The schema stores the evidence; the matching engine does the arithmetic.
+- **`searchable_variants[]`** lists every spelling under which this record should be findable when a word is uncertain between, say, "Maxwell" and "Maxweil". [MaxName](/schemas/maxname/) handles the general fact that names vary across history; this field handles one hard reading in one document.
+- **`character_error_rate`** and **`word_error_rate`** record quality against ground truth when it exists, so over time the system learns which models and which people read which scripts best.
+
+## Fields
+
+
+
+## Example
+
+A human Kurrent specialist's reading of a Bavarian baptism, with one uncertain word and its alternative.
+
+
+
+## Listen
+
+
+---
+## MaxName
+
+## Why Maxwell and Makeswell are the same family
+
+Search a Scottish record set for "Maxwell" and you will not find Makeswell, Maccuswell, M'Axwell, McAxwell or Maxwel, though every one of them is the same name written by a different clerk in a different decade. The problem is bigger than spelling. Ó Briain became O'Brien when colonial administrators wrote it down. Müller became Miller on the far side of the Atlantic. Yochanan became Iohannes became Jean became John became Ivan.
+
+No open standard captured this before. We checked GEDCOM X, WeRelate, Behind the Name, JRC-Names, the Library of Congress name authority, VIAF, schema.org, HistNorm and Popolo. None records typed, directed, sourced name relationships across languages, scripts, places and centuries. MaxName fills that gap.
+
+## What it is
+
+One MaxName record is one **canonical form** (the modern reference spelling) plus everything known about how that name has been written and adapted.
+
+- **`regional_canonical[]`**: the preferred form in other communities. "John" carries Seán, Eoin, Ioan, Johann. None is more real than another.
+- **`variants[]`**: every known form, each with its own UUID (so it can be cited or retracted on its own), the text exactly as it appears in records, a **type** (spelling variant, nickname, anglicisation, latinisation, abbreviation, scribal corruption, phonetic rendering, emigration adaptation, translation, patronymic form, legal substitution…), its **scope** (place, language, script, period), a **frequency** (rare, occasional, common, dominant), an **attestation source**, a confidence, and `disputed_by[]` for scholars who disagree.
+- **`cognates[]`**: links to other MaxName records across languages, with a relationship type (etymological root, cross-language cognate, derivative, contracted form) and a **direction**: Maxwell *derives from* Maccus; John and Ivan are *parallel cognates* of Iohannes. Every link cites its source.
+- **`phonetic_keys{}`**: pre-computed codes for fuzzy search under six algorithms (Soundex, NYSIIS, Metaphone, Double Metaphone, Daitch-Mokotoff, Beider-Morse), each with its algorithm version so a code computed in 2026 can be reconciled with one computed in 2040.
+
+## Two-pass cognates (new in v1.13)
+
+Cognate relationships are discovered while researching the first name, before a record for the second exists. A cognate may therefore be recorded **unresolved**, carrying only `related_canonical_form` ("John"), and later **resolved** by a linking pass that adds the `related_name_id`. Both states are valid; a cognate pointing at nothing is not.
+
+## The Maxwell example
+
+Canonical form Maxwell, a surname of Old Norse origin: Maccus's pool, first attested about 1144. Variants: *Maccuswell* (Latin charters, 1144 to 1300, dominant), *Makeswell* (Scots parish registers, 1600 to 1750, occasional), *M'Axwell* (an abbreviation, 1700s to 1800s), *McAxwell* (Virginia colonial records, rare, with one scholar disputing whether it is corruption or anglicisation). Phonetic keys Soundex M240, Daitch-Mokotoff 645400. One cognate: *derives from* Maccus, citing Reaney's Dictionary of English Surnames. With that record, a search for Makeswell finds Maxwell, and a transcription of Maccuswell from a twelfth-century charter lands in the right family.
+
+## Variant types
+
+
+
+## Fields
+
+
+
+## Example
+
+Seán, the Irish form of John, with an anglicisation, an older spelling, and an unresolved cognate link.
+
+
+
+## Listen
+
+
+---
+## Schema files (JSON Schema 2020-12)
+
+- https://opengenealogyai.org/schemas/maxgen/v1/raw-record.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v1/person.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v1/task-queue.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v1/dna.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v1/source.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v1/recognition.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v1/name.schema.json
