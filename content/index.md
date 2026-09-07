@@ -14,7 +14,7 @@ description: MAXGEN is an open, public-domain data standard for genealogy that t
 <a href="/schemas/"><strong>Download</strong><span>The seven schema files, every version</span></a>
 </div>
 </div>
-<img class="hero-logo" src="/assets/img/logo-transparent.svg" alt="The OpenGenealogyAI star-tree logo: a tree of stars growing from a single bright star." width="340" height="240">
+
 </div>
 
 ## The problem it solves

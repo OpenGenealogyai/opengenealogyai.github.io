@@ -228,8 +228,7 @@ def main():
     files = {}
     for name, t, uid in (("dark", DARK, "d"), ("parchment", PAPER, "p")):
         files[f"maxgen-horizontal-{name}.svg"] = svg_horizontal(t, uid)
-        files[f"maxgen-vertical-{name}.svg"] = svg_vertical(t, uid, True)
-        files[f"maxgen-vertical-words-{name}.svg"] = svg_vertical(t, uid, False)
+        files[f"maxgen-vertical-{name}.svg"] = svg_vertical(t, uid, False)   # words only (Garlon: no star-tree)
         files[f"maxgen-icon-{name}.svg"] = svg_icon(t, uid)
     for fn, text in files.items():
         (OUT_SITE / fn).write_text(text, encoding="utf-8")
