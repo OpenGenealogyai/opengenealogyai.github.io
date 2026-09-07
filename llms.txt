@@ -1,0 +1,30 @@
+# MAXGEN — The Maxwell Genealogy Standard
+
+> MAXGEN is an open, public-domain (CC0) data standard for genealogy, stewarded by OpenGenealogyAI. Current release v1.13. Seven JSON Schema files describe evidence (MaxRecord), probable identities (MaxPerson), research work (MaxTask), DNA evidence (MaxDNA), where records live (MaxSource), transcription provenance (MaxRecognition) and name variants (MaxName). Every claim carries a source and a 0-1 confidence score; conflicting evidence is kept, nothing is deleted, and records about living people are private by rule.
+
+MAXGEN is designed to work alongside existing genealogy sites, archives and the GEDCOM format, not to replace them.
+
+## Read
+- [The standard in plain English](https://opengenealogyai.org/standard/)
+- [FAQ](https://opengenealogyai.org/faq/)
+- [Versioning policy and changelog](https://opengenealogyai.org/versions/)
+- [Governance](https://opengenealogyai.org/governance/)
+- [Licence (CC0)](https://opengenealogyai.org/license/)
+
+## Schemas (canonical JSON Schema files)
+- [MaxRecord](https://opengenealogyai.org/schemas/maxrecord/): A source document exactly as it was found. No interpretation added. — file: https://opengenealogyai.org/schemas/maxgen/v1/raw-record.schema.json
+- [MaxPerson](https://opengenealogyai.org/schemas/maxperson/): A probable person. Every claim is an assertion with a source and a score. — file: https://opengenealogyai.org/schemas/maxgen/v1/person.schema.json
+- [MaxTask](https://opengenealogyai.org/schemas/maxtask/): A unit of research work for a human or an AI, with proof required. — file: https://opengenealogyai.org/schemas/maxgen/v1/task-queue.schema.json
+- [MaxDNA](https://opengenealogyai.org/schemas/maxdna/): Genetic evidence, always private, never the genome itself. — file: https://opengenealogyai.org/schemas/maxgen/v1/dna.schema.json
+- [MaxSource](https://opengenealogyai.org/schemas/maxsource/): A catalogue of where records live, built for the question "where do I look next?" — file: https://opengenealogyai.org/schemas/maxgen/v1/source.schema.json
+- [MaxRecognition](https://opengenealogyai.org/schemas/maxrecognition/): Who read this page, how, and how sure they were about every word. — file: https://opengenealogyai.org/schemas/maxgen/v1/recognition.schema.json
+- [MaxName](https://opengenealogyai.org/schemas/maxname/): One name, every form it has ever taken, with sources. — file: https://opengenealogyai.org/schemas/maxgen/v1/name.schema.json
+
+- Machine-readable version index: https://opengenealogyai.org/schemas/maxgen/index.json
+
+## Listen
+- [Podcast episodes and study guides](https://opengenealogyai.org/podcasts/) — RSS: https://opengenealogyai.org/podcasts/feed.xml
+
+## Contribute
+- [Ask a question or propose a change](https://opengenealogyai.org/contribute/)
+- GitHub: https://github.com/OpenGenealogyai

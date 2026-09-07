@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAXGEN 03 maxtask StudyGuide — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="Study guide for the MAXGEN podcast episode MAXGEN-03-maxtask-StudyGuide.">
+<link rel="canonical" href="https://opengenealogyai.org/podcasts/study-guides/MAXGEN-03-maxtask-StudyGuide/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MAXGEN 03 maxtask StudyGuide">
+<meta property="og:description" content="Study guide for the MAXGEN podcast episode MAXGEN-03-maxtask-StudyGuide.">
+<meta property="og:url" content="https://opengenealogyai.org/podcasts/study-guides/MAXGEN-03-maxtask-StudyGuide/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/" class="active">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<h1 id="maxtask-a-standard-for-distributed-genealogical-research-study-guide">MaxTask: A Standard for Distributed Genealogical Research Study Guide</h1>
+<p>This study guide provides a comprehensive overview of the MaxTask standard, a framework designed to manage and distribute genealogical research tasks across a global network of human and artificial intelligence contributors.</p>
+<h2 id="key-concepts-and-system-overview">Key Concepts and System Overview</h2>
+<h3 id="the-necessity-of-distributed-research">The Necessity of Distributed Research</h3>
+<p>The volume of historical records globally is staggering, with billions of pages held by institutions like the National Archives of the United Kingdom and the United States, the Vatican Archives, and the Mormon Church. Because no single organization or AI model can process this scale of data, genealogical research is considered "irreducibly distributed." MaxTask provides the standard for describing a unit of this distributed work, allowing millions of people and machines to work in parallel.</p>
+<h3 id="definition-of-a-task">Definition of a Task</h3>
+<p>In the MaxTask framework, a <strong>Task</strong> is a request for a specific type of research to be performed on a specific piece of evidence. Tasks are not free-form requests but structured units of work that can include:
+*   <strong>Cost Caps:</strong> Limits on spending (e.g., preventing an AI from spending $50 on a $5 problem).
+*   <strong>Deadlines:</strong> Timeframes for completion.
+*   <strong>Dependencies:</strong> Requirements that a task must wait for another task to finish.
+*   <strong>Escalation and Review:</strong> Procedures for handling failed tasks or auditing results.</p>
+<h3 id="the-standardized-task-types">The Standardized Task Types</h3>
+<p>The MaxTask schema currently recognizes ten specific task types that drive the downstream requirements for payloads and acceptance criteria:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Task Type</th>
+<th style="text-align: left;">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>extract_record</code></td>
+<td style="text-align: left;">Extracting genealogical data from a MaxRecord.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>validate_record</code></td>
+<td style="text-align: left;">Verifying the accuracy of an extraction.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>merge_person</code></td>
+<td style="text-align: left;">Determining if two MaxPerson records represent the same individual.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>judge_review</code></td>
+<td style="text-align: left;">Human or AI review of a specific research question.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>resolve_conflict</code></td>
+<td style="text-align: left;">Resolving contradictory assertions in the data.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ingest_to_qdrant</code></td>
+<td style="text-align: left;">Embedding and indexing a record into a vector database.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>build_tree</code></td>
+<td style="text-align: left;">Constructing a family tree segment from available evidence.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>fetch_internet_archive</code></td>
+<td style="text-align: left;">Retrieving a document from the Internet Archive.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>cost_report</code></td>
+<td style="text-align: left;">Summarizing API costs for a specific project.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>other</code></td>
+<td style="text-align: left;">Miscellaneous tasks not covered by the above categories.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="quality-control-and-evidence-mechanisms">Quality Control and Evidence Mechanisms</h2>
+<h3 id="structured-results-and-step-verdicts">Structured Results and Step Verdicts</h3>
+<p>A task result is a structured object rather than a free-form text blob. Every action taken during a task (searches, lookups, verifications) is documented in a <code>steps[]</code> array. Each step is assigned a <strong>verdict</strong> using a standardized vocabulary:</p>
+<ul>
+<li><strong>Key Finding (Green):</strong> The information is confirmed.</li>
+<li><strong>Usable (Blue):</strong> A useful lead has been identified.</li>
+<li><strong>Inconclusive (Amber):</strong> The results are mixed.</li>
+<li><strong>Ruled Out (Red):</strong> The hypothesis has been definitively disproved. This is considered a valuable "disproof" that changes the probability landscape.</li>
+<li><strong>Dead End (Grey):</strong> The source was searched, but nothing was found.</li>
+<li><strong>Infra (Grey):</strong> Relates to infrastructure tasks.</li>
+</ul>
+<h3 id="acceptance-criteria-and-evidence">Acceptance Criteria and Evidence</h3>
+<ul>
+<li><strong><code>acceptance_criteria[]</code>:</strong> Objective, checkable conditions that define a complete result. They ensure results are comparable, auditable, and consistent.</li>
+<li><strong><code>evidence_required[]</code>:</strong> An anti-hallucination mechanism. It requires workers to provide proof, such as source URLs, exact queries used, and citations. This is critical for AI workers to ensure they are grounding their results in actual records rather than confabulating.</li>
+</ul>
+<h3 id="the-review-gate">The Review Gate</h3>
+<p>No task result is automatically accepted. The <code>review{}</code> object requires an independent reviewer (different from the contributor) to provide a <code>review_verdict</code> (accepted, rework, or rejected). A specific rejection reason, <code>fabricated_or_hallucinated</code>, is used to flag AI results that cannot be grounded in actual sources.</p>
+<hr />
+<h2 id="privacy-and-economics">Privacy and Economics</h2>
+<h3 id="the-privacy-gate">The Privacy Gate</h3>
+<p>The <code>contributor_eligibility</code> field acts as a normative privacy gate. 
+*   <strong><code>first_party_only</code>:</strong> The default (fail-closed) setting. Any task concerning a living person must use this setting. These tasks are never dispatched to external volunteers or third-party AI services.
+*   <strong><code>any_contributor</code>:</strong> Allows the task to be dispatched to external contributors.</p>
+<h3 id="economic-neutrality">Economic Neutrality</h3>
+<p>MaxTask does not include payment fields within the core standard. This maintains business model neutrality, allowing various platforms to use their own economic structures (e.g., paying volunteers vs. using unpaid contributors). Economic data is instead placed in the <code>extensions{}</code> namespace.</p>
+<hr />
+<h2 id="short-answer-practice-questions">Short-Answer Practice Questions</h2>
+<ol>
+<li><strong>What is the primary purpose of the <code>evidence_required[]</code> field?</strong></li>
+<li><strong>How does a <code>ruled_out</code> verdict differ from a <code>dead_end</code> verdict in a task step?</strong></li>
+<li><strong>Why is the default value for <code>contributor_eligibility</code> set to <code>first_party_only</code>?</strong></li>
+<li><strong>Identify three specific task types recognized by MaxTask and briefly describe their function.</strong></li>
+<li><strong>Explain the role of the <code>review{}</code> object in the MaxTask workflow.</strong></li>
+<li><strong>Why are payment and economic fields excluded from the core MaxTask standard?</strong></li>
+<li><strong>What is the function of <code>acceptance_criteria[]</code> from the perspective of both the worker and the reviewer?</strong></li>
+</ol>
+<hr />
+<h2 id="essay-prompts-for-deeper-exploration">Essay Prompts for Deeper Exploration</h2>
+<ol>
+<li><strong>The Anti-Hallucination Framework:</strong> Analyze how MaxTask uses structured data, <code>evidence_required[]</code>, and specific rejection reasons to mitigate the risks of AI confabulation in genealogical research.</li>
+<li><strong>Scalability through Standardization:</strong> Discuss how MaxTask enables "irreducibly distributed" research. How does a standardized unit of work allow diverse contributors (AI, volunteers, specialized organizations) to collaborate effectively?</li>
+<li><strong>The Value of Disproof:</strong> Explore the concept of the <code>ruled_out</code> verdict. Why is establishing that a certain fact "cannot be right" considered valuable information in the context of genealogical research?</li>
+<li><strong>Privacy as a Normative Standard:</strong> Evaluate the decision to make the privacy gate (<code>contributor_eligibility</code>) a part of the MaxTask standard rather than a platform-specific policy. What are the implications for the protection of data regarding living persons?</li>
+</ol>
+<hr />
+<h2 id="comprehensive-glossary-of-terms">Comprehensive Glossary of Terms</h2>
+<h3 id="schema-field-names">Schema Field Names</h3>
+<ul>
+<li><strong><code>acceptance_criteria[]</code></strong>: A list of objective, checkable conditions that must be met for a task result to be considered complete and acceptable.</li>
+<li><strong><code>contributor_eligibility</code></strong>: A field defining who is allowed to perform a task; serves as the primary privacy gate.</li>
+<li><strong><code>evidence_required[]</code></strong>: A field specifying the proof (URLs, citations, queries) a worker must provide to support their findings.</li>
+<li><strong><code>extensions{}</code></strong>: An open namespace for implementation-specific fields, such as payment or economic data, which are not part of the core standard.</li>
+<li><strong><code>review{}</code></strong>: An object containing data regarding the independent audit of a task result.</li>
+<li><strong><code>review_verdict</code></strong>: The status of a review, categorized as <em>accepted</em>, <em>rework</em>, or <em>rejected</em>.</li>
+<li><strong><code>rejection_reason</code></strong>: A field specifying why a task result was not accepted (e.g., <em>fabricated_or_hallucinated</em> or <em>privacy_violation</em>).</li>
+<li><strong><code>steps[]</code></strong>: An array documenting each individual action (search, lookup, etc.) taken during the execution of a task.</li>
+<li><strong><code>task_type</code></strong>: A field defining the nature of the research request, which determines the required payload and acceptance criteria.</li>
+</ul>
+<h3 id="task-types">Task Types</h3>
+<ul>
+<li><strong><code>build_tree</code></strong>: The process of constructing a segment of a family tree based on evidence.</li>
+<li><strong><code>cost_report</code></strong>: A task that summarizes the API expenses associated with a project.</li>
+<li><strong><code>extract_record</code></strong>: The act of pulling structured genealogical data from a MaxRecord.</li>
+<li><strong><code>fetch_internet_archive</code></strong>: The retrieval of documents from the Internet Archive digital library.</li>
+<li><strong><code>ingest_to_qdrant</code></strong>: The process of embedding and indexing a record into a vector database for searchability.</li>
+<li><strong><code>judge_review</code></strong>: A task involving a human or AI assessment of a specific research question.</li>
+<li><strong><code>merge_person</code></strong>: The analytical task of determining if two separate person records represent the same individual.</li>
+<li><strong><code>resolve_conflict</code></strong>: The process of reconciling two or more contradictory assertions or data points.</li>
+<li><strong><code>validate_record</code></strong>: The verification process to ensure that data extracted from a record is accurate.</li>
+</ul>
+<h3 id="verdict-vocabulary">Verdict Vocabulary</h3>
+<ul>
+<li><strong><code>dead_end</code> (Grey)</strong>: Indicates a source was searched, but no relevant information was found.</li>
+<li><strong><code>inconclusive</code> (Amber)</strong>: Indicates that the results of a step are mixed or unclear.</li>
+<li><strong><code>infra</code> (Grey)</strong>: A verdict assigned to infrastructure-related tasks rather than research findings.</li>
+<li><strong><code>key_finding</code> (Green)</strong>: A verdict indicating that a research point has been confirmed.</li>
+<li><strong><code>ruled_out</code> (Red)</strong>: A verdict indicating that a hypothesis or assertion has been definitively disproved.</li>
+<li><strong><code>usable</code> (Blue)</strong>: Indicates that a search provided a useful lead, even if not a final confirmation.</li>
+</ul>
+<h3 id="genealogical-and-technical-concepts">Genealogical and Technical Concepts</h3>
+<ul>
+<li><strong>Any Contributor</strong>: A setting in <code>contributor_eligibility</code> that allows a task to be sent to external researchers or AI services.</li>
+<li><strong>Confabulation/Hallucination</strong>: A phenomenon where AI models generate plausible-sounding but false or ungrounded information.</li>
+<li><strong>Distributed Research</strong>: A work model where tasks are spread across many parallel contributors (human and machine) rather than one central authority.</li>
+<li><strong>Fail-Closed</strong>: A security/privacy design where the default setting is the most restrictive (<code>first_party_only</code>).</li>
+<li><strong>First Party Only</strong>: A setting in <code>contributor_eligibility</code> ensuring only the platform’s internal resources/personnel handle the task; mandatory for research on living persons.</li>
+<li><strong>MaxPerson</strong>: A structured record representing the interpretation of an individual’s identity and history.</li>
+<li><strong>MaxRecord</strong>: A structured representation of a piece of historical evidence or document.</li>
+<li><strong>MaxTask</strong>: The standardized format for describing a unit of work in distributed genealogical research.</li>
+<li><strong>Orchestrator/Task Dispatcher</strong>: A system or entity that reads MaxTask requests and assigns them to appropriate contributors.</li>
+<li><strong>Vector Database</strong>: A technical system (e.g., Qdrant) used for indexing and searching data through embeddings.</li>
+</ul><p><a href="/podcasts/">← All episodes</a></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

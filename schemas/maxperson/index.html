@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaxPerson — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MaxPerson is the identity layer of MAXGEN. A person is a set of scored assertions from many sources, with several possible parents allowed to coexist.">
+<link rel="canonical" href="https://opengenealogyai.org/schemas/maxperson/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MaxPerson">
+<meta property="og:description" content="MaxPerson is the identity layer of MAXGEN. A person is a set of scored assertions from many sources, with several possible parents allowed to coexist.">
+<meta property="og:url" content="https://opengenealogyai.org/schemas/maxperson/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxPerson — MAXGEN schema v1.13", "description": "MaxPerson is the identity layer of MAXGEN. A person is a set of scored assertions from many sources, with several possible parents allowed to coexist.", "url": "https://opengenealogyai.org/schemas/maxperson/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/person.schema.json", "encodingFormat": "application/schema+json"}}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v1.13</p>
+  <h1>MaxPerson</h1>
+  <p class="tagline">A probable person. Every claim is an assertion with a source and a score.</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v1/person.schema.json">Download MaxPerson v1.13</a>
+     <a class="btn ghost" href="/versions/">All versions</a>
+     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v1/person.schema.json</code></p>
+</div><h2 id="you-cannot-ask-the-dead-who-they-are">You cannot ask the dead who they are</h2>
+<p>Genealogy reconstructs people from fragments: names written by clerks who may have misspelled them, ages self-reported to a census taker, dates in calendars that no longer match ours. Most file formats can hold only one answer per fact, so the uncertainty has to be resolved before it can be saved: one John Maxwell, one father, and the doubt lives in a notebook instead of the data.</p>
+<p>MaxPerson keeps the uncertainty in the data, where software and researchers can work with it.</p>
+<h2 id="what-it-is">What it is</h2>
+<p>A MaxPerson is a <strong>probable identity</strong>: a bundle of assertions, each saying <em>this source claims this, with this confidence, recorded by this agent on this date</em>. There are no bare facts in a MaxPerson. There are only assertions with evidence behind them.</p>
+<ul>
+<li><code>name_assertions[]</code>: every name this person was called, including the misspellings, each with its source.</li>
+<li><code>birth_assertions[]</code> and <code>death_assertions[]</code>: date ranges and places, one per source.</li>
+<li><code>parent_assertions[]</code> and <code>child_assertions[]</code>: <strong>several candidates are normal.</strong> A probable father at 0.75 and a possible father at 0.35 both stay in the record. The tree shows the likelier one; nothing is erased.</li>
+<li><code>spouse_assertions[]</code>: marriages with type, dates, place and how they ended. Kept in both spouses' records.</li>
+<li><code>event_assertions[]</code>: everything between the bookends: immigration, residence, military service, probate, burial. Event types map to GEDCOM tags.</li>
+<li><code>external_id_assertions[]</code>: scored links to the same person on FamilySearch, WikiTree, Find a Grave and others. Scored, not merged, because those databases contain duplicates too.</li>
+<li><code>dna_evidence[]</code>: DNA matches that touch this person as a candidate common ancestor, feeding the overall confidence.</li>
+</ul>
+<h2 id="composite-confidence">Composite confidence</h2>
+<p><code>composite_confidence</code> is one number, 0 to 1, for how sure we are about the identity as a whole. It is computed from all the assertions, weighted by source quality, using a "noisy-OR" combination (two independent sources agreeing raise confidence more than either alone, but not as if they were certain). Because every assertion cites a <code>source_record_id</code>, the engine can notice when two assertions really come from the same underlying document and avoid double-counting.</p>
+<h2 id="the-merge-model">The merge model</h2>
+<p>When evidence shows two MaxPerson records are the same individual, one absorbs the other. <code>merge_history[]</code> records the confidence, method, signals, who merged and when. The absorbed record stays, marked <code>merge_status: merged_away</code>. If later evidence shows they were different people after all, the merge is reversed on the same quality of evidence that made it.</p>
+<h2 id="privacy">Privacy</h2>
+<p><code>is_living: true</code> locks the record. Public endpoints return "not found". The record still exists internally and can be researched, but it is never exposed. Linked DNA records inherit the same lock. This is a design requirement of the standard, not a policy any implementation can switch off.</p>
+<h2 id="fields">Fields</h2>
+<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>person_id</code> <span class="req">required</span></td><td class="type">string</td><td>Globally unique identifier for this person entity.</td></tr><tr><td><code>schema_version</code> </td><td class="type">const &quot;1.13&quot;</td><td>MAXGEN version this record conforms to.</td></tr><tr><td><code>is_living</code> </td><td class="type">boolean</td><td>True if this person may be alive.</td></tr><tr><td><code>composite_confidence</code> </td><td class="type">number</td><td>Aggregate confidence that all assertions in this record refer to the same real individual.</td></tr><tr><td><code>name_assertions</code> <span class="req">required</span></td><td class="type">array of object</td><td>All known names for this person with individual confidence scores.</td></tr><tr><td><code>birth_assertions</code> </td><td class="type">array of object</td><td>All birth event claims with individual confidence scores.</td></tr><tr><td><code>death_assertions</code> </td><td class="type">array of object</td><td>All death event claims with individual confidence scores.</td></tr><tr><td><code>parent_assertions</code> </td><td class="type">array of object</td><td>All claimed parent relationships.</td></tr><tr><td><code>spouse_assertions</code> </td><td class="type">array of object</td><td>All claimed spouse relationships.</td></tr><tr><td><code>gender_assertions</code> </td><td class="type">array of object</td><td>MAXGEN v1.12 — Time-bounded gender records.</td></tr><tr><td><code>child_assertions</code> </td><td class="type">array of object</td><td>All claimed child relationships.</td></tr><tr><td><code>occupation_assertions</code> </td><td class="type">array of object</td><td>All known occupations for this person with confidence scores.</td></tr><tr><td><code>external_ids</code> </td><td class="type">object</td><td>Denormalized quick-lookup map of {system -&gt; top-confidence id} for this person — a convenience MIRROR of external_id_assertions[] (the authoritative, scored, multi-valued source as of v1.6).</td></tr><tr><td><code>external_id_assertions</code> </td><td class="type">array of object</td><td>MAXGEN v1.6 — scored, sourced, REVERSIBLE links from this conclusion-person to the same individual as represented in an external database (a &#x27;persona&#x27;).</td></tr><tr><td><code>dna_evidence</code> </td><td class="type">array of object</td><td>MAXGEN v1.2 — DNA chains that touch this person as a candidate MRCA or direct subject.</td></tr><tr><td><code>event_assertions</code> </td><td class="type">array of object</td><td>MAXGEN v1.3 — Long-tail life events beyond the first-class birth/death/marriage assertions.</td></tr><tr><td><code>place_registry</code> </td><td class="type">array of object</td><td>MAXGEN v1.3 — Normalized gazetteer links for places referenced anywhere in this record&#x27;s assertions.</td></tr><tr><td><code>merge_status</code> </td><td class="type">enum</td><td>MAXGEN v1.3 — Lifecycle state.</td></tr><tr><td><code>duplicate_of</code> </td><td class="type">string</td><td>MAXGEN v1.3 — When merge_status is &#x27;merged_away&#x27;, the person_id of the surviving entity this one was absorbed into.</td></tr><tr><td><code>merge_history</code> </td><td class="type">array of object</td><td>MAXGEN v1.3 — Record of entities absorbed INTO this one.</td></tr><tr><td><code>source_record_ids</code> </td><td class="type">array of string</td><td>All RawRecord UUIDs that contributed evidence to this Person entity.</td></tr><tr><td><code>extensions</code> </td><td class="type">object</td><td>MAXGEN v1.3 — Designated namespace for experimental or contributor-specific fields.</td></tr><tr><td><code>photo_assertions</code> </td><td class="type">array of object</td><td>MAXGEN v1.4 — Photographs OF this person (portraits, snapshots, family photos).</td></tr><tr><td><code>redistribution_license</code> </td><td class="type">enum</td><td>Most restrictive license among all contributing source records.</td></tr><tr><td><code>asserted_by</code> <span class="req">required</span></td><td class="type">string</td><td>Agent ID or contributor that created this Person entity.</td></tr><tr><td><code>asserted_at</code> <span class="req">required</span></td><td class="type">string</td><td>Timestamp of initial entity creation.</td></tr><tr><td><code>last_updated_at</code> </td><td class="type">string</td><td></td></tr><tr><td><code>judge_approved</code> </td><td class="type">boolean</td><td>True if the judge-agent has validated this entity&#x27;s assertions.</td></tr><tr><td><code>judge_approved_at</code> </td><td class="type">string</td><td></td></tr></tbody></table></div>
+
+<h2 id="example">Example</h2>
+<p>Mary Todd Lincoln as a MaxPerson: two names (birth and married), an exact birth and death, one marriage, every claim citing the same marriage record.</p>
+<pre class="json"><code>{
+  &quot;person_id&quot;: &quot;b1000000-0006-4000-8000-000000000006&quot;,
+  &quot;schema_version&quot;: &quot;1.13&quot;,
+  &quot;is_living&quot;: false,
+  &quot;composite_confidence&quot;: 0.95,
+  &quot;name_assertions&quot;: [
+    {
+      &quot;name_as_written&quot;: &quot;Mary Todd&quot;,
+      &quot;given_name&quot;: &quot;Mary&quot;,
+      &quot;surname&quot;: &quot;Todd&quot;,
+      &quot;name_type&quot;: &quot;birth&quot;,
+      &quot;confidence&quot;: 0.95,
+      &quot;source_record_id&quot;: &quot;a1b2c3d4-0003-4000-8000-000000000003&quot;,
+      &quot;asserted_by&quot;: &quot;extractor-agent-haiku-001&quot;,
+      &quot;asserted_at&quot;: &quot;2026-05-01T14:00:00Z&quot;
+    },
+    {
+      &quot;name_as_written&quot;: &quot;Mary Lincoln&quot;,
+      &quot;given_name&quot;: &quot;Mary&quot;,
+      &quot;surname&quot;: &quot;Lincoln&quot;,
+      &quot;name_type&quot;: &quot;married&quot;,
+      &quot;confidence&quot;: 0.99,
+      &quot;source_record_id&quot;: &quot;a1b2c3d4-0003-4000-8000-000000000003&quot;,
+      &quot;asserted_by&quot;: &quot;extractor-agent-haiku-001&quot;,
+      &quot;asserted_at&quot;: &quot;2026-05-01T14:00:00Z&quot;
+    }
+  ],
+  &quot;birth_assertions&quot;: [
+    {
+      &quot;year_min&quot;: 1818,
+      &quot;year_max&quot;: 1818,
+      &quot;month&quot;: 12,
+      &quot;day&quot;: 13,
+      &quot;date_type&quot;: &quot;exact&quot;,
+      &quot;place_as_written&quot;: &quot;Lexington, Kentucky&quot;,
+      &quot;country_code&quot;: &quot;US&quot;,
+      &quot;confidence&quot;: 0.98,
+      &quot;source_record_id&quot;: &quot;a1b2c3d4-0003-4000-8000-000000000003&quot;,
+      &quot;asserted_by&quot;: &quot;extractor-agent-haiku-001&quot;,
+      &quot;asserted_at&quot;: &quot;2026-05-01T14:00:00Z&quot;
+    }
+  ],
+  &quot;death_assertions&quot;: [
+    {
+      &quot;year_min&quot;: 1882,
+      &quot;year_max&quot;: 1882,
+      &quot;month&quot;: 7,
+      &quot;day&quot;: 16,
+      &quot;date_type&quot;: &quot;exact&quot;,
+      &quot;place_as_written&quot;: &quot;Springfield, Illinois&quot;,
+      &quot;country_code&quot;: &quot;US&quot;,
+      &quot;confidence&quot;: 0.99,
+      &quot;source_record_id&quot;: &quot;a1b2c3d4-0003-4000-8000-000000000003&quot;,
+      &quot;asserted_by&quot;: &quot;extractor-agent-haiku-001&quot;,
+      &quot;asserted_at&quot;: &quot;2026-05-01T14:00:00Z&quot;
+    }
+  ],
+  &quot;spouse_assertions&quot;: [
+    {
+      &quot;spouse_person_id&quot;: &quot;b1000000-0007-4000-8000-000000000007&quot;,
+      &quot;marriage_year_min&quot;: 1842,
+      &quot;marriage_year_max&quot;: 1842,
+      &quot;confidence&quot;: 0.99,
+      &quot;source_record_id&quot;: &quot;a1b2c3d4-0003-4000-8000-000000000003&quot;,
+      &quot;asserted_by&quot;: &quot;extractor-agent-haiku-001&quot;,
+      &quot;asserted_at&quot;: &quot;2026-05-01T14:00:00Z&quot;
+    }
+  ],
+  &quot;source_record_ids&quot;: [
+    &quot;a1b2c3d4-0003-4000-8000-000000000003&quot;
+  ],
+  &quot;redistribution_license&quot;: &quot;public-domain&quot;,
+  &quot;asserted_by&quot;: &quot;extractor-agent-haiku-001&quot;,
+  &quot;asserted_at&quot;: &quot;2026-05-01T14:00:00Z&quot;,
+  &quot;judge_approved&quot;: true,
+  &quot;judge_approved_at&quot;: &quot;2026-05-04T09:00:00Z&quot;
+}</code></pre>
+
+<h2 id="listen">Listen</h2>
+<div class="episode" id="ep2">
+  <div class="ep-head"><span class="ep-num">Episode 2</span><h3>MaxPerson — The person who might be your ancestor</h3><span class="ep-len">22:46</span></div>
+  <p>Assertions not facts, probabilistic parents, composite confidence, and the merge model.</p>
+  <audio controls preload="none" src="https://media.opengenealogyai.org/podcasts/MAXGEN-02-maxperson-v2.mp3"></audio>
+  <p class="ep-links"><a href="https://media.opengenealogyai.org/podcasts/MAXGEN-02-maxperson-v2.mp3">Download MP3</a> · <a href="/podcasts/study-guides/MAXGEN-02-maxperson-v2-StudyGuide/">Study guide</a></p>
+</div><p class="backlink"><a href="/schemas/">← All seven schemas</a></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

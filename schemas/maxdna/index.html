@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaxDNA — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MaxDNA stores DNA match evidence linked to a MaxPerson with the strongest privacy rules in MAXGEN: hashed kit IDs, mandatory consent, and no raw genotype data ever.">
+<link rel="canonical" href="https://opengenealogyai.org/schemas/maxdna/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MaxDNA">
+<meta property="og:description" content="MaxDNA stores DNA match evidence linked to a MaxPerson with the strongest privacy rules in MAXGEN: hashed kit IDs, mandatory consent, and no raw genotype data ever.">
+<meta property="og:url" content="https://opengenealogyai.org/schemas/maxdna/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxDNA — MAXGEN schema v1.13", "description": "MaxDNA stores DNA match evidence linked to a MaxPerson with the strongest privacy rules in MAXGEN: hashed kit IDs, mandatory consent, and no raw genotype data ever.", "url": "https://opengenealogyai.org/schemas/maxdna/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/dna.schema.json", "encodingFormat": "application/schema+json"}}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v1.13</p>
+  <h1>MaxDNA</h1>
+  <p class="tagline">Genetic evidence, always private, never the genome itself.</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v1/dna.schema.json">Download MaxDNA v1.13</a>
+     <a class="btn ghost" href="/versions/">All versions</a>
+     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v1/dna.schema.json</code></p>
+</div><h2 id="evidence-that-belongs-to-your-relatives-too">Evidence that belongs to your relatives too</h2>
+<p>More than fifty million people have taken a consumer DNA test. A 47-centimorgan match (a centimorgan is the unit used to measure how much DNA two people share) does not prove a relationship on its own, but combined with a documentary trail to the same ancestor it raises confidence sharply. Genetic data is also information about every biological relative you have, including people who never consented. MaxDNA is designed to capture the genealogical value while making a leak structurally impossible.</p>
+<h2 id="what-it-stores-and-what-it-cannot">What it stores, and what it cannot</h2>
+<p>MaxDNA stores <strong>match metadata</strong>: shared centimorgans, longest segment, segment count, optional chromosome segments for triangulation, haplogroups (deep ancestral lineages on the direct paternal or maternal line), ancestry composition, and kit metadata.</p>
+<p>It cannot store a genome. <code>raw_genotype_stored</code> is a constant <code>false</code> that cannot be set otherwise. There is no field for a raw file.</p>
+<h2 id="the-privacy-architecture">The privacy architecture</h2>
+<ul>
+<li><strong>Always <code>tier2-private</code>.</strong> The licence field has exactly one allowed value. A MaxDNA record can never appear in a public dataset, API response, or embedding, even for people long dead, because a living tester's data describes their ancestors too.</li>
+<li><strong>Hashed kit IDs.</strong> <code>kit_id_hash</code> holds an HMAC-SHA-256 hash (a one-way scramble that uses a secret key, so it cannot be reversed by guessing) of the kit number. Matches store <code>match_kit_hash</code> the same way. You can triangulate without ever seeing your cousin's kit number.</li>
+<li><strong>Consent is a required field.</strong> Values include explicit opt-in, guardian consent, public-dataset redistribution allowed, deceased before 2000, pending, and withdrawn. <code>withdrawn</code> starts a 30-day purge; after that the record is deleted outright, which is the one place MAXGEN deletes anything.</li>
+</ul>
+<h2 id="methodology-fields-most-tools-forget">Methodology fields most tools forget</h2>
+<ul>
+<li><code>cm_map_version</code>: different recombination maps (HapMap, deCODE and others) give centimorgan values that differ by up to 15% for the same segment. Recording which map was used makes matches comparable.</li>
+<li><code>phasing_status</code>: whether a shared segment is on the paternal or maternal chromosome, both, unphased, or unknown. Essential for serious triangulation.</li>
+<li><code>endogamy_flag</code> and <code>endogamy_population</code>: communities that married within themselves for generations (Ashkenazi, Acadian, Mennonite, island populations) break the standard relationship estimates. The flag tells downstream tools to recalibrate.</li>
+</ul>
+<h2 id="how-it-connects-to-the-rest">How it connects to the rest</h2>
+<p><code>person_id</code> links the test to the <a href="/schemas/maxperson/">MaxPerson</a> who took it. Confirmed common-ancestor candidates on a match carry a confidence and an inference method (manual, tree intersection, triangulation, shared surname and geography). Those flow into MaxPerson's <code>dna_evidence[]</code>, where they strengthen documentary relationship claims through the same noisy-OR combination used everywhere else.</p>
+<h2 id="fields">Fields</h2>
+<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>dna_id</code> <span class="req">required</span></td><td class="type">string</td><td>Globally unique identifier for this DNA assertion.</td></tr><tr><td><code>schema_version</code> <span class="req">required</span></td><td class="type">const &quot;1.13&quot;</td><td>MAXGEN version this DNA record conforms to.</td></tr><tr><td><code>person_id</code> <span class="req">required</span></td><td class="type">string</td><td>Foreign key to the MaxPerson this DNA test belongs to.</td></tr><tr><td><code>test_type</code> <span class="req">required</span></td><td class="type">enum</td><td>Type of DNA test performed.</td></tr><tr><td><code>test_provider</code> </td><td class="type">enum</td><td>Company or platform that performed or hosts the original test.</td></tr><tr><td><code>test_date</code> </td><td class="type">object</td><td>Approximate date the test was taken.</td></tr><tr><td><code>kit_id_hash</code> <span class="req">required</span></td><td class="type">string</td><td>SHA-256 hash of the original kit number.</td></tr><tr><td><code>kit_source</code> <span class="req">required</span></td><td class="type">string</td><td>Where this kit metadata came from (e.g.</td></tr><tr><td><code>haplogroup_y</code> </td><td class="type">string</td><td>Y-DNA haplogroup designation (paternal line), e.g.</td></tr><tr><td><code>haplogroup_mt</code> </td><td class="type">string</td><td>mtDNA haplogroup designation (maternal line), e.g.</td></tr><tr><td><code>haplogroup_y_confidence</code> </td><td class="type">number</td><td></td></tr><tr><td><code>haplogroup_mt_confidence</code> </td><td class="type">number</td><td></td></tr><tr><td><code>ancestry_composition</code> </td><td class="type">array of object</td><td>Ethnicity/admixture estimates from the test provider.</td></tr><tr><td><code>endogamy_flag</code> </td><td class="type">boolean</td><td>True if subject belongs to an endogamous population (Ashkenazi, Acadian, Mennonite, etc.) where standard cM thresholds are unreliable.</td></tr><tr><td><code>endogamy_population</code> </td><td class="type">string</td><td>Specific endogamous population if endogamy_flag is true.</td></tr><tr><td><code>matches</code> </td><td class="type">array of object</td><td>DNA matches with other kits.</td></tr><tr><td><code>external_ids</code> </td><td class="type">object</td><td>Cross-service kit aliases.</td></tr><tr><td><code>is_living_flag</code> <span class="req">required</span></td><td class="type">boolean</td><td>True if the DNA-test subject may be living.</td></tr><tr><td><code>redistribution_license</code> <span class="req">required</span></td><td class="type">const &quot;tier2-private&quot;</td><td>DNA data is ALWAYS tier2-private.</td></tr><tr><td><code>raw_genotype_stored</code> <span class="req">required</span></td><td class="type">const false</td><td>MAXGEN does not store raw genotype data (FASTQ, VCF, 23andMe raw export, etc.).</td></tr><tr><td><code>external_raw_data_location</code> </td><td class="type">string</td><td>Free-text note about where raw data is held (e.g.</td></tr><tr><td><code>consent_status</code> <span class="req">required</span></td><td class="type">enum</td><td>Legal basis for storing this DNA metadata.</td></tr><tr><td><code>consented_at</code> </td><td class="type">string</td><td></td></tr><tr><td><code>consent_evidence_url</code> </td><td class="type">string</td><td>Link to signed consent record (e.g.</td></tr><tr><td><code>withdrawal_requested_at</code> </td><td class="type">string</td><td>When the subject requested deletion.</td></tr><tr><td><code>source_records</code> </td><td class="type">array of string</td><td>MaxRecord IDs that document this DNA test (e.g.</td></tr><tr><td><code>asserted_by</code> <span class="req">required</span></td><td class="type">string</td><td>Agent ID or contributor ID that produced this DNA assertion.</td></tr><tr><td><code>asserted_at</code> <span class="req">required</span></td><td class="type">string</td><td></td></tr><tr><td><code>notes</code> </td><td class="type">string</td><td>Free-text annotations.</td></tr></tbody></table></div>
+
+<h2 id="example">Example</h2>
+<p>Because MaxDNA records are private by definition, this site does not publish a real one. The <a href="/validator/">validator</a> offers a synthetic minimal record you can inspect and check.</p>
+<h2 id="listen">Listen</h2>
+<div class="episode" id="ep4">
+  <div class="ep-head"><span class="ep-num">Episode 4</span><h3>MaxDNA — Genetic evidence without giving up privacy</h3><span class="ep-len">23:23</span></div>
+  <p>Hashed kit IDs, consent, endogamy, phasing, and how DNA boosts documentary confidence.</p>
+  <audio controls preload="none" src="https://media.opengenealogyai.org/podcasts/MAXGEN-04-maxdna.mp3"></audio>
+  <p class="ep-links"><a href="https://media.opengenealogyai.org/podcasts/MAXGEN-04-maxdna.mp3">Download MP3</a> · <a href="/podcasts/study-guides/MAXGEN-04-maxdna-StudyGuide/">Study guide</a></p>
+</div><p class="backlink"><a href="/schemas/">← All seven schemas</a></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

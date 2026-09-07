@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The seven schemas — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MaxRecord, MaxPerson, MaxTask, MaxDNA, MaxSource, MaxRecognition and MaxName — the seven MAXGEN schema files, explained and downloadable.">
+<link rel="canonical" href="https://opengenealogyai.org/schemas/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="The seven schemas">
+<meta property="og:description" content="MaxRecord, MaxPerson, MaxTask, MaxDNA, MaxSource, MaxRecognition and MaxName — the seven MAXGEN schema files, explained and downloadable.">
+<meta property="og:url" content="https://opengenealogyai.org/schemas/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "Dataset", "@id": "https://opengenealogyai.org/#standard", "name": "MAXGEN — The Maxwell Genealogy Standard v1.13", "description": "Seven JSON Schema files (MaxRecord, MaxPerson, MaxTask, MaxDNA, MaxSource, MaxRecognition, MaxName) defining an open, probabilistic genealogy data standard.", "url": "https://opengenealogyai.org/schemas/", "version": "1.13", "license": "https://creativecommons.org/publicdomain/zero/1.0/", "creator": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "isAccessibleForFree": true, "distribution": [{"@type": "DataDownload", "name": "MaxRecord schema", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/raw-record.schema.json", "encodingFormat": "application/schema+json"}, {"@type": "DataDownload", "name": "MaxPerson schema", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/person.schema.json", "encodingFormat": "application/schema+json"}, {"@type": "DataDownload", "name": "MaxTask schema", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/task-queue.schema.json", "encodingFormat": "application/schema+json"}, {"@type": "DataDownload", "name": "MaxDNA schema", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/dna.schema.json", "encodingFormat": "application/schema+json"}, {"@type": "DataDownload", "name": "MaxSource schema", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/source.schema.json", "encodingFormat": "application/schema+json"}, {"@type": "DataDownload", "name": "MaxRecognition schema", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/recognition.schema.json", "encodingFormat": "application/schema+json"}, {"@type": "DataDownload", "name": "MaxName schema", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/name.schema.json", "encodingFormat": "application/schema+json"}]}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<p class="eyebrow">MAXGEN v1.13 · lockstep release</p>
+<h1 id="the-seven-schemas">The seven schemas</h1>
+<p>All seven files share one version number. When any of them changes, the whole standard moves to the next number, so you adopt "MAXGEN v1.13" as a set and never have to wonder which schema goes with which.</p>
+<div class="cards"><a class="card" href="/schemas/maxrecord/"><h3>MaxRecord</h3><p>A source document exactly as it was found. No interpretation added.</p><span class="file">raw-record.schema.json</span></a><a class="card" href="/schemas/maxperson/"><h3>MaxPerson</h3><p>A probable person. Every claim is an assertion with a source and a score.</p><span class="file">person.schema.json</span></a><a class="card" href="/schemas/maxtask/"><h3>MaxTask</h3><p>A unit of research work for a human or an AI, with proof required.</p><span class="file">task-queue.schema.json</span></a><a class="card" href="/schemas/maxdna/"><h3>MaxDNA</h3><p>Genetic evidence, always private, never the genome itself.</p><span class="file">dna.schema.json</span></a><a class="card" href="/schemas/maxsource/"><h3>MaxSource</h3><p>A catalogue of where records live, built for the question &quot;where do I look next?&quot;</p><span class="file">source.schema.json</span></a><a class="card" href="/schemas/maxrecognition/"><h3>MaxRecognition</h3><p>Who read this page, how, and how sure they were about every word.</p><span class="file">recognition.schema.json</span></a><a class="card" href="/schemas/maxname/"><h3>MaxName</h3><p>One name, every form it has ever taken, with sources.</p><span class="file">name.schema.json</span></a></div>
+
+<h2 id="canonical-addresses">Canonical addresses</h2>
+<p>Every schema file declares its own permanent address in its <code>$id</code> field. Tools that validate records fetch the schema from there.</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>Latest v1 (always current)</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MaxRecord</td>
+<td><code>/schemas/maxgen/v1/raw-record.schema.json</code></td>
+<td><a href="/schemas/maxgen/v1/raw-record.schema.json">download</a></td>
+</tr>
+<tr>
+<td>MaxPerson</td>
+<td><code>/schemas/maxgen/v1/person.schema.json</code></td>
+<td><a href="/schemas/maxgen/v1/person.schema.json">download</a></td>
+</tr>
+<tr>
+<td>MaxTask</td>
+<td><code>/schemas/maxgen/v1/task-queue.schema.json</code></td>
+<td><a href="/schemas/maxgen/v1/task-queue.schema.json">download</a></td>
+</tr>
+<tr>
+<td>MaxDNA</td>
+<td><code>/schemas/maxgen/v1/dna.schema.json</code></td>
+<td><a href="/schemas/maxgen/v1/dna.schema.json">download</a></td>
+</tr>
+<tr>
+<td>MaxSource</td>
+<td><code>/schemas/maxgen/v1/source.schema.json</code></td>
+<td><a href="/schemas/maxgen/v1/source.schema.json">download</a></td>
+</tr>
+<tr>
+<td>MaxRecognition</td>
+<td><code>/schemas/maxgen/v1/recognition.schema.json</code></td>
+<td><a href="/schemas/maxgen/v1/recognition.schema.json">download</a></td>
+</tr>
+<tr>
+<td>MaxName</td>
+<td><code>/schemas/maxgen/v1/name.schema.json</code></td>
+<td><a href="/schemas/maxgen/v1/name.schema.json">download</a></td>
+</tr>
+</tbody>
+</table>
+<p>Frozen copies of every past release live under <code>/schemas/maxgen/v1.NN/</code> and are listed on the <a href="/versions/">versions page</a>. A machine-readable list is at <a href="/schemas/maxgen/index.json"><code>/schemas/maxgen/index.json</code></a>.</p>
+<h2 id="check-a-record">Check a record</h2>
+<p>Paste any JSON record into the <a href="/validator/">browser validator</a> to see whether it conforms. Nothing you paste leaves your computer.</p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

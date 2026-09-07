@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaxRecognition — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MaxRecognition is the provenance record for an OCR or handwriting transcription: the contributor (human or AI), word-level confidence, labelled inferences, and cross-run consensus.">
+<link rel="canonical" href="https://opengenealogyai.org/schemas/maxrecognition/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MaxRecognition">
+<meta property="og:description" content="MaxRecognition is the provenance record for an OCR or handwriting transcription: the contributor (human or AI), word-level confidence, labelled inferences, and cross-run consensus.">
+<meta property="og:url" content="https://opengenealogyai.org/schemas/maxrecognition/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxRecognition — MAXGEN schema v1.13", "description": "MaxRecognition is the provenance record for an OCR or handwriting transcription: the contributor (human or AI), word-level confidence, labelled inferences, and cross-run consensus.", "url": "https://opengenealogyai.org/schemas/maxrecognition/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/recognition.schema.json", "encodingFormat": "application/schema+json"}}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v1.13</p>
+  <h1>MaxRecognition</h1>
+  <p class="tagline">Who read this page, how, and how sure they were about every word.</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v1/recognition.schema.json">Download MaxRecognition v1.13</a>
+     <a class="btn ghost" href="/versions/">All versions</a>
+     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v1/recognition.schema.json</code></p>
+</div><h2 id="the-handwriting-problem">The handwriting problem</h2>
+<p>German Kurrent script was the everyday handwriting of German-speaking Europe from the 1500s to the mid-1900s. Its "e" looks nothing like an e; its "n" looks like a "u"; the word for mother looks like "Mnttev". The church registers that matter most for German-American research are written in it, by the million. Kurrent is one of many: Secretary Hand, Court Hand, Hebrew and Greek scribal hands, Arabic nastaliq, Cyrillic ustav.</p>
+<p>MaxRecognition records what happens when a machine or a trained human reads such a page, so that the reading is citable, checkable and improvable.</p>
+<h2 id="one-schema-for-print-and-handwriting">One schema for print and handwriting</h2>
+<p>OCR (reading printed text) and HTR (reading handwriting) share more than 90% of their fields, so there is one schema with a <code>recognition_type</code> switch. Handwriting records add <code>script_type</code> and <code>approx_century</code> for routing to the right specialist; print records add <code>font_type</code> and <code>scan_dpi</code>.</p>
+<h2 id="who-did-the-reading">Who did the reading</h2>
+<p><code>contributor{}</code> has a <code>contributor_type</code> of <code>human</code> or <code>ai</code>, and fields that follow from it.</p>
+<ul>
+<li><strong>Humans</strong> carry credentials, specialty scripts, languages and regions, <code>records_transcribed</code> (a reputation signal that accumulates), and training notes. A Kurrent reading by someone with fifteen thousand records and a Kurrent certification carries more weight than the same reading by a newcomer.</li>
+<li><strong>AI models</strong> carry model name, version, provider and type, the <strong>exact prompt</strong> used (a prompt that says "transcribe exactly, do not correct" is a different method from "extract the key facts"), and fine-tuning details. Storing the prompt makes the transcription reproducible.</li>
+</ul>
+<h2 id="word-level-confidence-and-labelled-guesses">Word-level confidence and labelled guesses</h2>
+<p><code>word_confidences[]</code> gives each word a score, a position, alternatives, and a <strong><code>reading_type</code></strong>:</p>
+<table>
+<thead>
+<tr>
+<th><code>reading_type</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>observed</code></td>
+<td>Read directly from the image.</td>
+</tr>
+<tr>
+<td><code>inferred_context</code></td>
+<td>Filled in from surrounding entries.</td>
+</tr>
+<tr>
+<td><code>inferred_pattern</code></td>
+<td>Filled in from a known naming convention.</td>
+</tr>
+<tr>
+<td><code>partial_read</code></td>
+<td>Some characters legible, the rest inferred.</td>
+</tr>
+</tbody>
+</table>
+<p>Traditional practice says "leave it blank if you cannot read it". MaxRecognition says: if you can make a reasonable inference, make it, <strong>label it</strong>, explain it in <code>inference_notes</code>, and give it a lower score. "Five other entries on this page read Maxwell; only 'Ma' is legible here; letterform height at position 3 fits 'xw' not 'rk'; inference Maxwell, 0.78." That is how a trained genealogist reasons, captured in a form a reviewer or a future model can audit.</p>
+<h2 id="consensus-and-searchability">Consensus and searchability</h2>
+<ul>
+<li><strong><code>consensus_group_id</code></strong> links independent readings of the same image. <code>is_independent</code> says whether each run was blind to the others. Agreement raises confidence; disagreement flags the word for human review. The schema stores the evidence; the matching engine does the arithmetic.</li>
+<li><strong><code>searchable_variants[]</code></strong> lists every spelling under which this record should be findable when a word is uncertain between, say, "Maxwell" and "Maxweil". <a href="/schemas/maxname/">MaxName</a> handles the general fact that names vary across history; this field handles one hard reading in one document.</li>
+<li><strong><code>character_error_rate</code></strong> and <strong><code>word_error_rate</code></strong> record quality against ground truth when it exists, so over time the system learns which models and which people read which scripts best.</li>
+</ul>
+<h2 id="fields">Fields</h2>
+<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>recognition_id</code> <span class="req">required</span></td><td class="type">string</td><td>Unique identifier for this transcription run.</td></tr><tr><td><code>schema_version</code> <span class="req">required</span></td><td class="type">const &quot;1.13&quot;</td><td>MAXGEN lockstep version.</td></tr><tr><td><code>recognition_type</code> <span class="req">required</span></td><td class="type">enum</td><td>ocr = printed or typed text; htr = handwritten text.</td></tr><tr><td><code>image_url</code> <span class="req">required</span></td><td class="type">string</td><td>URL of the document image that was transcribed.</td></tr><tr><td><code>raw_record_id</code> </td><td class="type">string</td><td>Optional: links back to the MaxRecord this transcription belongs to.</td></tr><tr><td><code>output_text</code> <span class="req">required</span></td><td class="type">string</td><td>Full transcribed text produced by this run.</td></tr><tr><td><code>processing_date</code> <span class="req">required</span></td><td class="type">string</td><td>ISO 8601 UTC timestamp of when this transcription was produced.</td></tr><tr><td><code>language</code> </td><td class="type">string</td><td>ISO 639-1 code of the document language (e.g.</td></tr><tr><td><code>contributor</code> <span class="req">required</span></td><td class="type">object</td><td>Who or what produced this transcription.</td></tr><tr><td><code>confidence</code> </td><td class="type">number</td><td>Overall transcription confidence 0.0–1.0, self-reported by the contributor.</td></tr><tr><td><code>word_confidences</code> </td><td class="type">array of object</td><td>Per-word confidence breakdown.</td></tr><tr><td><code>character_error_rate</code> </td><td class="type">number</td><td>CER measured against a ground-truth reference, if available.</td></tr><tr><td><code>word_error_rate</code> </td><td class="type">number</td><td>WER measured against a ground-truth reference, if available.</td></tr><tr><td><code>consensus_group_id</code> </td><td class="type">string</td><td>Groups multiple independent transcriptions of the same image.</td></tr><tr><td><code>is_independent</code> </td><td class="type">boolean</td><td>True if this run was performed blind to other transcriptions in the same consensus_group.</td></tr><tr><td><code>is_human_reviewed</code> </td><td class="type">boolean</td><td>True if a human has reviewed and approved the output.</td></tr><tr><td><code>review_status</code> </td><td class="type">enum</td><td></td></tr><tr><td><code>redistribution_license</code> </td><td class="type">enum</td><td>License for this transcription output.</td></tr><tr><td><code>font_type</code> </td><td class="type">enum</td><td>OCR only: dominant font type in the document.</td></tr><tr><td><code>scan_dpi</code> </td><td class="type">integer</td><td>OCR only: scan resolution in dots per inch.</td></tr><tr><td><code>script_type</code> </td><td class="type">enum</td><td>HTR only: handwriting script family of the document.</td></tr><tr><td><code>approx_century</code> </td><td class="type">integer</td><td>HTR only: approximate century of the handwriting expressed as the century&#x27;s start year (e.g.</td></tr><tr><td><code>searchable_variants</code> </td><td class="type">array of string</td><td>All possible full-text spellings this record should be findable under — including uncertain readings, alternative spellings, and normalized forms.</td></tr><tr><td><code>extensions</code> </td><td class="type">object</td><td>Product/implementation-specific fields.</td></tr></tbody></table></div>
+
+<h2 id="example">Example</h2>
+<p>A human Kurrent specialist's reading of a Bavarian baptism, with one uncertain word and its alternative.</p>
+<pre class="json"><code>{
+  &quot;recognition_id&quot;: &quot;c1900000-0002-4000-8000-000000000001&quot;,
+  &quot;schema_version&quot;: &quot;1.13&quot;,
+  &quot;recognition_type&quot;: &quot;htr&quot;,
+  &quot;image_url&quot;: &quot;https://www.archion.de/de/browse/?no_cache=1&amp;type=churchRegister&amp;pid=12345&quot;,
+  &quot;raw_record_id&quot;: &quot;a1600000-0001-4000-8000-000000000001&quot;,
+  &quot;output_text&quot;: &quot;Johann Maier, geb. 14 März 1842, Sohn des Georg Maier und der Maria Huber.&quot;,
+  &quot;processing_date&quot;: &quot;2026-06-20T14:00:00Z&quot;,
+  &quot;language&quot;: &quot;de&quot;,
+  &quot;contributor&quot;: {
+    &quot;contributor_type&quot;: &quot;human&quot;,
+    &quot;contributor_name&quot;: &quot;Helga Brandt&quot;,
+    &quot;contributor_id&quot;: &quot;ogai-user-00042&quot;,
+    &quot;profile_url&quot;: &quot;https://opengenealogyai.org/users/helga-brandt&quot;,
+    &quot;credentials&quot;: [
+      &quot;AG&quot;,
+      &quot;Kurrent specialist&quot;,
+      &quot;German parish records&quot;
+    ],
+    &quot;specialty_scripts&quot;: [
+      &quot;kurrent&quot;,
+      &quot;gothic_fraktur&quot;
+    ],
+    &quot;specialty_languages&quot;: [
+      &quot;de&quot;,
+      &quot;la&quot;
+    ],
+    &quot;specialty_regions&quot;: [
+      &quot;Bavaria&quot;,
+      &quot;Baden-Württemberg&quot;,
+      &quot;Württemberg&quot;
+    ],
+    &quot;records_transcribed&quot;: 14720,
+    &quot;training_notes&quot;: &quot;German Genealogical Society Kurrent certification 2019. Specializes in Württemberg Lutheran Kirchenbücher 1650-1875. Completed the entire Maulbronn parish register collection (3,200 entries).&quot;
+  },
+  &quot;confidence&quot;: 0.94,
+  &quot;word_confidences&quot;: [
+    {
+      &quot;word&quot;: &quot;Maier&quot;,
+      &quot;char_offset&quot;: 7,
+      &quot;confidence&quot;: 0.82,
+      &quot;reading_type&quot;: &quot;observed&quot;,
+      &quot;alternatives&quot;: [
+        {
+          &quot;text&quot;: &quot;Mäier&quot;,
+          &quot;confidence&quot;: 0.18
+        }
+      ]
+    }
+  ],
+  &quot;searchable_variants&quot;: [
+    &quot;Johann Maier geb 14 März 1842 Sohn Georg Maier Maria Huber&quot;,
+    &quot;Johann Mäier geb 14 März 1842 Sohn Georg Mäier Maria Huber&quot;
+  ],
+  &quot;consensus_group_id&quot;: &quot;d1900000-0001-4000-8000-000000000099&quot;,
+  &quot;is_independent&quot;: true,
+  &quot;is_human_reviewed&quot;: true,
+  &quot;review_status&quot;: &quot;approved&quot;,
+  &quot;redistribution_license&quot;: &quot;CC-BY&quot;,
+  &quot;script_type&quot;: &quot;kurrent&quot;,
+  &quot;approx_century&quot;: 1800
+}</code></pre>
+
+<h2 id="listen">Listen</h2>
+<div class="episode" id="ep6">
+  <div class="ep-head"><span class="ep-num">Episode 6</span><h3>MaxRecognition — Teaching machines to read</h3><span class="ep-len">25:21</span></div>
+  <p>OCR and handwriting provenance, word-level confidence, labelled inference, and consensus.</p>
+  <audio controls preload="none" src="https://media.opengenealogyai.org/podcasts/MAXGEN-06-maxrecognition.mp3"></audio>
+  <p class="ep-links"><a href="https://media.opengenealogyai.org/podcasts/MAXGEN-06-maxrecognition.mp3">Download MP3</a> · <a href="/podcasts/study-guides/MAXGEN-06-maxrecognition-StudyGuide/">Study guide</a></p>
+</div><p class="backlink"><a href="/schemas/">← All seven schemas</a></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

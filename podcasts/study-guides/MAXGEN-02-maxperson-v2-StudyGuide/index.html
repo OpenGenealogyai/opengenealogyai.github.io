@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAXGEN 02 maxperson v2 StudyGuide — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="Study guide for the MAXGEN podcast episode MAXGEN-02-maxperson-v2-StudyGuide.">
+<link rel="canonical" href="https://opengenealogyai.org/podcasts/study-guides/MAXGEN-02-maxperson-v2-StudyGuide/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MAXGEN 02 maxperson v2 StudyGuide">
+<meta property="og:description" content="Study guide for the MAXGEN podcast episode MAXGEN-02-maxperson-v2-StudyGuide.">
+<meta property="og:url" content="https://opengenealogyai.org/podcasts/study-guides/MAXGEN-02-maxperson-v2-StudyGuide/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/" class="active">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<h1 id="maxperson-a-comprehensive-study-guide">MaxPerson: A Comprehensive Study Guide</h1>
+<p>This study guide provides an overview of the MaxPerson data model, a revolutionary approach to genealogical records that prioritizes the preservation of uncertainty and the use of probabilistic identity. Unlike traditional genealogy software that requires definitive "facts," MaxPerson utilizes a system of assertions to mirror the scientific method and the reality of historical research.</p>
+<h2 id="core-philosophy-assertions-vs-facts">Core Philosophy: Assertions vs. Facts</h2>
+<p>The fundamental problem of genealogy is the inability to verify identity with the deceased directly. Researchers rely on fragments—names, dates, and places—recorded by various clerks across centuries, often in different languages or using non-aligned calendars. </p>
+<p>MaxPerson addresses this by replacing the concept of "facts" with <strong>assertions</strong>.
+*   <strong>Definition of an Assertion:</strong> A claim made by a specific source at a specific time with a specific confidence level.
+*   <strong>Scientific Mirroring:</strong> Like scientific findings, every claim in MaxPerson includes a confidence interval and methodology. This allows for replication, revision based on new evidence, or total replacement by superior data.
+*   <strong>Preservation of Conflict:</strong> Contradictory information (such as different spellings of a name or different birth years) is not forced into a single choice. Instead, all assertions coexist within the record.</p>
+<h2 id="the-architecture-of-uncertainty-schema-components">The Architecture of Uncertainty: Schema Components</h2>
+<p>The MaxPerson schema is designed to track the provenance and confidence of every data point.</p>
+<h3 id="vital-records-and-identity">Vital Records and Identity</h3>
+<ul>
+<li><strong><code>name_assertions[]</code></strong>: Stores all claims regarding a person’s name. This includes the name as written (<code>a_name</code>), the type (given, surname, etc.), the <code>source_record_id</code>, and the confidence level.</li>
+<li><strong>Birth and Death Assertions</strong>: Use a year range model (<code>year_min</code> and <code>year_max</code>) to handle vague historical data (e.g., "about 1847"). High-precision documents, like baptismal certificates, carry higher confidence but do not erase less precise census data.</li>
+<li><strong><code>event_assertions[]</code></strong>: Captures life events between birth and death (e.g., immigration, military service, land grants). These map to standard GEDCOM tags for interoperability.</li>
+</ul>
+<h3 id="relationships-and-external-links">Relationships and External Links</h3>
+<ul>
+<li><strong>Parent and Child Assertions</strong>: These are bidirectional and probabilistic. They allow for multiple potential candidates for a single role, representing the reality that parental identity is often uncertain.</li>
+<li><strong>Spouse Assertions</strong>: These require bidirectional synchronization (enforced at the application layer) and include the relationship type, date range, and reason for the relationship's end.</li>
+<li><strong><code>external_id_assertions[]</code></strong>: Provides scored links to external databases (e.g., FamilySearch, WikiTree). These are treated as assertions rather than hard merges to avoid the "silent merge" of incorrect or duplicate records.</li>
+</ul>
+<h2 id="privacy-and-data-management">Privacy and Data Management</h2>
+<p>MaxPerson incorporates privacy and data integrity at the schema level rather than relying solely on application policy.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>is_living</code></strong></td>
+<td style="text-align: left;">A "privacy gate." If true, all public endpoints return a 404 error. DNA data linked to a living person is automatically classified as Tier2-private.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>composite_confidence</code></strong></td>
+<td style="text-align: left;">A calculated value (0.0 to 1.0) representing overall identity certainty, derived using a noisy-OR combination of assertions.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>merge_history[]</code></strong></td>
+<td style="text-align: left;">Records absorbed entities. Merges are treated as reversible assertions; nothing is ever truly destroyed, and the status is changed to <code>merged_away</code>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="short-answer-practice-questions">Short-Answer Practice Questions</h2>
+<ol>
+<li>
+<p><strong>How does MaxPerson differ from traditional genealogy software regarding conflicting data?</strong>
+    Traditional software forces a decision on a single "correct" answer, while MaxPerson allows multiple contradictory assertions to coexist, each with its own confidence score and source.</p>
+</li>
+<li>
+<p><strong>What is the purpose of the <code>year_min</code> and <code>year_max</code> fields in birth assertions?</strong>
+    These fields allow the system to represent uncertainty in birth dates, such as self-reported census data ("about 1847"), while still allowing more precise data (like a baptismal record) to outweigh it in calculations.</p>
+</li>
+<li>
+<p><strong>Why are external ID links in MaxPerson "scored assertions" rather than hard merges?</strong>
+    External databases often contain duplicates or incorrect profiles. Scored assertions allow researchers to link to external records with a specific confidence level that can be updated or retracted if the external record is found to be incorrect.</p>
+</li>
+<li>
+<p><strong>How does the system handle the merging of two records that are later discovered to be different people?</strong>
+    Because merges are stored in the <code>merge_history[]</code> and the absorbed record is kept as <code>merged_away</code>, the merge is reversible. The history tracks who authorized the merge and on what evidence.</p>
+</li>
+<li>
+<p><strong>What happens when the <code>is_living</code> flag is set to true?</strong>
+    The record becomes inaccessible to public endpoints (returning a 404), and any associated DNA data is automatically protected as Tier2-private.</p>
+</li>
+</ol>
+<hr />
+<h2 id="essay-prompts-for-deeper-exploration">Essay Prompts for Deeper Exploration</h2>
+<ol>
+<li><strong>The Scientific Method in Historical Reconstruction:</strong> MaxPerson claims to mirror the scientific model. Discuss how treating genealogical data as "claims with confidence intervals" changes the role of the researcher from a "collector of facts" to an "evaluator of evidence."</li>
+<li><strong>The Role of AI in Probabilistic Genealogy:</strong> The source context states that MaxPerson is the foundation for AI-assisted genealogy. Analyze how a system based on assertions and confidence scores is better suited for Bayesian methods and automated research tasking than a traditional "single-truth" tree.</li>
+<li><strong>Structural Privacy vs. Policy Privacy:</strong> Evaluate the decision to place the <code>is_living</code> gate at the schema level rather than leaving it to the application layer. Why might this be necessary for a standard intended for use by diverse organizations?</li>
+</ol>
+<hr />
+<h2 id="glossary-of-key-terms">Glossary of Key Terms</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>a_name</code></strong></td>
+<td style="text-align: left;">The name of a person exactly as it was written in a specific source.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Assertion</strong></td>
+<td style="text-align: left;">A claim regarding an individual's identity or life events, tied to a source, a confidence level, and an asserting agent.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>composite_confidence</code></strong></td>
+<td style="text-align: left;">A value between 0.0 and 1.0 representing the total certainty of a person’s identity, calculated from weighted assertions.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>event_assertions[]</code></strong></td>
+<td style="text-align: left;">A collection of life events (e.g., census, residence, occupation) that build a person's narrative; mapped to GEDCOM tags.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>is_living</code></strong></td>
+<td style="text-align: left;">The Tier2 privacy gate; a boolean field that hides a record from public view if set to true.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>merge_history[]</code></strong></td>
+<td style="text-align: left;">A structured log of all entities absorbed into a record, allowing for the reversal of merges if new evidence arises.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>merged_away</code></strong></td>
+<td style="text-align: left;">The status assigned to a MaxPerson record that has been absorbed into another record following a merge.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>name_assertions[]</code></strong></td>
+<td style="text-align: left;">A field containing all claimed names for an individual, allowing contradictory spellings to coexist.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Noisy-OR</strong></td>
+<td style="text-align: left;">The statistical formula used to calculate <code>composite_confidence</code> by combining independent assertions while accounting for correlated evidence.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>parent_assertions[]</code></strong></td>
+<td style="text-align: left;"><strong>Canonical Example of Probabilistic Identity:</strong> This field allows for multiple parental candidates. For example, a record may list a "probable biological father" with 0.75 confidence and a "household father" with 0.35 confidence. Both remain in the record to reflect the true level of historical uncertainty.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>source_record_id</code></strong></td>
+<td style="text-align: left;">A unique identifier for the document or evidence that supports a specific assertion.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>spouse_assertions[]</code></strong></td>
+<td style="text-align: left;">Bidirectional records of marital or domestic relationships, including start/end dates and the reason for the relationship's conclusion.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Tier2-Private</strong></td>
+<td style="text-align: left;">A high-security privacy classification automatically applied to DNA data associated with living individuals.</td>
+</tr>
+</tbody>
+</table><p><a href="/podcasts/">← All episodes</a></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

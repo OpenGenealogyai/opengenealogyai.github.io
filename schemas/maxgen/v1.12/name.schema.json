@@ -1,0 +1,403 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://opengenealogyai.org/schemas/name/1.11",
+  "title": "MaxName",
+  "description": "MAXGEN v1.11 — Maxwell Genealogy Standard. A structured record of one canonical name form and all its historical variants, across scripts, languages, locales, and time periods. MaxName solves the name-matching problem that defeats every genealogy search engine: 'Maxwell' and 'Makeswell' and 'Maccuswell' are the same name, but no machine knows that without a structured record that says so, with provenance, time scope, and confidence. Each variant carries its own UUID (so it can be referenced, disputed, and retired independently), its variant type (spelling, anglicization, scribal corruption, etc.), its geographic and temporal scope, and full contributor provenance. Phonetic keys are stored with algorithm version metadata so future tools can reconcile across algorithm generations. Cognate links connect cross-language equivalents (John↔Johann↔Giovanni↔Ivan↔Seán) with directional relationship types. The design is language-neutral: regional_canonical[] avoids encoding English as the privileged anchor. Reviewed by a three-brain council (Grok-3 + qwen3:14b, 2026-07-26) — 10 specific improvements incorporated. No equivalent open, structured, machine-readable standard exists; this schema fills a genuine gap in the genealogical and NLP tooling landscape.",
+  "type": "object",
+  "required": ["name_id", "schema_version", "canonical_form", "name_type"],
+  "additionalProperties": false,
+  "properties": {
+
+    "name_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Globally unique identifier for this name record."
+    },
+
+    "schema_version": {
+      "type": "string",
+      "const": "1.12",
+      "description": "MAXGEN lockstep version. All seven schemas share this number."
+    },
+
+    "canonical_form": {
+      "type": "string",
+      "description": "The modern authoritative spelling of this name — the form used as the anchor for all variants. For given names: the contemporary standard spelling (e.g. 'John', 'Johann', 'Seán'). For surnames: the modern accepted form (e.g. 'Maxwell'). This is not inherently English — see regional_canonical[] for multi-language preferred forms. Use the form most commonly cited in authoritative references for the name's primary culture."
+    },
+
+    "canonical_script": {
+      "type": "string",
+      "enum": ["latin", "cyrillic", "arabic", "hebrew", "greek", "han", "devanagari", "hangul", "georgian", "armenian", "other"],
+      "description": "Writing system of canonical_form. Drives rendering decisions for bi-directional text, font selection, and search index configuration."
+    },
+
+    "regional_canonical": {
+      "type": "array",
+      "description": "Language-specific preferred forms of this name for regions where the canonical_form is not the local preferred form. Avoids encoding English as the universal anchor. Example: the canonical_form 'John' sits alongside regional_canonical entries for 'Seán' (Irish Gaelic), 'Eoin' (Scottish Gaelic), 'Ioan' (Welsh), 'Jan' (Dutch/Czech/Polish). None of these is more 'real' than the others; each is authoritative within its language community.",
+      "items": {
+        "type": "object",
+        "required": ["form", "language"],
+        "additionalProperties": false,
+        "properties": {
+          "form": {
+            "type": "string",
+            "description": "The preferred form in this language/region."
+          },
+          "language": {
+            "type": "string",
+            "description": "ISO 639-1 (or ISO 639-3 for minority languages) code of the language this form is preferred in."
+          },
+          "locale": {
+            "type": "string",
+            "description": "ISO 3166-2 region code if more specific than language (e.g. GB-SCT for Scottish Gaelic vs GB-WLS for Welsh)."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Context: when/where this form is used, any important caveats."
+          }
+        }
+      }
+    },
+
+    "name_type": {
+      "type": "string",
+      "enum": ["given", "surname", "patronymic", "matronymic", "occupational", "topographic", "clan", "byname", "religious", "title"],
+      "description": "Structural category of this name. given = personal/first name. surname = family name passed across generations. patronymic = derived from father's name (e.g. Mac an Fhilidh = 'son of the poet'). matronymic = derived from mother's name. occupational = derived from trade/work. topographic = derived from a geographic feature (e.g. Hill, Brook). clan = clan/sept affiliation name (Scottish/Irish clan system). byname = descriptive nickname that became hereditary. religious = name taken at confirmation, ordination, or conversion. title = honorific that traveled with the person (not inherited)."
+    },
+
+    "gender": {
+      "type": "string",
+      "enum": ["masculine", "feminine", "neutral", "variable"],
+      "description": "Gender association of this name in its canonical culture. variable = the same name is used for multiple genders (e.g. some Celtic names). This is cultural association, not a statement about any individual."
+    },
+
+    "language_of_origin": {
+      "type": "string",
+      "description": "ISO 639-3 code of the language from which this name ultimately derives. Not necessarily the language it is most commonly used in today. Example: 'Maxwell' → old Norse 'Maccus' + Old English 'wella' → origin is 'non' (Old Norse) + 'ang' (Old English)."
+    },
+
+    "etymology": {
+      "type": "string",
+      "description": "Free-text explanation of the name's origins and meaning. Written for a non-specialist reader — this is what gets read in the podcast. Include the oldest attested form, what it meant, how it evolved, and any interesting historical notes. Example: 'Maxwell derives from a place name in the Scottish Borders — Maccus's pool (wella). Maccus was a personal name of Norse origin used in medieval Scotland and northern England. The Maxwell family took their surname from the place, which first appears in records around 1144 CE.'"
+    },
+
+    "see_also_urls": {
+      "type": "array",
+      "description": "Links to authoritative external references — Behind the Name, Dictionary of the Scots Language, LCNAF authority record, Wiktionary etymology, etc. Open-ended; add as many as are useful.",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+
+    "variants": {
+      "type": "array",
+      "description": "All known variant forms of this name — spelling variants, nicknames, anglicizations, scribal corruptions, dialectal forms, and emigration adaptations. Each variant is a first-class object with its own UUID, so it can be individually referenced, updated, disputed, or retired as evidence improves. The variant_type field uses an open string vocabulary: the standard values are listed in the description, and implementers may extend with custom URIs (e.g. 'http://example.org/my-extension/forced_substitution') for types not yet in the standard list. This avoids enum ossification — the list of ways names can vary is not finite.",
+      "items": {
+        "type": "object",
+        "required": ["variant_id", "variant_text", "variant_type"],
+        "additionalProperties": false,
+        "properties": {
+
+          "variant_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this specific variant entry. Allows individual variants to be cited, disputed, updated, or retired without touching the parent name record. Required — every variant must be independently addressable."
+          },
+
+          "variant_text": {
+            "type": "string",
+            "description": "The variant form exactly as it appears in historical records — preserve original capitalization, diacritics, and spelling."
+          },
+
+          "variant_type": {
+            "type": "string",
+            "description": "How this variant relates to the canonical form. Standard values (use these): 'spelling_variant' — same pronunciation, different orthography (Maxwell/Maxwel/Maxuell); 'nickname' — informal short form used in daily speech (John/Johnny/Jack); 'anglicization' — native form adapted to English sound/spelling conventions (Seán→John, Máire→Mary); 'gaelicization' — English form adapted into Gaelic (John→Seán, Mary→Máire); 'latinization' — form used in Latin-language documents (Joannes, Jacobus); 'abbreviation' — contracted form used in records (Wm for William, Thos for Thomas); 'diminutive' — affectionate/small form (Margaret→Peggy, Elizabeth→Betty); 'cognate' — etymologically related form in another language (John/Johann); 'scribal_corruption' — error introduced by a clerk or copyist, not an accepted variant; 'phonetic_rendering' — spelled by sound when the clerk didn't know the name (Maccuswell→Makeswell); 'emigration_adaptation' — form adopted after moving to a new country (Müller→Miller); 'translation' — semantic translation across languages (Smith/Schmidt/Ferreiro); 'patronymic_form' — form that includes the parent marker (McMaxwell, O'Máille). Implementers may use a full URI for types not in this list."
+          },
+
+          "locale": {
+            "type": "string",
+            "description": "ISO 3166-2 region code where this variant was used (e.g. GB-SCT for Scotland, IE for Ireland, DE for Germany, US-MA for Massachusetts). More specific is better — 'GB-SCT' is more useful than 'GB'."
+          },
+
+          "language": {
+            "type": "string",
+            "description": "ISO 639-1 code of the language this variant appears in (e.g. 'sco' for Scots, 'gd' for Scottish Gaelic, 'la' for Latin, 'de' for German)."
+          },
+
+          "script": {
+            "type": "string",
+            "enum": ["latin", "cyrillic", "arabic", "hebrew", "greek", "han", "devanagari", "hangul", "georgian", "armenian", "other"],
+            "description": "Writing system this variant is rendered in. Required when different from canonical_script."
+          },
+
+          "transliteration_standard": {
+            "type": "string",
+            "description": "When this variant involves transliteration from a non-Latin script, the standard used. Examples: 'ALA-LC' (American Library Association - Library of Congress), 'BGN/PCGN' (US/UK government standard), 'ISO 233' (Arabic), 'Pinyin' (Chinese), 'GOST 7.79' (Cyrillic). Captures the information needed to reverse-transliterate or compare across standards."
+          },
+
+          "period_start": {
+            "type": "integer",
+            "minimum": 500,
+            "maximum": 2100,
+            "description": "Earliest year this variant is attested in historical records. Use the year of the earliest known example, not an estimate. If unknown, omit."
+          },
+
+          "period_end": {
+            "type": "integer",
+            "minimum": 500,
+            "maximum": 2100,
+            "description": "Latest year this variant is known to have been in active use. Omit if the variant is still used today."
+          },
+
+          "frequency": {
+            "type": "string",
+            "enum": ["rare", "occasional", "common", "dominant"],
+            "description": "How commonly this variant appears in records from its period and locale. rare = fewer than 5% of occurrences; occasional = 5-25%; common = 25-60%; dominant = over 60% of occurrences in attested records."
+          },
+
+          "attestation_source": {
+            "type": "string",
+            "description": "Where this variant is documented. Cite the specific source: a dictionary entry, a published study, a specific archival collection, a MaxRecord UUID, or a URL. The more specific the better — 'Dumfriesshire OPR 1640-1700' is better than 'Scottish records'."
+          },
+
+          "notes": {
+            "type": "string",
+            "description": "Any additional context about this variant — why it arose, how it was used, who used it, regional specifics, or caveats about the attestation."
+          },
+
+          "confidence": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "description": "How confident we are that this variant is genuinely a form of the canonical name (rather than a different name that looks similar). 0.95+ = documented equivalence; 0.7-0.95 = well-attested but some ambiguity; 0.5-0.7 = plausible, needs more attestation; below 0.5 = speculative."
+          },
+
+          "contributor": {
+            "type": "object",
+            "description": "Who added this specific variant — human researcher or AI model. Reuses the MaxRecognition contributor{} shape: contributor_type discriminates human vs. AI.",
+            "required": ["contributor_type"],
+            "properties": {
+              "contributor_type": { "type": "string", "enum": ["human", "ai"] },
+              "contributor_name": { "type": "string" },
+              "contributor_id": { "type": "string" },
+              "model_name": { "type": "string", "description": "AI only." },
+              "model_provider": { "type": "string", "description": "AI only." },
+              "asserted_at": { "type": "string", "format": "date-time" }
+            },
+            "additionalProperties": false
+          },
+
+          "disputed_by": {
+            "type": "array",
+            "description": "Sources that contest this variant — either disputing that this form is genuinely equivalent to the canonical, or disputing the stated period/locale. A variant with disputes is retained and flagged, never silently deleted. This is the mechanism for preserving conflicting scholarly opinion without forcing a single answer.",
+            "items": {
+              "type": "object",
+              "required": ["dispute_id", "disputing_source"],
+              "additionalProperties": false,
+              "properties": {
+                "dispute_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "disputing_source": {
+                  "type": "string",
+                  "description": "Citation of the source that disputes this variant."
+                },
+                "dispute_notes": {
+                  "type": "string",
+                  "description": "What the disputing source says — what is contested and why."
+                },
+                "contributor": {
+                  "type": "object",
+                  "description": "Who recorded this dispute.",
+                  "properties": {
+                    "contributor_type": { "type": "string", "enum": ["human", "ai"] },
+                    "contributor_name": { "type": "string" },
+                    "asserted_at": { "type": "string", "format": "date-time" }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "phonetic_keys": {
+      "type": "object",
+      "description": "Pre-computed phonetic encodings of canonical_form for fuzzy search. Each key stores the algorithm value AND the algorithm version — because phonetic algorithms have changed over time and the same algorithm name in 2026 may produce different codes than in 2040. Storing the version prevents silent mismatches when indexes are rebuilt with newer algorithm implementations.",
+      "additionalProperties": false,
+      "properties": {
+
+        "soundex": {
+          "type": "object",
+          "description": "Soundex encoding. Most widely supported but weakest for non-English names.",
+          "properties": {
+            "value": { "type": "string", "pattern": "^[A-Z][0-9]{3}$" },
+            "algorithm_version": { "type": "string", "description": "e.g. 'american-1918', 'russell-1918', 'genealogy-variant'." }
+          },
+          "additionalProperties": false
+        },
+
+        "nysiis": {
+          "type": "object",
+          "description": "New York State Identification and Intelligence System — better than Soundex for English surnames.",
+          "properties": {
+            "value": { "type": "string" },
+            "algorithm_version": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+
+        "metaphone": {
+          "type": "object",
+          "description": "Metaphone encoding — phonetically driven, handles English better than Soundex.",
+          "properties": {
+            "value": { "type": "string" },
+            "algorithm_version": { "type": "string", "description": "e.g. 'metaphone-1990', 'double-metaphone-2000'." }
+          },
+          "additionalProperties": false
+        },
+
+        "double_metaphone": {
+          "type": "object",
+          "description": "Double Metaphone — produces primary and secondary codes to handle different language origins of the same spelling.",
+          "properties": {
+            "primary": { "type": "string" },
+            "secondary": { "type": "string" },
+            "algorithm_version": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+
+        "daitch_mokotoff": {
+          "type": "object",
+          "description": "Daitch-Mokotoff Soundex — designed specifically for Central and Eastern European Jewish surnames. Returns multiple codes (branching) when a name has multiple valid phonetic interpretations.",
+          "properties": {
+            "values": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "DM Soundex may return multiple codes for one name."
+            },
+            "algorithm_version": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+
+        "beider_morse": {
+          "type": "object",
+          "description": "Beider-Morse Phonetic Matching — the most sophisticated algorithm for names of multiple European language origins. Designed for genealogical use; handles Jewish names, Slavic names, and Western European names.",
+          "properties": {
+            "values": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "BMPM returns a set of phonetic codes."
+            },
+            "language_set": {
+              "type": "string",
+              "description": "The BMPM language set used: 'any', 'ashkenazi', 'sephardic', or a specific language list."
+            },
+            "algorithm_version": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+
+    "cognates": {
+      "type": "array",
+      "description": "Cross-language equivalents — names in other languages that are etymologically related to or culturally equivalent to this name. John↔Johann↔Giovanni↔Ivan↔Seán↔Juan are cognates: they share a root (the Latin Iohannes, which came from the Greek Ioannes, from the Hebrew Yochanan). Cognate links are bidirectional in meaning but directional in the data: the direction field says whether this name derives from the related name, is the source of it, or is a parallel evolution. Each cognate link carries its own provenance — who says these names are related, and on what basis.",
+      "items": {
+        "type": "object",
+        "required": ["cognate_id", "related_name_id", "relationship_type", "direction"],
+        "additionalProperties": false,
+        "properties": {
+
+          "cognate_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this cognate relationship."
+          },
+
+          "related_name_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The name_id of the related MaxName record."
+          },
+
+          "related_canonical_form": {
+            "type": "string",
+            "description": "Denormalized: the canonical_form of the related MaxName record at the time this link was created. Stored for readability without a join — the authoritative value is in the related MaxName record."
+          },
+
+          "relationship_type": {
+            "type": "string",
+            "enum": ["etymological_root", "cross_language_cognate", "derivative", "contracted_form"],
+            "description": "etymological_root = the related name is the historical ancestor (e.g. 'Maccus' is the root of 'Maxwell'). cross_language_cognate = parallel evolution in different languages from a shared root (John/Johann — both from Iohannes). derivative = this name was formed by adapting the related name (Maxwell derived from Maccus + wella). contracted_form = a shortened version of the related name (Will from William)."
+          },
+
+          "direction": {
+            "type": "string",
+            "enum": ["this_derives_from", "this_is_source_of", "parallel_cognate"],
+            "description": "Directional relationship from THIS record's perspective. this_derives_from = THIS name descends from the related name (Maxwell derives from Maccus). this_is_source_of = THIS name is an ancestor of the related name (Maccus is source of Maxwell). parallel_cognate = both names evolved independently from a shared root (John and Johann are parallel, neither derives from the other)."
+          },
+
+          "attestation_source": {
+            "type": "string",
+            "description": "Citation for the claim that these names are cognates — a dictionary, etymological study, or scholarly reference. The cognate relationship is itself a scholarly claim and needs provenance."
+          },
+
+          "notes": {
+            "type": "string",
+            "description": "Context about the relationship — historical path, any caveats, regional variation in the cognate connection."
+          },
+
+          "contributor": {
+            "type": "object",
+            "description": "Who established this cognate link.",
+            "properties": {
+              "contributor_type": { "type": "string", "enum": ["human", "ai"] },
+              "contributor_name": { "type": "string" },
+              "contributor_id": { "type": "string" },
+              "model_name": { "type": "string" },
+              "model_provider": { "type": "string" },
+              "asserted_at": { "type": "string", "format": "date-time" }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+
+    "contributor": {
+      "type": "object",
+      "description": "Who created or is responsible for this MaxName record overall — the person or system that established the canonical form and the initial variant set.",
+      "required": ["contributor_type"],
+      "properties": {
+        "contributor_type": { "type": "string", "enum": ["human", "ai"] },
+        "contributor_name": { "type": "string" },
+        "contributor_id": { "type": "string" },
+        "profile_url": { "type": "string", "format": "uri" },
+        "model_name": { "type": "string", "description": "AI only." },
+        "model_provider": { "type": "string", "description": "AI only." },
+        "asserted_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+
+    "redistribution_license": {
+      "type": "string",
+      "enum": ["CC0", "CC-BY", "CC-BY-SA", "tier2-private"],
+      "default": "CC-BY",
+      "description": "License governing redistribution of this name record. Name variant data is typically open (CC-BY or CC0). tier2-private is reserved for entries derived from proprietary sources that restrict redistribution."
+    },
+
+    "extensions": {
+      "type": "object",
+      "description": "Product/implementation-specific fields. The core standard never reads these. Use for: FamilySearch variant IDs, Behind the Name identifiers, internal routing metadata, frequency counts from corpus analysis, or any field that is useful to one implementation but not part of the universal standard.",
+      "additionalProperties": true
+    }
+  }
+}

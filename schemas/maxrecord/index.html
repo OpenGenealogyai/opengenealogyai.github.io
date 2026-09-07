@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaxRecord — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MaxRecord is the evidence layer of MAXGEN. It stores one original document, as written, with its people, dates, places, licence and privacy flag.">
+<link rel="canonical" href="https://opengenealogyai.org/schemas/maxrecord/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MaxRecord">
+<meta property="og:description" content="MaxRecord is the evidence layer of MAXGEN. It stores one original document, as written, with its people, dates, places, licence and privacy flag.">
+<meta property="og:url" content="https://opengenealogyai.org/schemas/maxrecord/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxRecord — MAXGEN schema v1.13", "description": "MaxRecord is the evidence layer of MAXGEN. It stores one original document, as written, with its people, dates, places, licence and privacy flag.", "url": "https://opengenealogyai.org/schemas/maxrecord/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/raw-record.schema.json", "encodingFormat": "application/schema+json"}}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v1.13</p>
+  <h1>MaxRecord</h1>
+  <p class="tagline">A source document exactly as it was found. No interpretation added.</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v1/raw-record.schema.json">Download MaxRecord v1.13</a>
+     <a class="btn ghost" href="/versions/">All versions</a>
+     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v1/raw-record.schema.json</code></p>
+</div><h2 id="the-clerk-who-could-not-spell">The clerk who could not spell</h2>
+<p>In 1743 a parish clerk in Dumfriesshire wrote a baptism into his register and spelled the father's surname "Makeswell". The family's name was Maxwell. He was not wrong in any way that matters: he wrote what he heard, in the spelling of his day. Three centuries later a search engine that does not know Makeswell is Maxwell will skip the entry, and a researcher will lose a branch of her family because of a spelling choice made by a man dead for 250 years.</p>
+<p>MaxRecord exists to keep that entry exactly as written. Not corrected. Not normalised. Not interpreted.</p>
+<h2 id="what-it-is">What it is</h2>
+<p>MaxRecord is the <strong>evidence layer</strong>. One MaxRecord is one document: a baptism entry, a census page, a gravestone, a ship manifest, a newspaper notice, a will. It stores what is on the document, who is mentioned, when and where it was made, where the copy came from, and who transcribed it with what confidence.</p>
+<p>What it never does is say what the document <em>means</em>. The record says "Makeswell". Whether Makeswell is Maxwell is an interpretation, and interpretations live in <a href="/schemas/maxperson/">MaxPerson</a>. Keeping the two apart is what lets a future researcher, or a better AI model, look at the original evidence again.</p>
+<h2 id="how-it-is-used">How it is used</h2>
+<ol>
+<li>A document image is transcribed; the who-read-it-and-how details go in a <a href="/schemas/maxrecognition/">MaxRecognition</a> record.</li>
+<li>A MaxRecord is created from that transcription: the type of document, every person named (<code>persons_mentioned[]</code>, with their roles: subject, spouse, witness, officiant…), the date as a range, the place as written, the source URL, the licence.</li>
+<li>Every claim later made in a MaxPerson cites this record's <code>record_id</code>. If the document turns out to be a forgery, the record is retracted with a note. It keeps its ID and its history.</li>
+</ol>
+<h2 id="things-worth-knowing">Things worth knowing</h2>
+<ul>
+<li><strong>Dates are ranges.</strong> <code>year_min</code> / <code>year_max</code> with optional month and day. "Spring 1847" is honest as <code>1847–1847</code> with no month. A precise date that the document does not contain is a lie.</li>
+<li><strong>Places are kept as written</strong>, with optional normalised fields (country code, state, county, town) alongside.</li>
+<li><strong>Everyone on the page is kept</strong>, not just the "principal". Witnesses and neighbours are the social network of the document.</li>
+<li><strong>Licence is mandatory.</strong> <code>redistribution_license</code> is one of CC0, CC-BY, CC-BY-SA, public-domain, or <code>tier2-private</code> (never redistribute). If <code>is_living_flag</code> is true the record is private no matter what.</li>
+<li><strong><code>extensions{}</code></strong> holds source-specific fields (a groom's regiment, a cemetery plot, an archive's own reference) without forking the schema.</li>
+</ul>
+<h2 id="record-types">Record types</h2>
+<p class="enum"><code>birth_certificate</code> <code>death_certificate</code> <code>marriage_certificate</code> <code>census_row</code> <code>parish_register</code> <code>probate_record</code> <code>military_record</code> <code>immigration_record</code> <code>naturalization_record</code> <code>land_deed</code> <code>land_patent</code> <code>gravestone</code> <code>obituary</code> <code>newspaper_article</code> <code>photograph</code> <code>family_bible</code> <code>court_record</code> <code>tax_record</code> <code>wikidata_entity</code> <code>open_library_work</code> <code>dpla_item</code> <code>other</code></p>
+
+<h2 id="fields">Fields</h2>
+<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>record_id</code> <span class="req">required</span></td><td class="type">string</td><td>Globally unique identifier for this record.</td></tr><tr><td><code>schema_version</code> </td><td class="type">const &quot;1.13&quot;</td><td>MAXGEN version this record conforms to.</td></tr><tr><td><code>record_type</code> <span class="req">required</span></td><td class="type">enum</td><td>The type of source document.</td></tr><tr><td><code>redistribution_license</code> <span class="req">required</span></td><td class="type">enum</td><td>Whether this record can be redistributed.</td></tr><tr><td><code>is_living_flag</code> <span class="req">required</span></td><td class="type">boolean</td><td>True if any person in this record may be living.</td></tr><tr><td><code>persons_mentioned</code> </td><td class="type">array of object</td><td>All persons referenced in this document, as written in the source.</td></tr><tr><td><code>alternate_names</code> </td><td class="type">array of string</td><td>Variant spellings or alternate names for persons mentioned, as they appear across multiple documents.</td></tr><tr><td><code>record_date</code> </td><td class="type">object</td><td>Date range of the event recorded.</td></tr><tr><td><code>locations</code> </td><td class="type">array of object</td><td>MAXGEN v1.12 — Places associated with this record.</td></tr><tr><td><code>transcription</code> </td><td class="type">string</td><td>Full text transcription of the document content.</td></tr><tr><td><code>language</code> </td><td class="type">string</td><td>BCP-47 language code of the document (e.g.</td></tr><tr><td><code>image_url</code> </td><td class="type">string</td><td>URL to the scanned image of the original document.</td></tr><tr><td><code>source_url</code> <span class="req">required</span></td><td class="type">string</td><td>Canonical URL of the source (e.g.</td></tr><tr><td><code>digital_object_id</code> </td><td class="type">string</td><td>Persistent identifier such as ARK, DOI, or Internet Archive identifier.</td></tr><tr><td><code>repository</code> </td><td class="type">string</td><td>Name of the archive or repository holding the original document.</td></tr><tr><td><code>collection</code> </td><td class="type">string</td><td>Collection name within the repository.</td></tr><tr><td><code>extraction_confidence</code> <span class="req">required</span></td><td class="type">number</td><td>Confidence that the transcription accurately reflects the original document.</td></tr><tr><td><code>extracted_by</code> </td><td class="type">string</td><td>Agent ID or contributor ID that produced this RawRecord.</td></tr><tr><td><code>extracted_at</code> </td><td class="type">string</td><td>ISO 8601 timestamp of extraction.</td></tr><tr><td><code>sensitive_data_redacted</code> </td><td class="type">boolean</td><td>True if SSNs, medical data, or other sensitive fields were removed.</td></tr><tr><td><code>redaction_notes</code> </td><td class="type">string</td><td>Description of what was redacted and why.</td></tr><tr><td><code>archive_ref</code> </td><td class="type">string</td><td>MAXGEN v1.12 — Local archive path where this record&#x27;s canonical MaxRecord JSON file is stored (e.g.</td></tr><tr><td><code>extensions</code> </td><td class="type">object</td><td>MAXGEN v1.12 — Designated namespace for source-specific fields that don&#x27;t fit the core schema.</td></tr><tr><td><code>attribution</code> </td><td class="type">object</td><td>v1.8 — Credit for the human who originally created, photographed, transcribed, or donated this record.</td></tr></tbody></table></div>
+
+<h2 id="example">Example</h2>
+<p>A marriage certificate, as a MaxRecord. This is one of the fixtures the schema is tested against.</p>
+<pre class="json"><code>{
+  &quot;record_id&quot;: &quot;a1b2c3d4-0003-4000-8000-000000000003&quot;,
+  &quot;schema_version&quot;: &quot;1.13&quot;,
+  &quot;record_type&quot;: &quot;marriage_certificate&quot;,
+  &quot;redistribution_license&quot;: &quot;CC0&quot;,
+  &quot;is_living_flag&quot;: false,
+  &quot;persons_mentioned&quot;: [
+    {
+      &quot;name_as_written&quot;: &quot;Abraham Lincoln&quot;,
+      &quot;role&quot;: &quot;subject&quot;
+    },
+    {
+      &quot;name_as_written&quot;: &quot;Mary Todd&quot;,
+      &quot;role&quot;: &quot;spouse&quot;
+    },
+    {
+      &quot;name_as_written&quot;: &quot;Rev. Charles Dresser&quot;,
+      &quot;role&quot;: &quot;officiant&quot;
+    },
+    {
+      &quot;name_as_written&quot;: &quot;James Matheny&quot;,
+      &quot;role&quot;: &quot;witness&quot;
+    }
+  ],
+  &quot;record_date&quot;: {
+    &quot;year_min&quot;: 1842,
+    &quot;year_max&quot;: 1842,
+    &quot;month&quot;: 11,
+    &quot;day&quot;: 4,
+    &quot;date_type&quot;: &quot;exact&quot;
+  },
+  &quot;transcription&quot;: &quot;Abraham Lincoln and Mary Todd were united in marriage on the 4th day of November 1842 by Rev. Charles Dresser in the presence of James Matheny.&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;source_url&quot;: &quot;https://archive.org/details/illinois-marriage-1842-sangamon&quot;,
+  &quot;extraction_confidence&quot;: 0.97,
+  &quot;extracted_by&quot;: &quot;extractor-agent-haiku-001&quot;,
+  &quot;extracted_at&quot;: &quot;2026-05-01T14:00:00Z&quot;,
+  &quot;sensitive_data_redacted&quot;: false,
+  &quot;locations&quot;: [
+    {
+      &quot;location_type&quot;: &quot;event_location&quot;,
+      &quot;place_as_written&quot;: &quot;Springfield, Illinois&quot;,
+      &quot;country_code&quot;: &quot;US&quot;,
+      &quot;state_province&quot;: &quot;Illinois&quot;,
+      &quot;city_town&quot;: &quot;Springfield&quot;
+    }
+  ]
+}</code></pre>
+
+<h2 id="listen">Listen</h2>
+<div class="episode" id="ep1">
+  <div class="ep-head"><span class="ep-num">Episode 1</span><h3>MaxRecord — Source documents as written</h3><span class="ep-len">25:40</span></div>
+  <p>Evidence versus interpretation, and why the clerk who wrote &#x27;Makeswell&#x27; must never be corrected.</p>
+  <audio controls preload="none" src="https://media.opengenealogyai.org/podcasts/MAXGEN-01-maxrecord.mp3"></audio>
+  <p class="ep-links"><a href="https://media.opengenealogyai.org/podcasts/MAXGEN-01-maxrecord.mp3">Download MP3</a> · <a href="/podcasts/study-guides/MAXGEN-01-maxrecord-StudyGuide/">Study guide</a></p>
+</div><p class="backlink"><a href="/schemas/">← All seven schemas</a></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

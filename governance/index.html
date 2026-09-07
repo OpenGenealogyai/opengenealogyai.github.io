@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Governance — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="Who decides how MAXGEN changes, how to propose a change, and the published path from a single steward to an advisory board.">
+<link rel="canonical" href="https://opengenealogyai.org/governance/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="Governance">
+<meta property="og:description" content="Who decides how MAXGEN changes, how to propose a change, and the published path from a single steward to an advisory board.">
+<meta property="og:url" content="https://opengenealogyai.org/governance/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/" class="active">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<p class="eyebrow">How the standard changes</p>
+<h1 id="governance">Governance</h1>
+<p>MAXGEN is dedicated to the public domain. Anyone can use it, fork it, extend it, or build on it without asking. What is stewarded is the <strong>canonical version</strong>: the one set of files at <code>opengenealogyai.org/schemas/maxgen/</code> that may be called MAXGEN. This page says who decides what goes into it, how, and how that will change as the community grows.</p>
+<blockquote>
+<p>"MAXGEN is open because anyone can use it and build on it. It is not open to fragmentation. One canonical version. One steward. Every change earns its place in the record." — Garlon Maxwell</p>
+</blockquote>
+<h2 id="today-a-steward">Today: a steward</h2>
+<p>The standard's author, Garlon Maxwell, is the steward. The steward has final say on what enters the canonical schemas. Every decision is public, reasoned, and recorded in the <a href="/versions/#changelog">changelog</a>. This is the same arrangement most successful standards began with, including the OpenAPI specification before it moved to a foundation.</p>
+<h2 id="how-to-propose-a-change">How to propose a change</h2>
+<ol>
+<li><strong>Open a GitHub Issue</strong> in the schema repository using the <em>Schema Change Proposal</em> template. It asks four things:<ul>
+<li><strong>Problem</strong>: what real use the current schema fails to support.</li>
+<li><strong>Proposed change</strong>: the new or altered fields, with type and description.</li>
+<li><strong>Backward compatibility</strong>: does any existing valid record become invalid? If so, how would it migrate?</li>
+<li><strong>Examples</strong>: at least one before-and-after JSON snippet.</li>
+</ul>
+</li>
+<li><strong>Open discussion.</strong> Anyone may comment. Minor (additive) changes stay open at least <strong>7 days</strong>; major (breaking) changes at least <strong>30 days</strong>.</li>
+<li><strong>Review.</strong> The steward reads the proposal and the discussion, may ask for more examples, and may put the question to a wider vote.</li>
+<li><strong>Decision with reasons.</strong> Accepted or declined, in writing, on the issue. Nothing merges without explicit sign-off.</li>
+<li><strong>Implementation.</strong> The change is applied to the schema files, fixtures are re-validated, the changelog is written, and a new version is released under the <a href="/versions/">versioning policy</a>.</li>
+</ol>
+<p>Challenges that did <strong>not</strong> lead to a change are logged too. A rule that survived a good argument is worth knowing about.</p>
+<p>If you do not use GitHub, write to <strong>maxgen@opengenealogyai.org</strong> and the steward will open the issue on your behalf.</p>
+<h2 id="tomorrow-an-advisory-board">Tomorrow: an advisory board</h2>
+<p>A standard controlled by one person is a standard institutions hesitate to adopt. The path to shared control is published now so that adopters can see it.</p>
+<p><strong>Trigger.</strong> The board convenes when there are three or more independent implementations of MAXGEN, or when the first institution (an archive, a library, a genealogical society, a software vendor) adopts it, whichever comes first.</p>
+<p><strong>Composition.</strong> Five to seven seats: the steward, working genealogists, developers who have shipped an implementation, and at least one representative of an archive or library. No single company may hold a majority.</p>
+<p><strong>What the board decides.</strong> Major versions, additions to the core schemas, and changes to the normative privacy rules. Extensions need nobody's permission and are never voted on.</p>
+<p><strong>What the steward keeps.</strong> A tie-breaking vote and custody of the name and the canonical address. The steward may be <strong>overruled on a major version by a two-thirds vote</strong>. That clause is the point: it is the guarantee that the standard cannot be held hostage by its author.</p>
+<p><strong>Openness.</strong> Meetings are announced in advance, minutes are published on this site, and every vote is recorded.</p>
+<h2 id="what-the-steward-does-not-control">What the steward does not control</h2>
+<ul>
+<li>Private forks and extensions. Add fields in <code>extensions{}</code> or fork the files outright. No permission needed.</li>
+<li>Tools built on MAXGEN. Commercial or free, open or closed.</li>
+<li>Records you publish in MAXGEN format.</li>
+<li>Proposals. All are welcome and all get an answer.</li>
+</ul>
+<p>What you may not do is call a diverging fork "MAXGEN". The name means the canonical version.</p>
+<h2 id="conflict-of-interest">Conflict of interest</h2>
+<p>The steward's own genealogy platform, The Probable Pedigree, implements MAXGEN. It gets no special treatment: its change requests go through the same public process, and anything specific to its business (pricing, payments, accounts) stays in <code>extensions{}</code> and never enters the standard. The MaxTask schema deliberately contains no payment fields for exactly this reason.</p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

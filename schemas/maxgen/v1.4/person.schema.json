@@ -1,0 +1,511 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opengenealogyai.org/schemas/maxgen/v1/person.schema.json",
+  "title": "MaxPerson",
+  "description": "MAXGEN v1.4 â€” Maxwell Genealogy Standard. A probabilistic individual identity synthesized from one or more MaxRecord source documents. No assertion is ever overwritten; new evidence creates new assertions with confidence scores. Symmetric relationships (parentâ†”child, spouseâ†”spouse) require atomic bidirectional writes â€” see SYNC WARNING annotations. v1.4 adds photo_assertions[] (first-class portraits of the person â€” because a face transforms genealogy from data to story). v1.3 added: merge/dedup provenance (merge_history, duplicate_of, merge_status), event_assertions[], place_registry[], extensions object.",
+  "type": "object",
+  "required": ["person_id", "name_assertions", "asserted_by", "asserted_at"],
+  "properties": {
+    "person_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Globally unique identifier for this person entity."
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.4",
+      "description": "MAXGEN version this record conforms to."
+    },
+    "is_living": {
+      "type": "boolean",
+      "description": "True if this person may be alive. Enforces 404 on all open endpoints.",
+      "default": false
+    },
+    "composite_confidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Aggregate confidence that all assertions in this record refer to the same real individual."
+    },
+    "name_assertions": {
+      "type": "array",
+      "description": "All known names for this person with individual confidence scores. Multiple names handle maiden names, aliases, spelling variants.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name_as_written", "confidence", "source_record_id", "asserted_by", "asserted_at"],
+        "properties": {
+          "name_as_written": { "type": "string" },
+          "given_name": { "type": "string" },
+          "surname": { "type": "string" },
+          "name_type": {
+            "type": "string",
+            "enum": ["birth", "married", "alias", "nickname", "variant_spelling", "unknown"]
+          },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "source_record_id": { "type": "string", "format": "uuid" },
+          "asserted_by": { "type": "string" },
+          "asserted_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "birth_assertions": {
+      "type": "array",
+      "description": "All birth event claims with individual confidence scores.",
+      "items": {
+        "type": "object",
+        "required": ["confidence", "source_record_id", "asserted_by", "asserted_at"],
+        "properties": {
+          "year_min": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+          "year_max": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+          "month": { "type": "integer", "minimum": 1, "maximum": 12 },
+          "day": { "type": "integer", "minimum": 1, "maximum": 31 },
+          "date_type": {
+            "type": "string",
+            "enum": ["exact", "estimated", "calculated", "range"]
+          },
+          "place_as_written": { "type": "string" },
+          "country_code": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "state_province": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "source_record_id": { "type": "string", "format": "uuid" },
+          "asserted_by": { "type": "string" },
+          "asserted_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "death_assertions": {
+      "type": "array",
+      "description": "All death event claims with individual confidence scores.",
+      "items": {
+        "type": "object",
+        "required": ["confidence", "source_record_id", "asserted_by", "asserted_at"],
+        "properties": {
+          "year_min": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+          "year_max": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+          "month": { "type": "integer", "minimum": 1, "maximum": 12 },
+          "day": { "type": "integer", "minimum": 1, "maximum": 31 },
+          "date_type": {
+            "type": "string",
+            "enum": ["exact", "estimated", "calculated", "range"]
+          },
+          "place_as_written": { "type": "string" },
+          "country_code": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "cause_as_written": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "source_record_id": { "type": "string", "format": "uuid" },
+          "asserted_by": { "type": "string" },
+          "asserted_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "parent_assertions": {
+      "type": "array",
+      "description": "All claimed parent relationships. Multiple entries are normal â€” confidence scores express certainty, never forcing a single correct answer. BIDIRECTIONAL SYNC REQUIRED â€” when a parent_assertion is added here referencing parent P, the corresponding child_assertion must be written to P's MaxPerson record atomically. Both writes must succeed or neither should persist.",
+      "items": {
+        "type": "object",
+        "required": ["parent_person_id", "relationship_type", "confidence", "source_record_id", "asserted_by", "asserted_at"],
+        "properties": {
+          "parent_person_id": { "type": "string", "format": "uuid" },
+          "relationship_type": {
+            "type": "string",
+            "enum": ["biological", "adoptive", "step", "foster", "unknown"]
+          },
+          "parent_role": {
+            "type": "string",
+            "enum": ["father", "mother", "unknown"]
+          },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "source_record_id": { "type": "string", "format": "uuid" },
+          "asserted_by": { "type": "string" },
+          "asserted_at": { "type": "string", "format": "date-time" },
+          "conflict_flag": {
+            "type": "boolean",
+            "description": "True if this assertion conflicts with another assertion for the same parent role.",
+            "default": false
+          }
+        }
+      }
+    },
+    "spouse_assertions": {
+      "type": "array",
+      "description": "All claimed spouse relationships. Multiple entries are normal â€” handles serial marriages, polygamy, and conflicting documentary claims. BIDIRECTIONAL SYNC REQUIRED â€” marriage is inherently symmetric: when a spouse_assertion is added to person A referencing spouse B, the matching spouse_assertion must be added to B's MaxPerson record atomically (same marriage_year_min/max, same source_record_id). Both writes must succeed or neither should persist. To represent end of marriage (divorce, annulment, death), add an end_year_min/end_year_max to BOTH sides.",
+      "items": {
+        "type": "object",
+        "required": ["spouse_person_id", "confidence", "source_record_id", "asserted_by", "asserted_at"],
+        "properties": {
+          "spouse_person_id": { "type": "string", "format": "uuid" },
+          "marriage_year_min": { "type": "integer" },
+          "marriage_year_max": { "type": "integer" },
+          "marriage_place_as_written": { "type": "string" },
+          "end_year_min": {
+            "type": "integer",
+            "description": "Year marriage ended (divorce, annulment, or death of spouse). Omit if marriage still in effect at time of last known evidence."
+          },
+          "end_year_max": { "type": "integer" },
+          "end_reason": {
+            "type": "string",
+            "enum": ["divorce", "annulment", "death_of_spouse", "separation", "unknown"]
+          },
+          "relationship_type": {
+            "type": "string",
+            "enum": ["marriage", "civil_union", "domestic_partnership", "common_law", "unknown"],
+            "default": "marriage"
+          },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "source_record_id": { "type": "string", "format": "uuid" },
+          "asserted_by": { "type": "string" },
+          "asserted_at": { "type": "string", "format": "date-time" },
+          "conflict_flag": {
+            "type": "boolean",
+            "description": "True if this assertion conflicts with another assertion for this spouse pair.",
+            "default": false
+          }
+        }
+      }
+    },
+    "gender_assertions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gender_as_written", "confidence", "source_record_id", "asserted_by", "asserted_at"],
+        "properties": {
+          "gender_as_written": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "source_record_id": { "type": "string", "format": "uuid" },
+          "asserted_by": { "type": "string" },
+          "asserted_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "child_assertions": {
+      "type": "array",
+      "description": "All claimed child relationships. BIDIRECTIONAL SYNC REQUIRED â€” when a child_assertion is added here, the corresponding parent_assertion must be written to the child's Person record atomically. Both writes must succeed or neither should persist.",
+      "items": {
+        "type": "object",
+        "required": ["child_person_id", "confidence", "source_record_id", "asserted_by", "asserted_at"],
+        "properties": {
+          "child_person_id": { "type": "string", "format": "uuid" },
+          "relationship_type": {
+            "type": "string",
+            "enum": ["biological", "adoptive", "step", "foster", "unknown"]
+          },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "source_record_id": { "type": "string", "format": "uuid" },
+          "asserted_by": { "type": "string" },
+          "asserted_at": { "type": "string", "format": "date-time" },
+          "conflict_flag": {
+            "type": "boolean",
+            "description": "True if this assertion conflicts with another assertion for this child.",
+            "default": false
+          }
+        }
+      }
+    },
+    "occupation_assertions": {
+      "type": "array",
+      "description": "All known occupations for this person with confidence scores. Used for disambiguation when name and date are insufficient.",
+      "items": {
+        "type": "object",
+        "required": ["occupation_as_written", "confidence", "source_record_id", "asserted_by", "asserted_at"],
+        "properties": {
+          "occupation_as_written": { "type": "string" },
+          "year_min": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+          "year_max": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+          "place_as_written": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "source_record_id": { "type": "string", "format": "uuid" },
+          "asserted_by": { "type": "string" },
+          "asserted_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "external_ids": {
+      "type": "object",
+      "description": "Known identifiers for this person in external systems. Used for cross-source deduplication. Keys are system names (e.g. wikidata_qid, familysearch_pid, findagrave_id, ia_id, ssdi_id); values are the identifier strings. Open-ended to accommodate future sources.",
+      "additionalProperties": { "type": "string" }
+    },
+    "dna_evidence": {
+      "type": "array",
+      "description": "MAXGEN v1.2 â€” DNA chains that touch this person as a candidate MRCA or direct subject. Each entry is independent evidence that other assertions about this person (parents, birth dates) can use for Bayesian confidence boosting via noisy-OR. SYNC WARNING: each entry corresponds to a row in dna_evidence_chains (Postgres derived table). Updates here must keep dna_id references valid; cascades on consent withdrawal.",
+      "items": {
+        "type": "object",
+        "required": ["dna_id_a", "dna_id_b", "shared_cm", "path_length_generations", "likelihood"],
+        "properties": {
+          "dna_id_a": {
+            "type": "string",
+            "format": "uuid",
+            "description": "First MaxDNA record in the matching pair."
+          },
+          "dna_id_b": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Second MaxDNA record in the matching pair."
+          },
+          "shared_cm": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 7000
+          },
+          "path_length_generations": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 12,
+            "description": "Number of generations between the two living testers, summed through this MRCA."
+          },
+          "likelihood": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "description": "P(observed shared_cm | this person is the MRCA at this path length)."
+          },
+          "confidence_delta": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 0.5,
+            "description": "Per-chain boost applied via noisy-OR. Capped at 0.5 to prevent single-chain overconfidence."
+          },
+          "asserted_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "event_assertions": {
+      "type": "array",
+      "description": "MAXGEN v1.3 â€” Long-tail life events beyond the first-class birth/death/marriage assertions. Add a new event_type here rather than bumping the schema for each new event kind. First-class birth/death remain separate because they are the most queried.",
+      "items": {
+        "type": "object",
+        "required": ["event_type", "confidence", "source_record_id", "asserted_by", "asserted_at"],
+        "properties": {
+          "event_type": {
+            "type": "string",
+            "enum": [
+              "baptism", "christening", "confirmation", "bar_bat_mitzvah",
+              "immigration", "emigration", "naturalization", "residence",
+              "census_enumeration", "burial", "cremation", "military_service",
+              "will", "probate", "land_grant", "education", "ordination",
+              "divorce", "other"
+            ]
+          },
+          "event_type_other": {
+            "type": "string",
+            "description": "Free-text label when event_type is 'other'."
+          },
+          "year_min": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+          "year_max": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+          "month": { "type": "integer", "minimum": 1, "maximum": 12 },
+          "day": { "type": "integer", "minimum": 1, "maximum": 31 },
+          "date_type": {
+            "type": "string",
+            "enum": ["exact", "estimated", "calculated", "range"]
+          },
+          "place_as_written": { "type": "string" },
+          "description": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "source_record_id": { "type": "string", "format": "uuid" },
+          "asserted_by": { "type": "string" },
+          "asserted_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "place_registry": {
+      "type": "array",
+      "description": "MAXGEN v1.3 â€” Normalized gazetteer links for places referenced anywhere in this record's assertions. Resolves free-text place_as_written strings to stable IDs WITHOUT modifying each assertion (avoids a mass backfill when gazetteer integration runs later). Handles historical polities ('Austria-Hungary 1880') via historical_polity + valid-year range. Populated during/after gazetteer integration; may be empty.",
+      "items": {
+        "type": "object",
+        "required": ["place_as_written"],
+        "properties": {
+          "place_as_written": {
+            "type": "string",
+            "description": "The exact place string as it appears in assertions; the join key."
+          },
+          "geonames_id": { "type": "string" },
+          "wikidata_qid": { "type": "string", "pattern": "^Q[0-9]+$" },
+          "historical_polity": {
+            "type": "string",
+            "description": "Sovereign entity at the relevant time (e.g. 'Austria-Hungary', 'Kingdom of Prussia', 'Ottoman Empire')."
+          },
+          "modern_country_code": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "valid_from_year": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+          "valid_to_year": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+          "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+          "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+        }
+      }
+    },
+    "merge_status": {
+      "type": "string",
+      "enum": ["active", "merged_away", "split_pending"],
+      "default": "active",
+      "description": "MAXGEN v1.3 â€” Lifecycle state. 'active' = a live distinct entity. 'merged_away' = absorbed into another entity (see duplicate_of); the row is NEVER deleted, preserving append-only history and reversibility. 'split_pending' = flagged for splitting back apart."
+    },
+    "duplicate_of": {
+      "type": "string",
+      "format": "uuid",
+      "description": "MAXGEN v1.3 â€” When merge_status is 'merged_away', the person_id of the surviving entity this one was absorbed into. Null/absent otherwise. Lets queries follow a merged entity to its survivor and lets a merge be reversed."
+    },
+    "merge_history": {
+      "type": "array",
+      "description": "MAXGEN v1.3 â€” Record of entities absorbed INTO this one. A merge is itself a probabilistic assertion: it has confidence, method, author, and timestamp, and is fully reversible. Nothing is destroyed on merge â€” the absorbed entity persists with merge_status='merged_away' and duplicate_of pointing here.",
+      "items": {
+        "type": "object",
+        "required": ["merged_person_id", "merge_confidence", "merge_method", "merged_by", "merged_at"],
+        "properties": {
+          "merged_person_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The entity that was absorbed into this one."
+          },
+          "merge_confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "merge_method": {
+            "type": "string",
+            "enum": ["exact_external_id", "probabilistic_match", "manual", "dna_confirmed"]
+          },
+          "match_signals": {
+            "type": "object",
+            "description": "What drove the match â€” e.g. name_similarity, year_overlap, place_match, shared_external_id. Open-ended for scorer flexibility.",
+            "additionalProperties": true
+          },
+          "merged_by": { "type": "string" },
+          "merged_at": { "type": "string", "format": "date-time" },
+          "reverted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Set when this merge was undone. Presence means the merge is no longer in effect but the history is retained for audit."
+          }
+        }
+      }
+    },
+    "source_record_ids": {
+      "type": "array",
+      "description": "All RawRecord UUIDs that contributed evidence to this Person entity.",
+      "items": { "type": "string", "format": "uuid" }
+    },
+    "extensions": {
+      "type": "object",
+      "description": "MAXGEN v1.3 â€” Designated namespace for experimental or contributor-specific fields. Because the rest of the schema is additionalProperties:false (strict validation), new ideas go here first without a schema bump or Human Gate. Promote proven fields into the formal schema later.",
+      "additionalProperties": true
+    },
+    "photo_assertions": {
+      "type": "array",
+      "description": "MAXGEN v1.4 â€” Photographs OF this person (portraits, snapshots, family photos). NOT photos of gravestones, documents, or records â€” those belong on the relevant MaxRecord. A face makes genealogy come alive, so this is treated as a first-class field, not metadata. Multiple photos allowed; one designated is_primary for chip/card display. Living-person photos inherit tier2-private regardless of declared license. Photo storage follows redistribution_license: CC0/public-domain go to Internet Archive (durable, free); tier2-private stays in the user's private vault.",
+      "items": {
+        "type": "object",
+        "required": ["photo_id", "url", "confidence", "asserted_by", "asserted_at"],
+        "properties": {
+          "photo_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Canonical location of the full-resolution image."
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional smaller version for cards, chips, pedigree nodes."
+          },
+          "storage_tier": {
+            "type": "string",
+            "enum": ["internet_archive", "local_private", "contributor_upload", "external"],
+            "description": "Where the image physically lives. internet_archive = public + durable; local_private = tier2-private vault on this user's storage; contributor_upload = user-hosted; external = third-party URL (volatile â€” copy to durable storage when possible)."
+          },
+          "caption": {
+            "type": "string",
+            "description": "Free-text caption ('Horace at the Glendale homestead, c. 1955')."
+          },
+          "year_min": {
+            "type": "integer",
+            "minimum": 1839,
+            "maximum": 2100,
+            "description": "Earliest plausible year the photo was taken. 1839 = invention of photography."
+          },
+          "year_max": {
+            "type": "integer",
+            "minimum": 1839,
+            "maximum": 2100
+          },
+          "place_as_written": { "type": "string" },
+          "photographer": { "type": "string" },
+          "license": {
+            "type": "string",
+            "enum": ["CC0", "CC-BY", "CC-BY-SA", "public-domain", "tier2-private", "fair-use", "unknown"],
+            "default": "unknown"
+          },
+          "is_primary": {
+            "type": "boolean",
+            "default": false,
+            "description": "Designate ONE photo as the primary profile image. If multiple are set, viewer renders the highest-confidence; tied confidences break by most recent asserted_at."
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "description": "Confidence this is actually a photo of THIS person (not a misidentified cousin, not the wrong John Smith). Same scale as other assertions â€” see CONFIDENCE_CALIBRATION.md."
+          },
+          "subject_role": {
+            "type": "string",
+            "enum": ["solo", "group", "wedding", "family", "military", "occupational", "unknown"],
+            "description": "Photo type. 'group' or 'family' means this person is one of several; UI may auto-crop to face_bounding_box."
+          },
+          "face_bounding_box": {
+            "type": "object",
+            "description": "Optional rectangle around this person's face within the image (normalized 0â€“1 coords). Used for auto-cropping group photos to the subject in cards and pedigree nodes.",
+            "properties": {
+              "x":      { "type": "number", "minimum": 0, "maximum": 1 },
+              "y":      { "type": "number", "minimum": 0, "maximum": 1 },
+              "width":  { "type": "number", "minimum": 0, "maximum": 1 },
+              "height": { "type": "number", "minimum": 0, "maximum": 1 }
+            },
+            "required": ["x", "y", "width", "height"]
+          },
+          "alt_text": {
+            "type": "string",
+            "description": "Accessibility â€” screen-reader description (e.g. 'Black-and-white portrait of an elderly man with a white beard, c. 1890')."
+          },
+          "ia_id": {
+            "type": "string",
+            "description": "Internet Archive identifier when storage_tier=internet_archive (for the canonical, durable URL)."
+          },
+          "source_record_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Optional MaxRecord this photo came from (e.g. an obituary that included a portrait)."
+          },
+          "asserted_by": { "type": "string" },
+          "asserted_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "redistribution_license": {
+      "type": "string",
+      "enum": ["CC0", "CC-BY", "CC-BY-SA", "public-domain", "tier2-private"],
+      "description": "Most restrictive license among all contributing source records."
+    },
+    "asserted_by": {
+      "type": "string",
+      "description": "Agent ID or contributor that created this Person entity."
+    },
+    "asserted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of initial entity creation."
+    },
+    "last_updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "judge_approved": {
+      "type": "boolean",
+      "description": "True if the judge-agent has validated this entity's assertions.",
+      "default": false
+    },
+    "judge_approved_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

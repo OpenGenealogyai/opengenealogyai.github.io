@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaxName — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MaxName is a structured record of one canonical name and all its historical variants, cognates across languages, and phonetic keys, each with provenance, time scope and confidence.">
+<link rel="canonical" href="https://opengenealogyai.org/schemas/maxname/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MaxName">
+<meta property="og:description" content="MaxName is a structured record of one canonical name and all its historical variants, cognates across languages, and phonetic keys, each with provenance, time scope and confidence.">
+<meta property="og:url" content="https://opengenealogyai.org/schemas/maxname/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxName — MAXGEN schema v1.13", "description": "MaxName is a structured record of one canonical name and all its historical variants, cognates across languages, and phonetic keys, each with provenance, time scope and confidence.", "url": "https://opengenealogyai.org/schemas/maxname/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/name.schema.json", "encodingFormat": "application/schema+json"}}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v1.13</p>
+  <h1>MaxName</h1>
+  <p class="tagline">One name, every form it has ever taken, with sources.</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v1/name.schema.json">Download MaxName v1.13</a>
+     <a class="btn ghost" href="/versions/">All versions</a>
+     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v1/name.schema.json</code></p>
+</div><h2 id="why-maxwell-and-makeswell-are-the-same-family">Why Maxwell and Makeswell are the same family</h2>
+<p>Search a Scottish record set for "Maxwell" and you will not find Makeswell, Maccuswell, M'Axwell, McAxwell or Maxwel, though every one of them is the same name written by a different clerk in a different decade. The problem is bigger than spelling. Ó Briain became O'Brien when colonial administrators wrote it down. Müller became Miller on the far side of the Atlantic. Yochanan became Iohannes became Jean became John became Ivan.</p>
+<p>No open standard captured this before. We checked GEDCOM X, WeRelate, Behind the Name, JRC-Names, the Library of Congress name authority, VIAF, schema.org, HistNorm and Popolo. None records typed, directed, sourced name relationships across languages, scripts, places and centuries. MaxName fills that gap.</p>
+<h2 id="what-it-is">What it is</h2>
+<p>One MaxName record is one <strong>canonical form</strong> (the modern reference spelling) plus everything known about how that name has been written and adapted.</p>
+<ul>
+<li><strong><code>regional_canonical[]</code></strong>: the preferred form in other communities. "John" carries Seán, Eoin, Ioan, Johann. None is more real than another.</li>
+<li><strong><code>variants[]</code></strong>: every known form, each with its own UUID (so it can be cited or retracted on its own), the text exactly as it appears in records, a <strong>type</strong> (spelling variant, nickname, anglicisation, latinisation, abbreviation, scribal corruption, phonetic rendering, emigration adaptation, translation, patronymic form, legal substitution…), its <strong>scope</strong> (place, language, script, period), a <strong>frequency</strong> (rare, occasional, common, dominant), an <strong>attestation source</strong>, a confidence, and <code>disputed_by[]</code> for scholars who disagree.</li>
+<li><strong><code>cognates[]</code></strong>: links to other MaxName records across languages, with a relationship type (etymological root, cross-language cognate, derivative, contracted form) and a <strong>direction</strong>: Maxwell <em>derives from</em> Maccus; John and Ivan are <em>parallel cognates</em> of Iohannes. Every link cites its source.</li>
+<li><strong><code>phonetic_keys{}</code></strong>: pre-computed codes for fuzzy search under six algorithms (Soundex, NYSIIS, Metaphone, Double Metaphone, Daitch-Mokotoff, Beider-Morse), each with its algorithm version so a code computed in 2026 can be reconciled with one computed in 2040.</li>
+</ul>
+<h2 id="two-pass-cognates-new-in-v113">Two-pass cognates (new in v1.13)</h2>
+<p>Cognate relationships are discovered while researching the first name, before a record for the second exists. A cognate may therefore be recorded <strong>unresolved</strong>, carrying only <code>related_canonical_form</code> ("John"), and later <strong>resolved</strong> by a linking pass that adds the <code>related_name_id</code>. Both states are valid; a cognate pointing at nothing is not.</p>
+<h2 id="the-maxwell-example">The Maxwell example</h2>
+<p>Canonical form Maxwell, a surname of Old Norse origin: Maccus's pool, first attested about 1144. Variants: <em>Maccuswell</em> (Latin charters, 1144 to 1300, dominant), <em>Makeswell</em> (Scots parish registers, 1600 to 1750, occasional), <em>M'Axwell</em> (an abbreviation, 1700s to 1800s), <em>McAxwell</em> (Virginia colonial records, rare, with one scholar disputing whether it is corruption or anglicisation). Phonetic keys Soundex M240, Daitch-Mokotoff 645400. One cognate: <em>derives from</em> Maccus, citing Reaney's Dictionary of English Surnames. With that record, a search for Makeswell finds Maxwell, and a transcription of Maccuswell from a twelfth-century charter lands in the right family.</p>
+<h2 id="variant-types">Variant types</h2>
+
+
+<h2 id="fields">Fields</h2>
+<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>name_id</code> <span class="req">required</span></td><td class="type">string</td><td>Globally unique identifier for this name record.</td></tr><tr><td><code>schema_version</code> <span class="req">required</span></td><td class="type">const &quot;1.13&quot;</td><td>MAXGEN lockstep version.</td></tr><tr><td><code>canonical_form</code> <span class="req">required</span></td><td class="type">string</td><td>The modern authoritative spelling of this name — the form used as the anchor for all variants.</td></tr><tr><td><code>canonical_script</code> </td><td class="type">enum</td><td>Writing system of canonical_form.</td></tr><tr><td><code>regional_canonical</code> </td><td class="type">array of object</td><td>Language-specific preferred forms of this name for regions where the canonical_form is not the local preferred form.</td></tr><tr><td><code>name_type</code> <span class="req">required</span></td><td class="type">enum</td><td>Structural category of this name.</td></tr><tr><td><code>gender</code> </td><td class="type">enum</td><td>Gender association of this name in its canonical culture.</td></tr><tr><td><code>language_of_origin</code> </td><td class="type">string</td><td>ISO 639-3 code of the language from which this name ultimately derives.</td></tr><tr><td><code>etymology</code> </td><td class="type">string</td><td>Free-text explanation of the name&#x27;s origins and meaning.</td></tr><tr><td><code>see_also_urls</code> </td><td class="type">array of string</td><td>Links to authoritative external references — Behind the Name, Dictionary of the Scots Language, LCNAF authority record, Wiktionary etymology, etc.</td></tr><tr><td><code>variants</code> </td><td class="type">array of object</td><td>All known variant forms of this name — spelling variants, nicknames, anglicizations, scribal corruptions, dialectal forms, and emigration adaptations.</td></tr><tr><td><code>phonetic_keys</code> </td><td class="type">object</td><td>Pre-computed phonetic encodings of canonical_form for fuzzy search.</td></tr><tr><td><code>cognates</code> </td><td class="type">array of object</td><td>Cross-language equivalents — names in other languages that are etymologically related to or culturally equivalent to this name.</td></tr><tr><td><code>contributor</code> </td><td class="type">object</td><td>Who created or is responsible for this MaxName record overall — the person or system that established the canonical form and the initial variant set.</td></tr><tr><td><code>redistribution_license</code> </td><td class="type">enum</td><td>License governing redistribution of this name record.</td></tr><tr><td><code>extensions</code> </td><td class="type">object</td><td>Product/implementation-specific fields.</td></tr></tbody></table></div>
+
+<h2 id="example">Example</h2>
+<p>Seán, the Irish form of John, with an anglicisation, an older spelling, and an unresolved cognate link.</p>
+<pre class="json"><code>{
+  &quot;name_id&quot;: &quot;e1f2a3b4-c5d6-4789-9abc-de0123456789&quot;,
+  &quot;schema_version&quot;: &quot;1.13&quot;,
+  &quot;canonical_form&quot;: &quot;Seán&quot;,
+  &quot;canonical_script&quot;: &quot;latin&quot;,
+  &quot;name_type&quot;: &quot;given&quot;,
+  &quot;gender&quot;: &quot;masculine&quot;,
+  &quot;language_of_origin&quot;: &quot;sga&quot;,
+  &quot;etymology&quot;: &quot;Seán is the Irish form of John, borrowed from the Anglo-Norman Jehan rather than directly from the Latin Iohannes. Norman French speakers arriving in Ireland from the twelfth century brought Jehan with them; Irish speakers adapted it to their own sound system as Seán. The name therefore sits one step further along the chain than most European forms of John — it descends from a French intermediary, not from the Latin original, which is why it looks so unlike Johannes while meaning exactly the same thing.&quot;,
+  &quot;regional_canonical&quot;: [
+    {
+      &quot;form&quot;: &quot;Seán&quot;,
+      &quot;language&quot;: &quot;ga&quot;,
+      &quot;locale&quot;: &quot;IE&quot;,
+      &quot;notes&quot;: &quot;Standard modern Irish spelling with the síneadh fada on the a.&quot;
+    },
+    {
+      &quot;form&quot;: &quot;Eoin&quot;,
+      &quot;language&quot;: &quot;ga&quot;,
+      &quot;locale&quot;: &quot;IE&quot;,
+      &quot;notes&quot;: &quot;A separate Irish form of John taken directly from the Latin Iohannes rather than via Norman French. Eoin and Seán coexist in Irish; Eoin is conventionally used for the biblical John.&quot;
+    }
+  ],
+  &quot;variants&quot;: [
+    {
+      &quot;variant_id&quot;: &quot;f2a3b4c5-d6e7-4890-abcd-ef1234567890&quot;,
+      &quot;variant_text&quot;: &quot;Shane&quot;,
+      &quot;variant_type&quot;: &quot;anglicization&quot;,
+      &quot;locale&quot;: &quot;IE&quot;,
+      &quot;language&quot;: &quot;en&quot;,
+      &quot;script&quot;: &quot;latin&quot;,
+      &quot;period_start&quot;: 1600,
+      &quot;frequency&quot;: &quot;common&quot;,
+      &quot;attestation_source&quot;: &quot;Ó Corráin &amp; Maguire, Irish Names (1981), entry for Seán.&quot;,
+      &quot;notes&quot;: &quot;Phonetic English respelling of Seán, which later became an independent given name in its own right in the anglophone world.&quot;,
+      &quot;confidence&quot;: 0.97
+    },
+    {
+      &quot;variant_id&quot;: &quot;a3b4c5d6-e7f8-4901-bcde-f01234567891&quot;,
+      &quot;variant_text&quot;: &quot;Seaán&quot;,
+      &quot;variant_type&quot;: &quot;spelling_variant&quot;,
+      &quot;locale&quot;: &quot;IE&quot;,
+      &quot;language&quot;: &quot;ga&quot;,
+      &quot;script&quot;: &quot;latin&quot;,
+      &quot;period_start&quot;: 1400,
+      &quot;period_end&quot;: 1900,
+      &quot;frequency&quot;: &quot;occasional&quot;,
+      &quot;attestation_source&quot;: &quot;Ó Corráin &amp; Maguire, Irish Names (1981), entry for Seán.&quot;,
+      &quot;notes&quot;: &quot;Older Irish orthography, superseded by the modern standardised spelling.&quot;,
+      &quot;confidence&quot;: 0.93
+    }
+  ],
+  &quot;phonetic_keys&quot;: {
+    &quot;soundex&quot;: {
+      &quot;value&quot;: &quot;S500&quot;,
+      &quot;algorithm_version&quot;: &quot;american-1918&quot;
+    },
+    &quot;metaphone&quot;: {
+      &quot;value&quot;: &quot;SN&quot;,
+      &quot;algorithm_version&quot;: &quot;jellyfish-1.x&quot;
+    }
+  },
+  &quot;cognates&quot;: [
+    {
+      &quot;cognate_id&quot;: &quot;b4c5d6e7-f8a9-4012-cdef-012345678902&quot;,
+      &quot;related_canonical_form&quot;: &quot;John&quot;,
+      &quot;relationship_type&quot;: &quot;cross_language_cognate&quot;,
+      &quot;direction&quot;: &quot;parallel_cognate&quot;,
+      &quot;attestation_source&quot;: &quot;Ó Corráin &amp; Maguire, Irish Names (1981); Withycombe, Oxford Dictionary of English Christian Names (3rd ed. 1977).&quot;,
+      &quot;notes&quot;: &quot;MAXGEN v1.13 UNRESOLVED COGNATE — this link was recorded during first-pass research, before a MaxName record for &#x27;John&#x27; existed. It carries related_canonical_form but no related_name_id, which the schema permits from v1.13 onward. A later linking pass resolves the UUID. Under v1.12 this fact could not be stored at all and would have been discarded.&quot;,
+      &quot;contributor&quot;: {
+        &quot;contributor_type&quot;: &quot;ai&quot;,
+        &quot;contributor_id&quot;: &quot;maxname-worker-1&quot;,
+        &quot;asserted_at&quot;: &quot;2026-08-14T00:00:00Z&quot;
+      }
+    },
+    {
+      &quot;cognate_id&quot;: &quot;c5d6e7f8-a9b0-4123-def0-123456789013&quot;,
+      &quot;related_canonical_form&quot;: &quot;Jehan&quot;,
+      &quot;relationship_type&quot;: &quot;etymological_root&quot;,
+      &quot;direction&quot;: &quot;this_derives_from&quot;,
+      &quot;attestation_source&quot;: &quot;Ó Corráin &amp; Maguire, Irish Names (1981), entry for Seán.&quot;,
+      &quot;notes&quot;: &quot;Anglo-Norman intermediary. Also unresolved — recorded by canonical form only.&quot;,
+      &quot;contributor&quot;: {
+        &quot;contributor_type&quot;: &quot;ai&quot;,
+        &quot;contributor_id&quot;: &quot;maxname-worker-1&quot;,
+        &quot;asserted_at&quot;: &quot;2026-08-14T00:00:00Z&quot;
+      }
+    },
+    {
+      &quot;cognate_id&quot;: &quot;d6e7f8a9-b0c1-4234-ef01-234567890124&quot;,
+      &quot;related_name_id&quot;: &quot;a1b2c3d4-e5f6-4789-abcd-ef0123456789&quot;,
+      &quot;related_canonical_form&quot;: &quot;Eoin&quot;,
+      &quot;relationship_type&quot;: &quot;cross_language_cognate&quot;,
+      &quot;direction&quot;: &quot;parallel_cognate&quot;,
+      &quot;attestation_source&quot;: &quot;Ó Corráin &amp; Maguire, Irish Names (1981).&quot;,
+      &quot;notes&quot;: &quot;RESOLVED COGNATE — carries both the UUID and the readable form. This is the end state a linking pass produces.&quot;,
+      &quot;contributor&quot;: {
+        &quot;contributor_type&quot;: &quot;ai&quot;,
+        &quot;contributor_id&quot;: &quot;maxname-linker&quot;,
+        &quot;asserted_at&quot;: &quot;2026-08-14T00:00:00Z&quot;
+      }
+    }
+  ],
+  &quot;redistribution_license&quot;: &quot;CC-BY&quot;,
+  &quot;contributor&quot;: {
+    &quot;contributor_type&quot;: &quot;ai&quot;,
+    &quot;contributor_id&quot;: &quot;maxname-worker-1&quot;,
+    &quot;asserted_at&quot;: &quot;2026-08-14T00:00:00Z&quot;
+  }
+}</code></pre>
+
+<h2 id="listen">Listen</h2>
+<div class="episode" id="ep7">
+  <div class="ep-head"><span class="ep-num">Episode 7</span><h3>MaxName — Why Maxwell and Makeswell are the same family</h3><span class="ep-len">23:31</span></div>
+  <p>Variants, cognates, phonetic keys, and the council design process behind the newest schema.</p>
+  <audio controls preload="none" src="https://media.opengenealogyai.org/podcasts/MAXGEN-07-maxname.mp3"></audio>
+  <p class="ep-links"><a href="https://media.opengenealogyai.org/podcasts/MAXGEN-07-maxname.mp3">Download MP3</a> · <a href="/podcasts/study-guides/MAXGEN-07-maxname-StudyGuide/">Study guide</a></p>
+</div><p class="backlink"><a href="/schemas/">← All seven schemas</a></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

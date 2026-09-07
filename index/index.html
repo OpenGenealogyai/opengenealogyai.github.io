@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAXGEN — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MAXGEN is an open, public-domain data standard for genealogy that treats uncertainty as data. Seven JSON schemas, explained in plain English and in podcasts.">
+<link rel="canonical" href="https://opengenealogyai.org/index/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MAXGEN">
+<meta property="og:description" content="MAXGEN is an open, public-domain data standard for genealogy that treats uncertainty as data. Seven JSON schemas, explained in plain English and in podcasts.">
+<meta property="og:url" content="https://opengenealogyai.org/index/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="hero">
+<div>
+<p class="eyebrow">An open standard · public domain · current release v1.13</p>
+<h1>Genealogy data that is honest about what it doesn't know.</h1>
+<p class="lede">MAXGEN is a free, open data standard for family history. Every fact carries its source and a confidence score. Conflicting evidence is kept, not deleted. Anyone can use it, build on it, or extend it. No permission required.</p>
+<div class="doors">
+<a href="/standard/"><strong>Read</strong><span>What the standard is and why it exists</span></a>
+<a href="/podcasts/"><strong>Listen</strong><span>Eight podcast episodes, one per schema</span></a>
+<a href="/schemas/"><strong>Download</strong><span>The seven schema files, every version</span></a>
+</div>
+</div>
+<img class="hero-logo" src="/assets/img/logo-transparent.svg" alt="The OpenGenealogyAI star-tree logo: a tree of stars growing from a single bright star." width="340" height="240">
+</div>
+
+<h2 id="the-problem-it-solves">The problem it solves</h2>
+<p>Genealogy has never had more to work with. Close to two billion records are online, archives scan more every year, volunteers transcribe registers by the million, and DNA testing has added a whole new kind of evidence. The formats we exchange that work in were designed for a simpler time: one birth year, one birthplace, one set of parents, written down as settled fact. Real family history rarely arrives that clean. A census says 1843; a gravestone says 1844. A father could be one of three men with the same name.</p>
+<p>MAXGEN writes the doubt down. It stores <strong>what the document says</strong> separately from <strong>what we think it means</strong>, keeps every claim with its source and a 0-to-1 confidence score, and never overwrites anything. Several possible parents can coexist until the evidence resolves them. Every uncertainty becomes a lead worth chasing instead of a dead end, and as each new source corroborates a name or a date you watch the confidence climb. People can read it, researchers can check it, and AI can work with it without inventing anything, because confidence is a machine's native language.</p>
+<p>MAXGEN is built to sit alongside the archives, record sites, and communities researchers already rely on, not to replace them. It is a shared language they can all speak. Every ancestor. Every source. Every honest doubt.</p>
+<h2 id="the-seven-schemas">The seven schemas</h2>
+<p>A schema is a written rule-set that says exactly what fields a record has and what each one means, so that any program can read a record written by any other program. MAXGEN has seven, and each has its own page and its own podcast episode.</p>
+<!--CARDS-->
+
+<h2 id="three-promises">Three promises</h2>
+<ol>
+<li><strong>Nothing is ever deleted.</strong> A retracted claim gets a retraction note; it does not vanish. The audit trail is permanent.</li>
+<li><strong>Living people are protected by the schema itself.</strong> A record about a person who may be alive is locked private no matter what any application does.</li>
+<li><strong>Old records stay readable forever.</strong> Within a major version, fields are never renamed or removed. See the <a href="/versions/">versioning policy</a>.</li>
+</ol>
+<h2 id="who-it-is-for">Who it is for</h2>
+<ul>
+<li><strong>Developers</strong> building genealogy tools or AI agents: seven JSON Schema files at stable addresses, a changelog, fixtures, and a <a href="/validator/">validator</a> that runs in your browser.</li>
+<li><strong>Genealogists and archivists</strong> deciding whether to trust it: the <a href="/standard/">plain-English guide</a>, the <a href="/faq/">FAQ</a>, and the <a href="/podcasts/">podcasts</a>.</li>
+<li><strong>Institutions</strong> who need to know how it is governed before adopting it: the <a href="/governance/">governance page</a> and the <a href="/license/">licence</a>.</li>
+</ul>
+<p class="muted">MAXGEN is short for the Maxwell Genealogy Standard, named for its author, Garlon Maxwell. It is stewarded by OpenGenealogyAI and dedicated to the public domain.</p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

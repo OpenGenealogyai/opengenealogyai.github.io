@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaxTask — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MaxTask describes a unit of distributed genealogy work: what to do, who may do it, what counts as done, and what evidence must come back.">
+<link rel="canonical" href="https://opengenealogyai.org/schemas/maxtask/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MaxTask">
+<meta property="og:description" content="MaxTask describes a unit of distributed genealogy work: what to do, who may do it, what counts as done, and what evidence must come back.">
+<meta property="og:url" content="https://opengenealogyai.org/schemas/maxtask/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/ogai-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/ogai-logo.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxTask — MAXGEN schema v1.13", "description": "MaxTask describes a unit of distributed genealogy work: what to do, who may do it, what counts as done, and what evidence must come back.", "url": "https://opengenealogyai.org/schemas/maxtask/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/task-queue.schema.json", "encodingFormat": "application/schema+json"}}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span>MAXGEN<small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v1.13</p>
+  <h1>MaxTask</h1>
+  <p class="tagline">A unit of research work for a human or an AI, with proof required.</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v1/task-queue.schema.json">Download MaxTask v1.13</a>
+     <a class="btn ghost" href="/versions/">All versions</a>
+     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v1/task-queue.schema.json</code></p>
+</div><h2 id="the-work-is-irreducibly-distributed">The work is irreducibly distributed</h2>
+<p>The UK National Archives holds eleven million documents. The US National Archives holds thirteen billion pages. No organisation, model, or volunteer community can process all of it. Genealogical research will always be done by millions of people and machines in parallel, over decades. MaxTask is the standard way to describe one piece of that work.</p>
+<h2 id="what-it-is">What it is</h2>
+<p>A task is a request: "transcribe this image", "decide whether the Johann Müller in record X is the John Miller in record Y", "search the Württemberg emigration lists for Müllers who left between 1840 and 1860", "resolve these two contradictory birth years". A task can go to an AI agent, a volunteer, or a specialist organisation. It can carry a cost cap, a deadline, dependencies on other tasks, and a review step before its result is accepted.</p>
+<h2 id="what-makes-it-different">What makes it different</h2>
+<ul>
+<li><strong>Acceptance criteria</strong> (<code>acceptance_criteria[]</code>): objective, checkable conditions that define "done" before work starts.</li>
+<li><strong>Evidence required</strong> (<code>evidence_required[]</code>): the anti-hallucination rule. A task that needs a birth record must return a link to the birth record. A search must return the exact query and what it found. An AI cannot pass by producing plausible text.</li>
+<li><strong>A structured result</strong>, not a text blob: what was tested, what was done, what was found, what changed, what to do next. Each step carries a <strong>verdict</strong>:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Verdict</th>
+<th>Colour</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key_finding</code></td>
+<td>green</td>
+<td>Confirmed.</td>
+</tr>
+<tr>
+<td><code>usable</code></td>
+<td>blue</td>
+<td>A useful lead.</td>
+</tr>
+<tr>
+<td><code>inconclusive</code></td>
+<td>amber</td>
+<td>Mixed.</td>
+</tr>
+<tr>
+<td><code>ruled_out</code></td>
+<td>red</td>
+<td>Definitively disproved. A disproof is information, not a dead end.</td>
+</tr>
+<tr>
+<td><code>dead_end</code></td>
+<td>grey</td>
+<td>Searched, found nothing.</td>
+</tr>
+<tr>
+<td><code>infra</code></td>
+<td>grey</td>
+<td>Infrastructure work.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>An independent review</strong> (<code>review{}</code>): the reviewer must not be the contributor. Rejection reasons include <code>fabricated_or_hallucinated</code> and <code>privacy_violation</code>, which build a quality signal over time.</li>
+<li><strong>A privacy gate</strong> (<code>contributor_eligibility</code>): defaults to <code>first_party_only</code>. Any task about a living person can never be sent to outside volunteers or third-party AI services. This rule is part of the standard.</li>
+</ul>
+<h2 id="what-is-deliberately-not-in-it">What is deliberately not in it</h2>
+<p>Payment. An open standard must be neutral on business models. Who gets paid, how much, and how lives in <code>extensions{}</code>, so the standard describes the work and the quality gate while each implementation decides the economics.</p>
+<h2 id="task-types">Task types</h2>
+<p class="enum"><code>extract_record</code> <code>validate_record</code> <code>merge_person</code> <code>judge_review</code> <code>resolve_conflict</code> <code>ingest_to_qdrant</code> <code>build_tree</code> <code>fetch_internet_archive</code> <code>cost_report</code> <code>other</code></p>
+
+<h2 id="fields">Fields</h2>
+<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>task_id</code> <span class="req">required</span></td><td class="type">string</td><td>Globally unique task identifier.</td></tr><tr><td><code>schema_version</code> </td><td class="type">const &quot;1.13&quot;</td><td></td></tr><tr><td><code>task_type</code> <span class="req">required</span></td><td class="type">enum</td><td>Category of work to be performed.</td></tr><tr><td><code>status</code> <span class="req">required</span></td><td class="type">enum</td><td>Current lifecycle state.</td></tr><tr><td><code>priority</code> </td><td class="type">integer</td><td>1=lowest, 10=highest.</td></tr><tr><td><code>payload</code> </td><td class="type">object</td><td>Task-specific input data.</td></tr><tr><td><code>result</code> </td><td class="type">object</td><td>MAXGEN v1.5 — structured, client-readable task output set by the consuming agent on completion.</td></tr><tr><td><code>assigned_to</code> </td><td class="type">string</td><td>Agent ID currently processing this task.</td></tr><tr><td><code>cost_usd</code> </td><td class="type">number</td><td>Actual API cost incurred by the processing agent.</td></tr><tr><td><code>cost_cap_usd</code> </td><td class="type">number</td><td>Maximum allowed cost for this task.</td></tr><tr><td><code>retry_count</code> </td><td class="type">integer</td><td>Number of times this task has been retried after failure.</td></tr><tr><td><code>max_retries</code> </td><td class="type">integer</td><td></td></tr><tr><td><code>error_message</code> </td><td class="type">string</td><td>Error description if status is failed or escalated.</td></tr><tr><td><code>escalation_reason</code> </td><td class="type">string</td><td>Why this task was escalated to the Opus conflict resolver.</td></tr><tr><td><code>created_at</code> <span class="req">required</span></td><td class="type">string</td><td></td></tr><tr><td><code>created_by</code> <span class="req">required</span></td><td class="type">string</td><td>Agent ID that created this task.</td></tr><tr><td><code>started_at</code> </td><td class="type">string</td><td></td></tr><tr><td><code>completed_at</code> </td><td class="type">string</td><td></td></tr><tr><td><code>queue_file_path</code> </td><td class="type">string</td><td>Filesystem path in the file-based queue (inbox/processing/done/failed).</td></tr><tr><td><code>depends_on</code> </td><td class="type">array of string</td><td>Task IDs that must be in status=done before this task can start.</td></tr><tr><td><code>parent_task_id</code> </td><td class="type">string</td><td>MAXGEN v1.5 — the directive/goal task this task was spawned from.</td></tr><tr><td><code>acceptance_criteria</code> </td><td class="type">array of string</td><td>MAXGEN v1.5 — objective, checkable conditions defining a COMPLETE, payable result.</td></tr><tr><td><code>min_confidence</code> </td><td class="type">number</td><td>MAXGEN v1.5 — minimum result.confidence required for acceptance.</td></tr><tr><td><code>evidence_required</code> </td><td class="type">array of string</td><td>MAXGEN v1.5 — proof the worker MUST return (source URLs, exact queries, citations).</td></tr><tr><td><code>contributor_eligibility</code> </td><td class="type">enum</td><td>MAXGEN v1.5 PRIVACY GATE — who may be assigned this task.</td></tr><tr><td><code>contributor</code> </td><td class="type">object</td><td>MAXGEN v1.5 — who claimed/performed this task.</td></tr><tr><td><code>deadline</code> </td><td class="type">string</td><td></td></tr><tr><td><code>review</code> </td><td class="type">object</td><td>MAXGEN v1.5 — independent quality review BEFORE payment; the gate against poor work.</td></tr><tr><td><code>extensions</code> </td><td class="type">object</td><td>MAXGEN v1.5 — open namespace for implementer/product-specific fields that are intentionally NOT part of the neutral standard.</td></tr></tbody></table></div>
+
+<h2 id="example">Example</h2>
+<p>A conflict-resolution task escalated to a stronger model because two candidate mothers were within 0.05 of each other.</p>
+<pre class="json"><code>{
+  &quot;task_id&quot;: &quot;c1000000-0016-4000-8000-000000000016&quot;,
+  &quot;schema_version&quot;: &quot;1.13&quot;,
+  &quot;task_type&quot;: &quot;resolve_conflict&quot;,
+  &quot;status&quot;: &quot;done&quot;,
+  &quot;priority&quot;: 9,
+  &quot;payload&quot;: {
+    &quot;person_id&quot;: &quot;b1000000-0012-4000-8000-000000000012&quot;
+  },
+  &quot;result&quot;: {
+    &quot;resolution&quot;: &quot;adoptive_mother_confirmed&quot;,
+    &quot;winning_parent_id&quot;: &quot;b1000000-0030-4000-8000-000000000030&quot;,
+    &quot;confidence&quot;: 0.72
+  },
+  &quot;assigned_to&quot;: &quot;opus-conflict-resolver&quot;,
+  &quot;cost_usd&quot;: 4.2,
+  &quot;cost_cap_usd&quot;: 5.0,
+  &quot;retry_count&quot;: 0,
+  &quot;max_retries&quot;: 1,
+  &quot;escalation_reason&quot;: &quot;Conflicting biological vs adoptive mother with confidence gap 0.05&quot;,
+  &quot;created_at&quot;: &quot;2026-05-04T15:00:00Z&quot;,
+  &quot;created_by&quot;: &quot;judge-agent-sonnet-001&quot;,
+  &quot;started_at&quot;: &quot;2026-05-04T15:10:00Z&quot;,
+  &quot;completed_at&quot;: &quot;2026-05-04T15:45:00Z&quot;
+}</code></pre>
+
+<h2 id="listen">Listen</h2>
+<div class="episode" id="ep3">
+  <div class="ep-head"><span class="ep-num">Episode 3</span><h3>MaxTask — Distributing the work</h3><span class="ep-len">24:29</span></div>
+  <p>Task types, the verdict vocabulary, acceptance criteria, and the anti-hallucination rule.</p>
+  <audio controls preload="none" src="https://media.opengenealogyai.org/podcasts/MAXGEN-03-maxtask.mp3"></audio>
+  <p class="ep-links"><a href="https://media.opengenealogyai.org/podcasts/MAXGEN-03-maxtask.mp3">Download MP3</a> · <a href="/podcasts/study-guides/MAXGEN-03-maxtask-StudyGuide/">Study guide</a></p>
+</div><p class="backlink"><a href="/schemas/">← All seven schemas</a></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

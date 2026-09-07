@@ -1,0 +1,132 @@
+{
+  "standard": "MAXGEN",
+  "current": "1.13",
+  "canonical_base": "https://opengenealogyai.org/schemas/maxgen/v1/",
+  "versions": [
+    {
+      "version": "1.13",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna",
+        "source",
+        "recognition",
+        "name"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.13/"
+    },
+    {
+      "version": "1.12",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna",
+        "source",
+        "recognition",
+        "name"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.12/"
+    },
+    {
+      "version": "1.11",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna",
+        "source",
+        "recognition",
+        "name"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.11/"
+    },
+    {
+      "version": "1.10",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna",
+        "source",
+        "recognition"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.10/"
+    },
+    {
+      "version": "1.9",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna",
+        "source",
+        "recognition"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.9/"
+    },
+    {
+      "version": "1.8",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna",
+        "source"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.8/"
+    },
+    {
+      "version": "1.7",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna",
+        "source"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.7/"
+    },
+    {
+      "version": "1.6",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.6/"
+    },
+    {
+      "version": "1.5",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.5/"
+    },
+    {
+      "version": "1.4",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.4/"
+    },
+    {
+      "version": "1.3",
+      "schemas": [
+        "raw-record",
+        "person",
+        "task-queue",
+        "dna"
+      ],
+      "url": "https://opengenealogyai.org/schemas/maxgen/v1.3/"
+    }
+  ]
+}

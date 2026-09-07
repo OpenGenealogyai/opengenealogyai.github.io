@@ -1,0 +1,304 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://opengenealogyai.org/schemas/recognition/1.10",
+  "title": "MaxRecognition",
+  "description": "Provenance record for an OCR or HTR transcription of a genealogical document image. Captures who or what produced the text, how, when, and at what confidence. Multiple MaxRecognition records can be linked via consensus_group_id so the matching engine can compute cross-run consensus confidence — independent runs that agree raise the score; uncertain characters lower it.",
+  "type": "object",
+  "required": [
+    "recognition_id",
+    "schema_version",
+    "recognition_type",
+    "image_url",
+    "output_text",
+    "processing_date",
+    "contributor"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "recognition_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for this transcription run."
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.12",
+      "description": "MAXGEN lockstep version."
+    },
+    "recognition_type": {
+      "type": "string",
+      "enum": ["ocr", "htr"],
+      "description": "ocr = printed or typed text; htr = handwritten text."
+    },
+    "image_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the document image that was transcribed."
+    },
+    "raw_record_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Optional: links back to the MaxRecord this transcription belongs to."
+    },
+    "output_text": {
+      "type": "string",
+      "description": "Full transcribed text produced by this run. May be plain text or a JSON-encoded string (e.g. a serialized array of structured line or word records) — the field type is string in both cases. AI contributors typically return structured JSON; plain text is valid for any contributor type."
+    },
+    "processing_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of when this transcription was produced."
+    },
+    "language": {
+      "type": "string",
+      "description": "ISO 639-1 code of the document language (e.g. 'de', 'la', 'en')."
+    },
+
+    "contributor": {
+      "type": "object",
+      "description": "Who or what produced this transcription. Human and AI contributors share the same object shape — contributor_type is the discriminator.",
+      "required": ["contributor_type"],
+      "if": {
+        "properties": { "contributor_type": { "const": "human" } }
+      },
+      "then": {
+        "required": ["contributor_name"]
+      },
+      "else": {
+        "required": ["model_name", "model_provider"]
+      },
+      "properties": {
+        "contributor_type": {
+          "type": "string",
+          "enum": ["human", "ai"]
+        },
+
+        "contributor_name": {
+          "type": "string",
+          "description": "Human: full name. AI: display name (e.g. 'Claude Sonnet 4.6')."
+        },
+        "contributor_id": {
+          "type": "string",
+          "description": "Human: OGAI user ID, WikiTree ID, etc. AI: model slug."
+        },
+        "profile_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Human: link to contributor profile. AI: model card URL."
+        },
+
+        "credentials": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Human: certifications and self-described specialties (e.g. ['CG', 'AG', 'Kurrent specialist']). AI: leave empty."
+        },
+        "specialty_scripts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "latin_cursive", "kurrent", "gothic_fraktur", "secretary_hand",
+              "arabic", "cyrillic", "hebrew", "chinese", "other"
+            ]
+          },
+          "description": "Human: handwriting scripts the contributor is trained to read."
+        },
+        "specialty_languages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Human: ISO 639-1 codes of languages the contributor reads fluently."
+        },
+        "specialty_regions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Human: geographic/archival specialties (e.g. ['Bavaria', 'County Cork', 'New England'])."
+        },
+        "records_transcribed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Human: cumulative count of records this contributor has transcribed — reputation signal for confidence weighting."
+        },
+        "training_notes": {
+          "type": "string",
+          "description": "Human: free text — courses taken, collections completed, self-described expertise. AI: fine-tuning notes."
+        },
+
+        "model_name": {
+          "type": "string",
+          "description": "AI: model identifier (e.g. 'claude-sonnet-4-6', 'tesseract-5.3', 'transkribus-htransformer')."
+        },
+        "model_version": {
+          "type": "string",
+          "description": "AI: specific version string if the model_name alone is ambiguous."
+        },
+        "model_provider": {
+          "type": "string",
+          "description": "AI: organization that provides the model (e.g. 'Anthropic', 'READ-COOP', 'Google', 'tesseract-ocr')."
+        },
+        "model_type": {
+          "type": "string",
+          "enum": ["llm_vision", "transformer", "cnn_lstm", "rule_based", "hybrid"],
+          "description": "AI: architecture family."
+        },
+
+        "prompt": {
+          "type": "object",
+          "description": "AI (LLM-based runs): the exact prompt used. Store verbatim so results are reproducible.",
+          "properties": {
+            "system_prompt": { "type": "string" },
+            "user_prompt":   { "type": "string" },
+            "temperature":   { "type": "number", "minimum": 0, "maximum": 2 }
+          },
+          "additionalProperties": false
+        },
+
+        "fine_tuning": {
+          "type": "object",
+          "description": "AI: populated only when the model was fine-tuned for this task.",
+          "properties": {
+            "was_fine_tuned":  { "type": "boolean" },
+            "base_model":      { "type": "string", "description": "Model that was fine-tuned from." },
+            "dataset_name":    { "type": "string", "description": "e.g. 'IAM Handwriting Database', 'Transkribus Bentham Collection'." },
+            "dataset_url":     { "type": "string", "format": "uri" },
+            "training_date":   { "type": "string", "format": "date" },
+            "training_notes":  { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Overall transcription confidence 0.0–1.0, self-reported by the contributor. AI models derive this from token log-probabilities; humans estimate from legibility and expertise."
+    },
+
+    "word_confidences": {
+      "type": "array",
+      "description": "Per-word confidence breakdown. Include whenever the contributor can provide it — this is the primary signal for cross-run consensus and for flagging uncertain readings to reviewers.",
+      "items": {
+        "type": "object",
+        "required": ["word", "confidence"],
+        "properties": {
+          "word": {
+            "type": "string",
+            "description": "The word as transcribed."
+          },
+          "char_offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Character position of this word in output_text."
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "reading_type": {
+            "type": "string",
+            "enum": ["observed", "inferred_context", "inferred_pattern", "partial_read"],
+            "description": "How this word was produced. observed = directly read from the image. inferred_context = logically filled in from surrounding entries (e.g. same column, same register page). inferred_pattern = filled in from known naming/place conventions. partial_read = some characters clearly read, remainder inferred. Omitting this field implies observed."
+          },
+          "inference_notes": {
+            "type": "string",
+            "description": "Required when reading_type is anything other than observed. Explain the basis for the inference — e.g. '5 of 6 surrounding entries in this column read Maxwell; characters 4-7 are water-damaged and unreadable.' This is the audit trail that lets a future AI or human judge whether the inference was sound."
+          },
+          "alternatives": {
+            "type": "array",
+            "description": "Other readings the contributor considered, with their relative probabilities. Enables reviewers and downstream models to see what was uncertain.",
+            "items": {
+              "type": "object",
+              "required": ["text", "confidence"],
+              "properties": {
+                "text":       { "type": "string" },
+                "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "character_error_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "CER measured against a ground-truth reference, if available."
+    },
+    "word_error_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "WER measured against a ground-truth reference, if available."
+    },
+
+    "consensus_group_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Groups multiple independent transcriptions of the same image. The matching engine uses this to compute aggregate confidence — independent runs that agree boost the score; disagreements flag the word for review."
+    },
+    "is_independent": {
+      "type": "boolean",
+      "description": "True if this run was performed blind to other transcriptions in the same consensus_group. Prevents double-counting correlated runs when computing consensus."
+    },
+
+    "is_human_reviewed": {
+      "type": "boolean",
+      "description": "True if a human has reviewed and approved the output."
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["unreviewed", "in_review", "approved", "rejected"],
+      "default": "unreviewed"
+    },
+
+    "redistribution_license": {
+      "type": "string",
+      "enum": ["CC0", "CC-BY", "CC-BY-SA", "tier2-private", "all_rights_reserved"],
+      "description": "License for this transcription output. tier2-private = never republish (e.g. if the source image is rights-restricted)."
+    },
+
+    "font_type": {
+      "type": "string",
+      "enum": ["serif", "sans_serif", "typewriter", "printed_script", "mixed", "unknown"],
+      "description": "OCR only: dominant font type in the document."
+    },
+    "scan_dpi": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "OCR only: scan resolution in dots per inch. Affects OCR accuracy."
+    },
+
+    "script_type": {
+      "type": "string",
+      "enum": [
+        "latin_cursive", "kurrent", "gothic_fraktur", "secretary_hand",
+        "arabic", "cyrillic", "hebrew", "chinese", "mixed", "other"
+      ],
+      "description": "HTR only: handwriting script family of the document."
+    },
+    "approx_century": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 2100,
+      "description": "HTR only: approximate century of the handwriting expressed as the century's start year (e.g. 1800 = 19th century). Helps route to the right HTR model."
+    },
+
+    "searchable_variants": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "All possible full-text spellings this record should be findable under — including uncertain readings, alternative spellings, and normalized forms. Populated by the contributor at submission time or by a post-processing normalizer. If omitted, search engines fall back to output_text only. Example: a record where 'Maxwell' vs 'Maxweil' is uncertain would include both. Enables search to find the record under any plausible spelling without duplicating the record."
+    },
+
+    "extensions": {
+      "type": "object",
+      "description": "Product/implementation-specific fields. Core standard never reads these. Put billing, routing, batch IDs, etc. here.",
+      "additionalProperties": true
+    }
+  }
+}
