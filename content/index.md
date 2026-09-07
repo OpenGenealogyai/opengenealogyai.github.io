@@ -4,9 +4,8 @@ description: MAXGEN is an open, public-domain data standard for genealogy that t
 ---
 <div class="hero">
 <div>
-<p class="wordmark wordmark-lg">Maxwell Genealogy Standard</p>
-<div class="chain" aria-hidden="true"><span class="link"></span><span class="link"></span><span class="link"></span><span class="link"></span><span class="link"></span><span class="link"></span><span class="link"></span></div>
-<p class="eyebrow">MAXGEN · an open standard · public domain · current release v<!--CURRENT--></p>
+<img class="hero-lockup" src="/assets/img/logo/maxgen-horizontal-parchment.svg" alt="MAXGEN — Maxwell Genealogy Standard" width="540" height="204">
+<p class="eyebrow">An open standard · public domain · current release v<!--CURRENT--></p>
 <h1>Genealogy data that is honest about what it doesn't know.</h1>
 <p class="lede">MAXGEN is a free, open data standard for family history. Every fact carries its source and a confidence score. Conflicting evidence is kept, not deleted. Anyone can use it, build on it, or extend it. No permission required.</p>
 <div class="doors">

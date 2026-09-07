@@ -147,6 +147,13 @@ details p { margin: 0.5rem 0; }
 .brand-text small { font-family: var(--font-sans); font-weight: 400; font-size: 0.68rem; letter-spacing: 0.08em; color: var(--gold-muted); text-transform: uppercase; margin-top: 0.15rem; }
 @media (max-width: 760px) { .wordmark-sm { font-size: 0.9rem; letter-spacing: 0.06em; } }
 
+/* final lockup (6H) in header and hero */
+.brand img.lockup { height: 64px; width: auto; display: block; }
+.brand-text small { margin-top: 0; }
+.hero-lockup { display: block; width: min(100%, 540px); height: auto; margin: 0 0 0.6rem -8px; }
+@media (max-width: 760px) { .brand img.lockup { height: 48px; } .hero-lockup { width: 100%; margin-left: 0; } }
+.site-header .wrap { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+
 /* chain-link motif */
 .chain { display: flex; align-items: center; gap: 3px; margin: 0.5rem 0 1rem; }
 .chain .link { width: 16px; height: 9px; border: 2px solid; border-color: #c8922a #7a5010 #7a5010 #c8922a; border-radius: 50%; background: linear-gradient(135deg, #e8c040, #7a5010); opacity: 0.9; }

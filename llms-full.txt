@@ -5,9 +5,7 @@
 ---
 ## MAXGEN
 
-Maxwell Genealogy Standard
-
-MAXGEN · an open standard · public domain · current release v1.13
+An open standard · public domain · current release v1.13
 Genealogy data that is honest about what it doesn't know.
 MAXGEN is a free, open data standard for family history. Every fact carries its source and a confidence score. Conflicting evidence is kept, not deleted. Anyone can use it, build on it, or extend it. No permission required.
 

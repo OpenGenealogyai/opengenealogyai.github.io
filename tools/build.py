@@ -99,7 +99,7 @@ ORG_JSONLD = {
     "@id": f"{BASE_URL}/#org",
     "name": "OpenGenealogyAI",
     "url": BASE_URL + "/",
-    "logo": f"{BASE_URL}/assets/img/ogai-logo.png",
+    "logo": f"{BASE_URL}/assets/img/logo/maxgen-icon-dark-512.png",
     "sameAs": ["https://github.com/OpenGenealogyai"],
     "description": "Steward of MAXGEN, the open, public-domain genealogy data standard.",
 }
@@ -151,11 +151,15 @@ def layout(title: str, body: str, active: str = "", description: str = "", extra
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}">
-<meta property="og:image" content="{BASE_URL}/assets/img/ogai-logo.png">
+<meta property="og:image" content="{BASE_URL}/assets/img/logo/maxgen-og-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-<link rel="icon" href="/assets/img/logo-transparent.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/img/logo/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/assets/img/logo/maxgen-icon-dark.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/logo/favicon-180.png">
 <link rel="stylesheet" href="/assets/css/site.css">
 <link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
 {ld}
@@ -165,7 +169,7 @@ def layout(title: str, body: str, active: str = "", description: str = "", extra
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/"><img src="/assets/img/logo-transparent.svg" alt="" width="40" height="40"><span class="brand-text"><span class="wordmark wordmark-sm">Maxwell Genealogy Standard</span><small>MAXGEN · by OpenGenealogyAI</small></span></a>
+    <a class="brand" href="/"><img class="lockup" src="/assets/img/logo/maxgen-horizontal-dark.svg" alt="MAXGEN — Maxwell Genealogy Standard" width="180" height="68"><span class="brand-text"><small>by OpenGenealogyAI</small></span></a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
     <nav id="nav" class="nav">{nav}<a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
   </div>
