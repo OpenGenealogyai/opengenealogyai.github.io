@@ -261,7 +261,10 @@ def build_podcasts() -> None:
           layout("Podcasts", body, "/podcasts/", intro_meta.get("description", ""), path="/podcasts/", ld=jsonld(ORG_JSONLD, series, *eps)))
 
     # study guides
+    published = {s for _, s, *_ in EPISODES}
     for f in sorted(AUDIO_SRC.glob("*-StudyGuide.md")):
+        if f.stem.replace("-StudyGuide", "") not in published:
+            continue  # superseded recording (e.g. MaxPerson v1) — not linked from the site
         text = f.read_text(encoding="utf-8")
         text = re.sub(r"\bCC-BY\b", "CC0", text)  # guides were written before the licence wording was settled
         name = f.stem
@@ -321,6 +324,9 @@ def build_versions() -> None:
              f"<tbody>{''.join(rows)}</tbody></table></div>")
     changelog = CHANGELOG.read_text(encoding="utf-8")
     changelog = changelog.split("\n", 1)[1]  # drop the H1
+    # Relative links inside the changelog point at files in the schema repo's docs/ folder.
+    changelog = re.sub(r"\]\((?!https?://|/)([A-Za-z0-9_./-]+\.md)\)",
+                       r"](https://github.com/OpenGenealogyai/opengenealogyai/blob/main/docs/\1)", changelog)
     body = md(intro).replace("<!--CURRENT-->", CURRENT).replace("<!--VERSIONS-->", table) + "<h2 id=\"changelog\">Changelog</h2>" + md(changelog)
     write(SITE / "versions" / "index.html", layout("Versions", body, "/versions/", meta.get("description", ""), path="/versions/", ld=jsonld(ORG_JSONLD)))
 

@@ -17,7 +17,7 @@
     <guid isPermaLink="false">maxgen-podcast-0</guid>
     <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-00-overview-all-schemas.mp3" length="41730483" type="audio/mpeg"/>
     <itunes:duration>21:37</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:10:27 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 07:11:05 +0000</pubDate>
   </item>
   <item>
     <title>MaxRecord — Source documents as written</title>
@@ -26,7 +26,7 @@
     <guid isPermaLink="false">maxgen-podcast-1</guid>
     <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-01-maxrecord.mp3" length="49556371" type="audio/mpeg"/>
     <itunes:duration>25:40</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:10:27 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 07:11:05 +0000</pubDate>
   </item>
   <item>
     <title>MaxPerson — The person who might be your ancestor</title>
@@ -35,7 +35,7 @@
     <guid isPermaLink="false">maxgen-podcast-2</guid>
     <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-02-maxperson-v2.mp3" length="43958964" type="audio/mpeg"/>
     <itunes:duration>22:46</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:10:27 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 07:11:05 +0000</pubDate>
   </item>
   <item>
     <title>MaxTask — Distributing the work</title>
@@ -44,7 +44,7 @@
     <guid isPermaLink="false">maxgen-podcast-3</guid>
     <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-03-maxtask.mp3" length="47286056" type="audio/mpeg"/>
     <itunes:duration>24:29</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:10:27 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 07:11:05 +0000</pubDate>
   </item>
   <item>
     <title>MaxDNA — Genetic evidence without giving up privacy</title>
@@ -53,7 +53,7 @@
     <guid isPermaLink="false">maxgen-podcast-4</guid>
     <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-04-maxdna.mp3" length="45161413" type="audio/mpeg"/>
     <itunes:duration>23:23</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:10:27 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 07:11:05 +0000</pubDate>
   </item>
   <item>
     <title>MaxSource — The routing brain</title>
@@ -62,7 +62,7 @@
     <guid isPermaLink="false">maxgen-podcast-5</guid>
     <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-05-maxsource.mp3" length="35269268" type="audio/mpeg"/>
     <itunes:duration>18:16</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:10:27 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 07:11:05 +0000</pubDate>
   </item>
   <item>
     <title>MaxRecognition — Teaching machines to read</title>
@@ -71,7 +71,7 @@
     <guid isPermaLink="false">maxgen-podcast-6</guid>
     <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-06-maxrecognition.mp3" length="48937591" type="audio/mpeg"/>
     <itunes:duration>25:21</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:10:27 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 07:11:05 +0000</pubDate>
   </item>
   <item>
     <title>MaxName — Why Maxwell and Makeswell are the same family</title>
@@ -80,7 +80,7 @@
     <guid isPermaLink="false">maxgen-podcast-7</guid>
     <enclosure url="https://media.opengenealogyai.org/podcasts/MAXGEN-07-maxname.mp3" length="45419257" type="audio/mpeg"/>
     <itunes:duration>23:31</itunes:duration>
-    <pubDate>Mon, 07 Sep 2026 07:10:27 +0000</pubDate>
+    <pubDate>Mon, 07 Sep 2026 07:11:05 +0000</pubDate>
   </item>
 </channel>
 </rss>
