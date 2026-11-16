@@ -16,7 +16,11 @@
     return fetch("/schemas/maxgen/v1/" + name + ".schema.json").then(function (r) {
       if (!r.ok) throw new Error("Could not load schema (" + r.status + ")");
       return r.json();
-    }).then(function (s) { cache[name] = s; return s; });
+    }).then(function (s) {
+      // MaxName and MaxRecognition 1.13 name an older draft in $schema; the 2020-12 engine reads their keywords the same way.
+      delete s.$schema;
+      cache[name] = s; return s;
+    });
   }
 
   btn.addEventListener("click", function () {

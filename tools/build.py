@@ -432,7 +432,7 @@ def faq_ld(body_html: str) -> dict:
 # ---------------------------------------------------------------- plain pages
 def build_pages() -> None:
     for f in sorted(CONTENT.glob("*.md")):
-        if f.stem in {"podcasts", "versions", "schemas-index", "changelog-v1"}:
+        if f.stem in {"podcasts", "versions", "schemas-index", "changelog-v1", "index"}:   # index.md is the home page (build_home)
             continue
         meta, text = front_matter(f.read_text(encoding="utf-8"))
         out = meta.get("out", f"{f.stem}/index.html")
@@ -496,9 +496,17 @@ def main() -> None:
     build_podcasts()
     build_versions()
     build_llms_txt(pages)
+    # /index/ was a duplicate of the home page (with its own canonical) until 2026-11-16; now it redirects home.
+    write(SITE / "index" / "index.html", f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>MAXGEN — OpenGenealogyAI</title>
+<link rel="canonical" href="{BASE_URL}/"><meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0; url=/"></head>
+<body><p>This page moved to <a href="/">the home page</a>.</p></body></html>
+""")
     # sitemap
     urls = sorted({"/" + str(p.relative_to(SITE)).replace("\\", "/").replace("index.html", "")
                    for p in SITE.rglob("index.html") if ".git" not in p.parts})
+    urls = [u for u in urls if u != "/index/"]   # /index/ only redirects to the home page
     sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + \
          "".join(f"  <url><loc>{BASE_URL}{u}</loc></url>\n" for u in urls) + "</urlset>\n"
     write(SITE / "sitemap.xml", sm)
