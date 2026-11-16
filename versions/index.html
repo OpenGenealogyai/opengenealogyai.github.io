@@ -35,7 +35,7 @@
   </div>
 </header>
 <main id="main" class="wrap">
-<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc"><ul><li class="lvl2"><a href="#how-versions-work">How versions work</a></li><li class="lvl2"><a href="#the-stability-promise">The stability promise</a></li><li class="lvl2"><a href="#permanent-addresses">Permanent addresses</a></li><li class="lvl2"><a href="#release-ritual">Release ritual</a></li><li class="lvl2"><a href="#changelog">Changelog</a></li><li class="lvl2"><a href="#versioning-policy-2x-is-additive-only-as-of-v20">Versioning policy — 2.x is additive only (as of v2.0)</a></li><li class="lvl2"><a href="#v20-2026-10-16">v2.0 — 2026-10-16</a></li><li class="lvl3"><a href="#what-breaks-from-1x">What breaks from 1.x</a></li><li class="lvl3"><a href="#across-every-schema-in-maxgen-defsschemajson">Across every schema (in maxgen-defs.schema.json)</a></li><li class="lvl3"><a href="#maxperson-personschemajson">MaxPerson (person.schema.json)</a></li><li class="lvl3"><a href="#maxrecord-raw-recordschemajson">MaxRecord (raw-record.schema.json)</a></li><li class="lvl3"><a href="#maxrelationship-relationshipschemajson-new">MaxRelationship (relationship.schema.json) — new</a></li><li class="lvl3"><a href="#maxtask-task-queueschemajson">MaxTask (task-queue.schema.json)</a></li><li class="lvl3"><a href="#maxsource-sourceschemajson">MaxSource (source.schema.json)</a></li><li class="lvl3"><a href="#maxplace-placeschemajson-new">MaxPlace (place.schema.json) — new</a></li><li class="lvl3"><a href="#maxgroup-groupschemajson-new">MaxGroup (group.schema.json) — new</a></li><li class="lvl3"><a href="#maxevent-eventschemajson-new">MaxEvent (event.schema.json) — new</a></li><li class="lvl3"><a href="#maxname-nameschemajson">MaxName (name.schema.json)</a></li><li class="lvl3"><a href="#maxrecognition-recognitionschemajson">MaxRecognition (recognition.schema.json)</a></li><li class="lvl3"><a href="#maxdna-dnaschemajson">MaxDNA (dna.schema.json)</a></li><li class="lvl3"><a href="#verification">Verification</a></li><li class="lvl2"><a href="#v113-2026-08-14">v1.13 — 2026-08-14</a></li><li class="lvl3"><a href="#maxname-nameschemajson-cognates-become-two-pass">MaxName (name.schema.json) — cognates become two-pass</a></li><li class="lvl3"><a href="#housekeeping-version-stamp-drift-corrected">Housekeeping — version-stamp drift corrected</a></li><li class="lvl3"><a href="#unchanged-in-v113">Unchanged in v1.13</a></li><li class="lvl3"><a href="#verification_1">Verification</a></li><li class="lvl2"><a href="#v112-2026-08-14">v1.12 — 2026-08-14</a></li><li class="lvl3"><a href="#maxperson-expanded-relationship-vocabulary-time-bounded-gender-records">MaxPerson — expanded relationship vocabulary + time-bounded gender records</a></li><li class="lvl3"><a href="#maxsource-sub-collection-linking-record-count-as-core-field">MaxSource — sub-collection linking + record count as core field</a></li><li class="lvl3"><a href="#maxrecord-extensions-archive_ref-locations-array">MaxRecord — extensions{}, archive_ref, locations[] array</a></li><li class="lvl3"><a href="#all-schemas">All schemas</a></li><li class="lvl2"><a href="#v111-2026-07-26">v1.11 — 2026-07-26</a></li><li class="lvl3"><a href="#maxname-new-schema-schemasnameschemajson">MaxName — new schema (schemas/name.schema.json)</a></li><li class="lvl3"><a href="#all-other-schemas-const-bump-only">All other schemas (const bump only)</a></li><li class="lvl3"><a href="#archive">Archive</a></li><li class="lvl2"><a href="#v110-2026-07-01">v1.10 — 2026-07-01</a></li><li class="lvl3"><a href="#maxrecognition-probabilistic-transcription-fields">MaxRecognition — probabilistic transcription fields</a></li><li class="lvl3"><a href="#all-other-schemas-const-bump-only_1">All other schemas (const bump only)</a></li><li class="lvl2"><a href="#v19-2026-07-01">v1.9 — 2026-07-01</a></li><li class="lvl3"><a href="#new-schema-maxrecognition-schemasrecognitionschemajson">New schema: MaxRecognition (schemas/recognition.schema.json)</a></li><li class="lvl3"><a href="#all-other-schemas-const-bump-only_2">All other schemas (const bump only)</a></li><li class="lvl3"><a href="#fixtures-added">Fixtures added</a></li><li class="lvl2"><a href="#v18-2026-06-25">v1.8 — 2026-06-25</a></li><li class="lvl3"><a href="#attribution-object-added-in-three-places">attribution{} object — added in three places</a></li><li class="lvl2"><a href="#v17-2026-06-25">v1.7 — 2026-06-25</a></li><li class="lvl3"><a href="#maxsource-new-schema-the-5th-maxgen-schema">MaxSource — new schema (the 5th MAXGEN schema)</a></li><li class="lvl3"><a href="#council-fixes-applied-geminis-design-objection">Council fixes applied (Gemini's design objection)</a></li><li class="lvl3"><a href="#note-on-cyndis-list-recorded-not-resolved-by-the-standard">Note on Cyndi's List (recorded, not resolved by the standard)</a></li><li class="lvl2"><a href="#v16-2026-06-02">v1.6 — 2026-06-02</a></li><li class="lvl3"><a href="#maxperson-external_id_assertions-new">MaxPerson — external_id_assertions[] (new)</a></li><li class="lvl3"><a href="#external_ids-existing-now-a-denormalized-mirror">external_ids (existing) → now a denormalized mirror</a></li><li class="lvl3"><a href="#privacy-guardrail-normative-required-by-council-before-publish">PRIVACY GUARDRAIL (normative — required by council before publish)</a></li><li class="lvl3"><a href="#lockstep-fixtures">Lockstep + fixtures</a></li><li class="lvl2"><a href="#v15-2026-06-02">v1.5 — 2026-06-02</a></li><li class="lvl3"><a href="#maxtask-structured-result-replaces-the-free-form-blob">MaxTask — structured result (replaces the free-form blob)</a></li><li class="lvl3"><a href="#maxtask-verdict-enum-ui-colors-new-defsverdict">MaxTask — verdict enum + UI colors (new $defs/verdict)</a></li><li class="lvl3"><a href="#maxtask-neutral-contributor-quality-fields-in-the-standard">MaxTask — neutral contributor / quality fields (IN the standard)</a></li><li class="lvl3"><a href="#maxtask-contributor_eligibility-privacy-gate-in-the-standard">MaxTask — contributor_eligibility PRIVACY GATE (IN the standard)</a></li><li class="lvl3"><a href="#paymenteconomics-are-deliberately-not-in-the-standard">Payment/economics are DELIBERATELY NOT in the standard</a></li><li class="lvl3"><a href="#lockstep-version-bump-no-content-change">Lockstep version bump (no content change)</a></li><li class="lvl3"><a href="#fixtures">Fixtures</a></li><li class="lvl2"><a href="#v14-addendum-2026-06-02-no-schema-version-bump">v1.4 addendum — 2026-06-02 (NO schema version bump)</a></li><li class="lvl3"><a href="#migration-life-events-live-in-event_assertions-do-not-add-a-vital_events-table">Migration &amp; life events live in event_assertions[] — do NOT add a vital_events table</a></li><li class="lvl3"><a href="#bio_summary-a-per-person-hover-biography-via-extensions-not-a-core-field">bio_summary — a per-person hover biography (via extensions, not a core field)</a></li><li class="lvl3"><a href="#postgres-portal-mirror-migration-002_events_placessql">Postgres / portal mirror — migration 002_events_places.sql</a></li><li class="lvl3"><a href="#privacy-repo-invariant-reaffirmed">Privacy / repo invariant (reaffirmed)</a></li><li class="lvl2"><a href="#v14-2026-05-17">v1.4 — 2026-05-17</a></li><li class="lvl3"><a href="#maxperson">MaxPerson</a></li><li class="lvl3"><a href="#lockstep-version-bump-no-content-change_1">Lockstep version bump (no content change)</a></li><li class="lvl3"><a href="#fixtures_1">Fixtures</a></li><li class="lvl2"><a href="#v13-2026-05-17">v1.3 — 2026-05-17</a></li><li class="lvl3"><a href="#maxperson_1">MaxPerson</a></li><li class="lvl3"><a href="#maxrecord-maxtask-maxdna">MaxRecord, MaxTask, MaxDNA</a></li><li class="lvl3"><a href="#tooling">Tooling</a></li><li class="lvl3"><a href="#companion-docs">Companion docs</a></li><li class="lvl3"><a href="#deferred-to-later-work-not-in-v13">Deferred to later work (not in v1.3)</a></li><li class="lvl2"><a href="#v12-2026-05-15">v1.2 — 2026-05-15</a></li><li class="lvl3"><a href="#naming">Naming</a></li><li class="lvl3"><a href="#maxdna-new-schema">MaxDNA (new schema)</a></li><li class="lvl3"><a href="#maxperson_2">MaxPerson</a></li><li class="lvl2"><a href="#v11-pre-2026-05-15">v1.1 — (pre-2026-05-15)</a></li><li class="lvl3"><a href="#maxperson_3">MaxPerson</a></li><li class="lvl3"><a href="#maxrecord">MaxRecord</a></li><li class="lvl2"><a href="#v10-initial-release">v1.0 — initial release</a></li><li class="lvl2"><a href="#schema-id-urls-permanent">Schema $id URLs (permanent)</a></li></ul></div></aside><div class="content"><p class="eyebrow">Releases · current v1.13</p>
+<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc"><ul><li class="lvl2"><a href="#how-versions-work">How versions work</a></li><li class="lvl2"><a href="#the-stability-promise">The stability promise</a></li><li class="lvl2"><a href="#permanent-addresses">Permanent addresses</a></li><li class="lvl2"><a href="#release-ritual">Release ritual</a></li><li class="lvl2"><a href="#changelog">Changelog</a></li><li class="lvl2"><a href="#versioning-policy-lockstep-as-of-v13">Versioning policy — LOCKSTEP (as of v1.3)</a></li><li class="lvl2"><a href="#v113-2026-08-14">v1.13 — 2026-08-14</a></li><li class="lvl3"><a href="#maxname-nameschemajson-cognates-become-two-pass">MaxName (name.schema.json) — cognates become two-pass</a></li><li class="lvl3"><a href="#housekeeping-version-stamp-drift-corrected">Housekeeping — version-stamp drift corrected</a></li><li class="lvl3"><a href="#unchanged-in-v113">Unchanged in v1.13</a></li><li class="lvl3"><a href="#verification">Verification</a></li><li class="lvl2"><a href="#v112-2026-08-14">v1.12 — 2026-08-14</a></li><li class="lvl3"><a href="#maxperson-expanded-relationship-vocabulary-time-bounded-gender-records">MaxPerson — expanded relationship vocabulary + time-bounded gender records</a></li><li class="lvl3"><a href="#maxsource-sub-collection-linking-record-count-as-core-field">MaxSource — sub-collection linking + record count as core field</a></li><li class="lvl3"><a href="#maxrecord-extensions-archive_ref-locations-array">MaxRecord — extensions{}, archive_ref, locations[] array</a></li><li class="lvl3"><a href="#all-schemas">All schemas</a></li><li class="lvl2"><a href="#v111-2026-07-26">v1.11 — 2026-07-26</a></li><li class="lvl3"><a href="#maxname-new-schema-schemasnameschemajson">MaxName — new schema (schemas/name.schema.json)</a></li><li class="lvl3"><a href="#all-other-schemas-const-bump-only">All other schemas (const bump only)</a></li><li class="lvl3"><a href="#archive">Archive</a></li><li class="lvl2"><a href="#v110-2026-07-01">v1.10 — 2026-07-01</a></li><li class="lvl3"><a href="#maxrecognition-probabilistic-transcription-fields">MaxRecognition — probabilistic transcription fields</a></li><li class="lvl3"><a href="#all-other-schemas-const-bump-only_1">All other schemas (const bump only)</a></li><li class="lvl2"><a href="#v19-2026-07-01">v1.9 — 2026-07-01</a></li><li class="lvl3"><a href="#new-schema-maxrecognition-schemasrecognitionschemajson">New schema: MaxRecognition (schemas/recognition.schema.json)</a></li><li class="lvl3"><a href="#all-other-schemas-const-bump-only_2">All other schemas (const bump only)</a></li><li class="lvl3"><a href="#fixtures-added">Fixtures added</a></li><li class="lvl2"><a href="#v18-2026-06-25">v1.8 — 2026-06-25</a></li><li class="lvl3"><a href="#attribution-object-added-in-three-places">attribution{} object — added in three places</a></li><li class="lvl2"><a href="#v17-2026-06-25">v1.7 — 2026-06-25</a></li><li class="lvl3"><a href="#maxsource-new-schema-the-5th-maxgen-schema">MaxSource — new schema (the 5th MAXGEN schema)</a></li><li class="lvl3"><a href="#council-fixes-applied-geminis-design-objection">Council fixes applied (Gemini's design objection)</a></li><li class="lvl3"><a href="#note-on-cyndis-list-recorded-not-resolved-by-the-standard">Note on Cyndi's List (recorded, not resolved by the standard)</a></li><li class="lvl2"><a href="#v16-2026-06-02">v1.6 — 2026-06-02</a></li><li class="lvl3"><a href="#maxperson-external_id_assertions-new">MaxPerson — external_id_assertions[] (new)</a></li><li class="lvl3"><a href="#external_ids-existing-now-a-denormalized-mirror">external_ids (existing) → now a denormalized mirror</a></li><li class="lvl3"><a href="#privacy-guardrail-normative-required-by-council-before-publish">PRIVACY GUARDRAIL (normative — required by council before publish)</a></li><li class="lvl3"><a href="#lockstep-fixtures">Lockstep + fixtures</a></li><li class="lvl2"><a href="#v15-2026-06-02">v1.5 — 2026-06-02</a></li><li class="lvl3"><a href="#maxtask-structured-result-replaces-the-free-form-blob">MaxTask — structured result (replaces the free-form blob)</a></li><li class="lvl3"><a href="#maxtask-verdict-enum-ui-colors-new-defsverdict">MaxTask — verdict enum + UI colors (new $defs/verdict)</a></li><li class="lvl3"><a href="#maxtask-neutral-contributor-quality-fields-in-the-standard">MaxTask — neutral contributor / quality fields (IN the standard)</a></li><li class="lvl3"><a href="#maxtask-contributor_eligibility-privacy-gate-in-the-standard">MaxTask — contributor_eligibility PRIVACY GATE (IN the standard)</a></li><li class="lvl3"><a href="#paymenteconomics-are-deliberately-not-in-the-standard">Payment/economics are DELIBERATELY NOT in the standard</a></li><li class="lvl3"><a href="#lockstep-version-bump-no-content-change">Lockstep version bump (no content change)</a></li><li class="lvl3"><a href="#fixtures">Fixtures</a></li><li class="lvl2"><a href="#v14-addendum-2026-06-02-no-schema-version-bump">v1.4 addendum — 2026-06-02 (NO schema version bump)</a></li><li class="lvl3"><a href="#migration-life-events-live-in-event_assertions-do-not-add-a-vital_events-table">Migration &amp; life events live in event_assertions[] — do NOT add a vital_events table</a></li><li class="lvl3"><a href="#bio_summary-a-per-person-hover-biography-via-extensions-not-a-core-field">bio_summary — a per-person hover biography (via extensions, not a core field)</a></li><li class="lvl3"><a href="#postgres-portal-mirror-migration-002_events_placessql">Postgres / portal mirror — migration 002_events_places.sql</a></li><li class="lvl3"><a href="#privacy-repo-invariant-reaffirmed">Privacy / repo invariant (reaffirmed)</a></li><li class="lvl2"><a href="#v14-2026-05-17">v1.4 — 2026-05-17</a></li><li class="lvl3"><a href="#maxperson">MaxPerson</a></li><li class="lvl3"><a href="#lockstep-version-bump-no-content-change_1">Lockstep version bump (no content change)</a></li><li class="lvl3"><a href="#fixtures_1">Fixtures</a></li><li class="lvl2"><a href="#v13-2026-05-17">v1.3 — 2026-05-17</a></li><li class="lvl3"><a href="#maxperson_1">MaxPerson</a></li><li class="lvl3"><a href="#maxrecord-maxtask-maxdna">MaxRecord, MaxTask, MaxDNA</a></li><li class="lvl3"><a href="#tooling">Tooling</a></li><li class="lvl3"><a href="#companion-docs">Companion docs</a></li><li class="lvl3"><a href="#deferred-to-later-work-not-in-v13">Deferred to later work (not in v1.3)</a></li><li class="lvl2"><a href="#v12-2026-05-15">v1.2 — 2026-05-15</a></li><li class="lvl3"><a href="#naming">Naming</a></li><li class="lvl3"><a href="#maxdna-new-schema">MaxDNA (new schema)</a></li><li class="lvl3"><a href="#maxperson_2">MaxPerson</a></li><li class="lvl2"><a href="#v11-pre-2026-05-15">v1.1 — (pre-2026-05-15)</a></li><li class="lvl3"><a href="#maxperson_3">MaxPerson</a></li><li class="lvl3"><a href="#maxrecord">MaxRecord</a></li><li class="lvl2"><a href="#v10-initial-release">v1.0 — initial release</a></li><li class="lvl2"><a href="#schema-id-urls-permanent">Schema $id URLs (permanent)</a></li></ul></div></aside><div class="content"><p class="eyebrow">Releases · current v1.13</p>
 <h1 id="versions-and-the-stability-promise">Versions and the stability promise</h1>
 <h2 id="how-versions-work">How versions work</h2>
 <p><strong>One number for all seven schemas.</strong> When any schema changes, the whole standard moves to the next number and every file is stamped with it, even the ones that did not change. You adopt "MAXGEN v1.13" as a set. This is how HL7 FHIR (the healthcare data standard) and GEDCOM release, and it makes it impossible for two files to disagree about which version they belong to.</p>
@@ -80,206 +80,30 @@
 <div class="table-wrap"><table><thead><tr><th>Version</th><th>Schemas</th><th>Files (permanent links)</th></tr></thead><tbody><tr><td><strong>v1.13</strong> <span class="badge">current</span></td><td>7</td><td class="links"><a href="/schemas/maxgen/v1.13/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.13/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.13/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.13/dna.schema.json">dna</a> · <a href="/schemas/maxgen/v1.13/source.schema.json">source</a> · <a href="/schemas/maxgen/v1.13/recognition.schema.json">recognition</a> · <a href="/schemas/maxgen/v1.13/name.schema.json">name</a></td></tr><tr><td><strong>v1.12</strong></td><td>7</td><td class="links"><a href="/schemas/maxgen/v1.12/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.12/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.12/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.12/dna.schema.json">dna</a> · <a href="/schemas/maxgen/v1.12/source.schema.json">source</a> · <a href="/schemas/maxgen/v1.12/recognition.schema.json">recognition</a> · <a href="/schemas/maxgen/v1.12/name.schema.json">name</a></td></tr><tr><td><strong>v1.11</strong></td><td>7</td><td class="links"><a href="/schemas/maxgen/v1.11/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.11/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.11/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.11/dna.schema.json">dna</a> · <a href="/schemas/maxgen/v1.11/source.schema.json">source</a> · <a href="/schemas/maxgen/v1.11/recognition.schema.json">recognition</a> · <a href="/schemas/maxgen/v1.11/name.schema.json">name</a></td></tr><tr><td><strong>v1.10</strong></td><td>6</td><td class="links"><a href="/schemas/maxgen/v1.10/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.10/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.10/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.10/dna.schema.json">dna</a> · <a href="/schemas/maxgen/v1.10/source.schema.json">source</a> · <a href="/schemas/maxgen/v1.10/recognition.schema.json">recognition</a></td></tr><tr><td><strong>v1.9</strong></td><td>6</td><td class="links"><a href="/schemas/maxgen/v1.9/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.9/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.9/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.9/dna.schema.json">dna</a> · <a href="/schemas/maxgen/v1.9/source.schema.json">source</a> · <a href="/schemas/maxgen/v1.9/recognition.schema.json">recognition</a></td></tr><tr><td><strong>v1.8</strong></td><td>5</td><td class="links"><a href="/schemas/maxgen/v1.8/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.8/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.8/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.8/dna.schema.json">dna</a> · <a href="/schemas/maxgen/v1.8/source.schema.json">source</a></td></tr><tr><td><strong>v1.7</strong></td><td>5</td><td class="links"><a href="/schemas/maxgen/v1.7/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.7/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.7/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.7/dna.schema.json">dna</a> · <a href="/schemas/maxgen/v1.7/source.schema.json">source</a></td></tr><tr><td><strong>v1.6</strong></td><td>4</td><td class="links"><a href="/schemas/maxgen/v1.6/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.6/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.6/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.6/dna.schema.json">dna</a></td></tr><tr><td><strong>v1.5</strong></td><td>4</td><td class="links"><a href="/schemas/maxgen/v1.5/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.5/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.5/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.5/dna.schema.json">dna</a></td></tr><tr><td><strong>v1.4</strong></td><td>4</td><td class="links"><a href="/schemas/maxgen/v1.4/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.4/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.4/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.4/dna.schema.json">dna</a></td></tr><tr><td><strong>v1.3</strong></td><td>4</td><td class="links"><a href="/schemas/maxgen/v1.3/raw-record.schema.json">raw-record</a> · <a href="/schemas/maxgen/v1.3/person.schema.json">person</a> · <a href="/schemas/maxgen/v1.3/task-queue.schema.json">task-queue</a> · <a href="/schemas/maxgen/v1.3/dna.schema.json">dna</a></td></tr></tbody></table></div>
 
 <h2 id="release-ritual">Release ritual</h2>
-<p>Every release, in this order: bump the <code>schema_version</code> constant in all seven files, re-run every fixture through the validators, write the changelog entry, tag the release in git, copy the files to <code>/v1/</code> and <code>/v1.NN/</code> on this site, update the version badge, and regenerate any podcast episode whose schema changed.</p><h2 id="changelog">Changelog</h2><p>Version history for the MAXGEN schemas. Since v2.0 there are <strong>eleven record schemas plus one
-shared building-blocks file</strong>: <strong>MaxRecord</strong>, <strong>MaxPerson</strong>, <strong>MaxRelationship</strong>, <strong>MaxTask</strong>,
-<strong>MaxSource</strong>, <strong>MaxPlace</strong>, <strong>MaxGroup</strong>, <strong>MaxEvent</strong>, <strong>MaxName</strong>, <strong>MaxRecognition</strong>,
-<strong>MaxDNA</strong>, and <code>maxgen-defs.schema.json</code>. The 1.x releases below had seven.</p>
-<h2 id="versioning-policy-2x-is-additive-only-as-of-v20">Versioning policy — 2.x is additive only (as of v2.0)</h2>
-<p>All twelve files share <strong>one MAXGEN version</strong>, <code>2.0</code>. Every document carries <code>schema_version</code>,
-and the schemas accept any <code>"2.&lt;n&gt;"</code> stamp (<code>"2.0"</code>, <code>"2.1"</code> …; not <code>"2.01"</code>, not <code>"1.13"</code>).</p>
+<p>Every release, in this order: bump the <code>schema_version</code> constant in all seven files, re-run every fixture through the validators, write the changelog entry, tag the release in git, copy the files to <code>/v1/</code> and <code>/v1.NN/</code> on this site, update the version badge, and regenerate any podcast episode whose schema changed.</p><h2 id="changelog">Changelog</h2><p>Version history for the seven MAXGEN schemas: <strong>MaxRecord</strong>, <strong>MaxPerson</strong>,
+<strong>MaxSource</strong>, <strong>MaxName</strong>, <strong>MaxDNA</strong>, <strong>MaxRecognition</strong>, <strong>MaxTask</strong>.</p>
+<h2 id="versioning-policy-lockstep-as-of-v13">Versioning policy — LOCKSTEP (as of v1.3)</h2>
+<p>All seven schemas share <strong>one MAXGEN version number</strong>. When any schema changes,
+the whole standard's version increments and every schema's <code>schema_version</code>
+const is stamped with the new number — even schemas that did not change in that
+release.</p>
+<p>This is the model used by HL7 FHIR releases and GEDCOM versions: you adopt
+"MAXGEN v1.3" as a set, not schema-by-schema. It makes compatibility trivial to
+reason about and makes version skew (different schemas reporting different
+versions) impossible by construction.</p>
 <ul>
-<li><strong>Within 2.x, every change is additive:</strong> a new optional property, a new value in a list, a
-  new shared definition in <code>maxgen-defs.schema.json</code> (a <code>$defs</code> entry), a new record schema
-  file, or a loosened limit. <strong>Never:</strong> removing or
-  renaming a property, making an optional property required, narrowing a pattern, range or
-  list, or changing what a value means. A file valid under 2.0 stays valid under every 2.x.</li>
-<li><strong>Files keep the stamp they were written with.</strong> The 1.x ritual of re-stamping every fixture
-  at each release is dropped.</li>
-<li>A reader that meets a list value it does not know falls back safely: a vocabulary word is
-  read as <code>other</code> (its <code>_as_written</code> words are shown); a state the kit manages fails closed
-  (an unknown licence is read as <code>tier2-private</code>, an unknown status as not live).</li>
-<li>The kit refuses a document stamped with a newer minor than it knows only if the document
-  fails its schemas (or is of a kind it does not know), and then says to update the schemas
-  folder and <code>maxgen_db.py</code>. A stamp with a later major is refused with "written by MAXGEN
-  3.x"; a malformed stamp with "not a MAXGEN stamp".</li>
-<li><strong>Major version</strong> (<code>v2</code> → <code>v3</code>): breaking changes, a new <code>$id</code> namespace, and the
-  maintainer's own approval.</li>
+<li><strong>Major version</strong> (<code>v1</code> → <code>v2</code>): breaking changes. New <code>$id</code> URL namespace
+  (<code>/schemas/maxgen/v2/</code>). Requires Human Gate HG-6.</li>
+<li><strong>Minor version</strong> (<code>v1.2</code> → <code>v1.3</code>): additive, backward-compatible. Same <code>$id</code>
+  URL; <code>schema_version</code> const bumped across all schemas; all fixtures
+  re-stamped and re-validated.</li>
 </ul>
-<p>From v1.3 to v1.13 the seven schemas versioned in <strong>lockstep</strong> (all bumped together): every release bumped every
-schema's <code>schema_version</code> const, even schemas that did not change, and every fixture was
-re-stamped. That history is kept below as written.</p>
-<hr />
-<h2 id="v20-2026-10-16">v2.0 — 2026-10-16</h2>
-<p><strong>Driver:</strong> the review of 16 October 2026 (a unanimous review of the whole schema set, plus two
-critiques of the first build specification, 62 findings). It found that 1.13 kept family links
-twice (on both people, kept in step by a two-sided rule), stored computed scores beside the
-evidence, let a claim cite a record without saying where on it, had no record of its own for
-places, groups or the occasions documents record, and could not let an adopted person follow
-both their birth and their adoptive lines. The maintainer decided on one release, 2.0, with
-eleven record schemas plus one shared file. The full specification is
-<a href="https://github.com/OpenGenealogyai/opengenealogyai/blob/main/docs/standard/SPEC-2.0.md"><code>docs/standard/SPEC-2.0.md</code></a>.</p>
-<h3 id="what-breaks-from-1x">What breaks from 1.x</h3>
-<ul>
-<li><strong>The 2.0 kit does not read 1.x files</strong>, and opens no database a 1.x kit made. There is no
-  migration: backward compatibility with 1.x is not a goal (only the maintainer has 1.x data,
-  and it is being redone under 2.0).</li>
-<li><strong>New <code>$id</code> namespace:</strong> <code>https://opengenealogyai.org/schemas/maxgen/v2/&lt;file name&gt;</code>. The <code>/v1/</code>
-  addresses stay with the archived 1.x files (<code>schemas/archive/</code>), whose rules are unchanged (the
-  1.12 and 1.13 MaxRecord <code>archive_ref</code> description no longer gives a local folder as its example).</li>
-<li>Every record schema now points into <code>maxgen-defs.schema.json</code> (<code>{"$ref":
-  "maxgen-defs.schema.json#/$defs/&lt;name&gt;"}</code>). Validators load all twelve files into one
-  registry and never fetch anything over the network.</li>
-<li>Every object is closed: unknown field names are refused everywhere except <code>extensions</code>, a
-  task's <code>payload</code>, and three holders of another program's own fields (<code>match_signals</code>,
-  <code>citation_template.fields</code>, <code>original_key.parts</code>).</li>
-</ul>
-<h3 id="across-every-schema-in-maxgen-defsschemajson">Across every schema (in <code>maxgen-defs.schema.json</code>)</h3>
-<ul>
-<li><strong>The evidence link (Citation A).</strong> Every claim cites exactly one piece of evidence, with no
-  exception: <code>document</code> (a record, the line holding the words, the event entry, the exact
-  quote, and whether it is direct, indirect or negative), <code>imported</code> (a fact from an imported
-  tree file), <code>dna</code> (permanent match ids), <code>conclusion</code> (an accepted proof) or <code>search</code> (a
-  search step that found nothing). Replaces 1.13's bare <code>source_record_id</code>. The kit checks
-  every quote against the record's words and stores the result.</li>
-<li><strong>The date block.</strong> The date as stated (<code>as_written</code>) plus what it means: modifiers (about,
-  before, by, after, between, from, to, from-to, or, text only), how it was obtained
-  (<code>calculated</code> from an age, <code>interpreted</code>, <code>estimated</code>), precision, calendar kept separate from
-  year start and style, dual dates, Quaker numbered months, BC years, month 13. Replaces the
-  flat <code>year_min</code>/<code>year_max</code>/<code>date_type</code> keys. Bounds are computed when read, never stored.</li>
-<li><strong>The place block</strong> on every claim and event entry: the place as written, an optional point
-  with its uncertainty, and a <code>place_id</code> attached later by analysis.</li>
-<li><strong>The claim header</strong> on every claim: a permanent <code>assertion_id</code>, the task that produced it,
-  a status ladder (<code>proposed</code>, <code>proven</code>, <code>disputed</code>, <code>disproven</code>, <code>retracted</code>) written only by
-  the kit, <code>supersedes_assertion_id</code>, privacy, and the other program's words for imported
-  facts. Claims are append-only.</li>
-<li><strong>Living A.</strong> Every document that names a person says whether that person may be alive; a
-  document that leaves it out is refused; living means <code>tier2-private</code>. Privacy is computed when
-  read, never from a stored copy.</li>
-<li><strong>Common and lifecycle fields:</strong> <code>created_by_task_id</code>, notes, outside ids, import fields,
-  and <code>lifecycle</code> (active, retracted, merged away) with undoable merge history, <code>distinct_from</code>
-  and split history.</li>
-<li><strong>Licences:</strong> <code>all_rights_reserved</code> added; one order from loosest to strictest.</li>
-<li><strong>Media</strong> (folded in, not a schema): each file is described once, on the record that
-  captured it (<code>saved_copies</code>, with a fingerprint and regions); others point at it by
-  fingerprint, or, while an imported file is not yet on this computer, by its address
-  (<code>location_uri</code>).</li>
-<li><strong>Imports keep everything:</strong> memberships, partner items, mentions, event entries and tree
-  citations carry their own <code>extensions</code>, so a field another program had and MAXGEN does not is
-  kept where it belongs.</li>
-<li><strong>Provenance</strong> (folded in): who did each task, written once by the kit, on MaxTask only.</li>
-<li>No stored scores anywhere: per-claim <code>confidence</code> stays; computed scores are worked out when
-  read.</li>
-</ul>
-<h3 id="maxperson-personschemajson">MaxPerson (<code>person.schema.json</code>)</h3>
-<p><strong>Holds no family links.</strong> Removed: <code>parent_assertions</code>, <code>child_assertions</code>,
-<code>spouse_assertions</code> (to MaxRelationship); <code>composite_confidence</code> (a stored score);
-<code>external_ids</code> (a mirror); <code>dna_evidence</code> (DNA is cited through the evidence link);
-<code>place_registry</code> (to MaxPlace); <code>source_record_ids</code> (an index); <code>occupation_assertions</code> (now
-<code>attribute_assertions</code> with <code>attribute_type: occupation</code>); <code>asserted_by</code>, <code>asserted_at</code>,
-<code>last_updated_at</code>, <code>judge_approved</code>, <code>judge_approved_at</code> (task provenance, kit timestamps and
-the database's review stage); <code>merge_status</code> (now <code>lifecycle</code>); the flat date keys and
-<code>country_code</code>/<code>state_province</code> (now the date and place blocks). Changed: every claim gains the
-claim header and an evidence link; photo claims point at a photograph record. Added:
-<code>person_kind</code> and <code>placeholder_label</code>, attribute, non-event and group-membership claims,
-<code>name_parts</code> and <code>name_status</code>, <code>attached_sources</code>, <code>same_as_candidates</code>. <code>is_living</code> and
-<code>redistribution_license</code> become required, with no default; <code>name_assertions</code> is required for a
-documented person.</p>
-<h3 id="maxrecord-raw-recordschemajson">MaxRecord (<code>raw-record.schema.json</code>)</h3>
-<p>One original, one record, holding the whole entry. <code>transcription</code> becomes
-<code>transcription_parts</code> with permanent line labels, <code>transcription_scope</code> (complete entry,
-complete list, partial) and a kit-computed fingerprint. Added: <code>persons_mentioned</code> with a
-permanent <code>mention_id</code>, the page's own role words and <code>is_living</code> for every person;
-<code>events_documented</code>, the events the document records, each with <code>information</code> judged per event
-(each gets an occasion id); <code>source_classification</code> as a required core field (it was under
-<code>extensions</code>); <code>copied_from</code> (the copying chain, required for a derivative); <code>part_of_source_id</code>
-and <code>locator</code>; a kit-built <code>original_key</code> that refuses a second copy of the same original;
-<code>record_status</code> (amended, delayed, reissued); <code>saved_copies</code> and <code>media_refs</code>;
-<code>citation_as_written</code> and <code>citation_template</code>. <code>source_url</code> becomes optional, but "where it is"
-is required (an address, a saved copy, or a repository or source with a locator; never an
-invented URL). <code>record_date</code> is the date the entry was written. <code>census_row</code> is renamed
-<code>census_household</code>; new types include <code>birth_register</code>, <code>death_register</code>, <code>tree_import</code>,
-<code>gazetteer_entry</code> and <code>dna_match_list</code>. Removed: <code>transcription</code>, <code>image_url</code>, <code>locations</code>,
-<code>repository</code>, <code>collection</code> (now <code>_as_written</code> fields), <code>language</code>, <code>alternate_names</code>,
-<code>digital_object_id</code>, <code>extracted_by</code>, <code>extracted_at</code>.</p>
-<h3 id="maxrelationship-relationshipschemajson-new">MaxRelationship (<code>relationship.schema.json</code>) — new</h3>
-<p>Every family link, stored once. Three kinds: <strong><code>family</code></strong> (0 to 2 partners — a person, or an
-"absent" partner the document mentions without naming — family facts such as marriage, banns,
-divorce or a census together, and child memberships, each with a <code>set_kind</code>: <code>birth</code>,
-<code>adoptive</code>, <code>step_household</code>, <code>foster</code>, <code>guardianship</code>, <code>sealing</code>, <code>alternative_hypothesis</code>,
-<code>other</code>, a <code>child_order</code> and a kit-computed <code>is_preferred</code>); <strong><code>parent_child</code></strong> (one per parent
-and child, with lineage facts such as <code>birth_parent</code>, <code>adoptive_parent</code>, <code>step_parent</code>, each
-with a dimension: genetic, gestational, legal, social, religious, household, unknown, other); and
-<strong><code>association</code></strong> (godparent, enslaved by, ancestor-descendant, employer, neighbour, friend,
-multiple birth, other). No two-sided lock: MaxPerson keeps no copy of any link. A child can belong to
-several parent sets, so an adopted person can trace both their birth and their adoptive
-lineage. Agents never write these files: the kit's <code>link</code> command finds or makes them. Replaces
-1.13's <code>parent_assertions</code>, <code>child_assertions</code>, <code>spouse_assertions</code>, <code>relationship_type</code> on
-parents and the <code>ecclesiastical</code> type.</p>
-<h3 id="maxtask-task-queueschemajson">MaxTask (<code>task-queue.schema.json</code>)</h3>
-<p>Removed: <code>contributor</code> (now <code>provenance</code>, written once by the kit), the top-level <code>review</code>
-(reviews are now separate <code>judge_review</code> tasks, never overwritten), a required <code>created_at</code>
-(now kit-owned). Added: <code>provenance</code>, <code>is_living_flag</code> (required), statuses <code>on_hold</code> and
-<code>cancelled</code>, task types <code>find_original</code> and <code>import_file</code>, the verdict <code>inaccessible</code> (could
-not search; never a dead end), and a closed <code>result</code> holding the search steps (the only search
-log), a proof write-up (the single authority for "proven"), occurrence verdicts, reviews, run
-decisions and FAN-club associates (the friends, associates and neighbours studied around one
-person). A proof's parent-set changes can set a set's kind, make it the main set, add a
-parent's existing link to it, or retract it.</p>
-<h3 id="maxsource-sourceschemajson">MaxSource (<code>source.schema.json</code>)</h3>
-<p><code>source_url</code> becomes optional; the <code>provenance</code> block is dissolved (<code>status</code> → <code>link_status</code>,
-<code>asserted_by</code> → <code>created_by_task_id</code>, <code>asserted_at</code> → <code>created_at</code>); <code>coverage.time_period</code>
-becomes <code>coverage.span</code> (a date block, no year cap); places use the place block. Added:
-<code>bibliographic</code> (title, creators, publisher, edition), <code>holdings</code> (which repository holds the
-original), <code>is_living_flag</code> (required), a wider <code>source_type</code> list, <code>discovered_via</code>.</p>
-<h3 id="maxplace-placeschemajson-new">MaxPlace (<code>place.schema.json</code>) — new</h3>
-<p>A slim place authority: one real place with its names, kinds, parent places (dated, with
-evidence) and coordinates (with their uncertainty when the evidence states one, never
-invented) over time, related places (formed from, split from, merged into, succeeded by,
-preceded by), gazetteer ids as outside ids, and undoable merges and <code>distinct_from</code>.
-Every place claim cites evidence (a gazetteer page is saved as a record first). Made only by
-import and analysis tasks.</p>
-<h3 id="maxgroup-groupschemajson-new">MaxGroup (<code>group.schema.json</code>) — new</h3>
-<p>One historical group — an emigrant company, a regiment, a congregation, a household that
-continued across documents — with its kind, its own names and dated facts, the larger groups it
-belonged to, and the documents that describe it, once. <strong>No member list:</strong> a
-membership is a claim on the person. FAN clusters (the friends, associates and neighbours
-studied around one person) stay as MaxTask results. Made only by import and analysis tasks.</p>
-<h3 id="maxevent-eventschemajson-new">MaxEvent (<code>event.schema.json</code>) — new</h3>
-<p>The identity of one occasion, thin: an occurrence id, its event type, where it came from
-(<code>origin</code>: a record's event entry, an import, or an analysis), outside ids, notes, pointers to
-the preferred date and place claims, links to related occasions, and same-occasion merges; an
-occasion made by analysis may also carry a reasoned conclusion that no single document states,
-citing an accepted proof. Made by the kit for every event entry on a record, and by importers
-and analysis tasks. It holds no participant list and no copies of the dates documents give: who
-took part is worked out from role claims.</p>
-<h3 id="maxname-nameschemajson">MaxName (<code>name.schema.json</code>)</h3>
-<p>The 1.13 shape is kept. <code>contributor</code> is removed (the task's provenance replaces it). Every
-variant and cognate becomes a claim, with a kit-owned <code>assertion_id</code>, a status and a required
-evidence link and confidence. Lifecycle fields added; <code>redistribution_license</code> required.</p>
-<h3 id="maxrecognition-recognitionschemajson">MaxRecognition (<code>recognition.schema.json</code>)</h3>
-<p>The 1.13 fields are kept. <code>is_living_flag</code> added (required); <code>contributor</code> removed;
-<code>image_url</code> and <code>raw_record_id</code> both optional but one required; <code>copy_sha256</code> and <code>region_id</code>
-added (the same copy and region evidence cites); <code>processing_date</code> renamed <code>processed_at</code>;
-<code>review_status</code>, <code>is_human_reviewed</code> and <code>is_independent</code> removed (reviews are tasks;
-independence is computed).</p>
-<h3 id="maxdna-dnaschemajson">MaxDNA (<code>dna.schema.json</code>)</h3>
-<p>The 1.13 fields are kept, always <code>tier2-private</code>. <code>asserted_by</code> and <code>asserted_at</code> removed; the
-top-level <code>notes</code> string replaced by the shared notes list; <code>kit_id_hash</code> optional with <code>kit_id_status</code>; <code>test_date</code> a
-date block; <code>external_ids</code> becomes <code>kit_aliases</code>; <code>source_records</code> becomes <code>source_record_ids</code>.
-Each match becomes a claim with a permanent <code>match_id</code>, its own <code>is_living</code>, and evidence citing
-the saved match list (a <code>dna_match_list</code> record, which the schema keeps living and
-<code>tier2-private</code>); predicted relationships keep the company's own words and probabilities. A
-match between two tests in one database is stored once. Kit numbers are never stored: their
-fingerprints are keyed with a secret only the person's own database holds.</p>
-<h3 id="verification">Verification</h3>
-<ul>
-<li>Schema and fixture tests: <code>tests/test_schemas_v2.py</code> and <code>tests/test_check_maxgen_v2.py</code>
-  (all fixtures made up, under <code>tests/fixtures/v2/</code>).</li>
-<li>Kit tests: <code>docs/agents/test_maxgen_db.py</code> and <code>docs/agents/test_probable_pedigree.py</code>.</li>
-</ul>
+<p>Before v1.3, schemas versioned independently, which produced confusing skew
+(MaxTask sat at 0.1 while MaxPerson reached 1.2). v1.3 ended that by adopting
+lockstep and bringing every schema to the same number.</p>
 <hr />
 <h2 id="v113-2026-08-14">v1.13 — 2026-08-14</h2>
-<p><strong>Driver:</strong> a name-research project hit a structural wall during its first
+<p><strong>Driver:</strong> the OGAI MaxName session hit a structural wall during its Tier-A
 calibration batch. It could not record a single cognate, because MaxName required
 <code>related_name_id</code> — a UUID for a record that does not exist yet. Cognate
 relationships are <em>discovered during</em> the research on the first name and would
@@ -346,13 +170,13 @@ it affected validation, but all of it misreported the standard's version:</p>
 structural changes — only the lockstep <code>schema_version</code> const and the description
 stamp. Records valid under v1.12 remain valid; re-stamp <code>schema_version</code> to
 <code>"1.13"</code>.</p>
-<h3 id="verification_1">Verification</h3>
+<h3 id="verification">Verification</h3>
 <ul>
 <li>75/75 fixtures pass (74 re-stamped + 1 new)</li>
 <li>All seven schemas validate against the draft-07 metaschema</li>
 <li>Cognate behavior tested in all five cases: canonical-form-only ✓ valid,
   UUID-only ✓ valid, both ✓ valid, neither ✓ rejected, missing <code>direction</code> ✓ rejected</li>
-<li>The canonical schemas and the <code>schemas/archive/v1.13/</code> copies verified
+<li>Canonical, <code>schemas/archive/v1.13/</code>, and <code>E:\OGAI\_hub\schemas\</code> verified
   byte-identical by SHA-256</li>
 </ul>
 <hr />
@@ -450,16 +274,16 @@ a stable canonical path.</p>
 <p><strong>Description fixed:</strong> the <code>description</code> field previously said "MAXGEN v1.7" (stale); now reads
 "MAXGEN v1.12".</p>
 <h3 id="maxrecord-extensions-archive_ref-locations-array">MaxRecord — extensions{}, archive_ref, locations[] array</h3>
-<p>Three additions requested by a data-collection project after encountering the
+<p>Three additions requested by the MaxSource (data collection) session after encountering the
 <code>additionalProperties: false</code> wall with no escape hatch:</p>
 <p><strong><code>extensions{}</code></strong> — open-schema namespace for source-specific fields. Same pattern as
-MaxPerson, MaxTask, MaxSource. Gives every producer a legal home for <code>groom_name</code>,
+MaxPerson, MaxTask, MaxSource. Gives all 197 producers a legal home for <code>groom_name</code>,
 <code>battle_unit</code>, <code>cemetery</code>, <code>liber</code>, <code>folio</code>, <code>ark_id</code>, and any other source-specific fields
 without requiring a schema bump. Omit it, the record still validates; add whatever keys you
 need inside it.</p>
-<p><strong><code>archive_ref</code></strong> (string, optional) — local file path to the canonical MaxRecord JSON in a
-local archive. Supports the dual-emit architecture: the queue is the transport format the embedder
-reads; the local archive holds the canonical, schema-validated MaxRecord. Populated by
+<p><strong><code>archive_ref</code></strong> (string, optional) — local file path to the canonical MaxRecord JSON on the
+E: drive. Supports the dual-emit architecture: the queue is the transport format the embedder
+reads; the E-drive archive holds the canonical, schema-validated MaxRecord. Populated by
 producers using dual-emit; omit otherwise.</p>
 <p><strong><code>locations[]</code></strong> (array, optional) — replaces the single <code>location</code> object. Each item adds a
 <code>location_type</code> field (<code>event_location</code> | <code>birth_place</code> | <code>death_place</code> | <code>burial_place</code> |
@@ -478,36 +302,37 @@ first machine-readable format that captures typed, directed, provenance-bearing 
 relationships across languages, scripts, locales, and time periods.</p>
 <p><strong>Why this schema exists.</strong> Every genealogy search engine fails on name matching because
 names are not stable strings — they are living things that drift across centuries, clerks,
-borders, and languages. "Whitcombe" and "Whitcomb" and "Witcombe" and "Whytcombe" are the
+borders, and languages. "Maxwell" and "Makeswell" and "Maccuswell" and "M'Axwell" are the
 same family. "Müller" and "Mueller" and "Miller" are the same occupation-surname in three
 forms. "John" and "Ivan" and "Giovanni" and "Seán" are the same baptismal name in four
 languages. Without a structured record that says so — with provenance, time scope, and
 confidence — no machine knows this. MaxName is that record.</p>
-<p><strong>Design review.</strong> A design review on 2026-07-26 led to 10 specific improvements:</p>
+<p><strong>Council provenance.</strong> Three-brain review 2026-07-26 (Grok-3 as Engineer, qwen3:14b as
+Contrarian). 10 specific improvements incorporated:</p>
 <ol>
-<li><strong>URI-extensible <code>variant_type</code></strong> — changed from a closed enum to a free
+<li><strong>URI-extensible <code>variant_type</code></strong> (Grok-3) — changed from a closed enum to a free
    string with documented standard values. New variant types (forced_substitution,
    administrative_reassignment, etc.) don't require a schema bump.</li>
-<li><strong><code>variant_id</code> UUID on each variant</strong> — every variant entry is independently
+<li><strong><code>variant_id</code> UUID on each variant</strong> (qwen3) — every variant entry is independently
    addressable, citable, and retractable without touching the parent record.</li>
-<li><strong><code>disputed_by[]</code> per variant</strong> — scholarly disputes are preserved, not
+<li><strong><code>disputed_by[]</code> per variant</strong> (Grok-3) — scholarly disputes are preserved, not
    silently resolved. A variant with disputes is retained and flagged; both views coexist.</li>
-<li><strong><code>cognate.direction</code></strong> — <code>this_derives_from | this_is_source_of | parallel_cognate</code>
+<li><strong><code>cognate.direction</code></strong> (qwen3) — <code>this_derives_from | this_is_source_of | parallel_cognate</code>
    makes the directional relationship explicit. Solves the "which way does the arrow point?"
    ambiguity in cross-language cognate links.</li>
-<li><strong><code>cognate.attestation_source</code></strong> — the cognate relationship is itself a scholarly
+<li><strong><code>cognate.attestation_source</code></strong> (Grok-3) — the cognate relationship is itself a scholarly
    claim. It needs provenance, not just assertion.</li>
-<li><strong><code>phonetic_key.algorithm_version</code></strong> — prevents silent mismatches when algorithm
+<li><strong><code>phonetic_key.algorithm_version</code></strong> (qwen3) — prevents silent mismatches when algorithm
    implementations change. A Soundex code computed in 2026 may differ from one computed in 2040.</li>
-<li><strong><code>transliteration_standard</code></strong> per variant — captures the standard used when
+<li><strong><code>transliteration_standard</code></strong> per variant (qwen3) — captures the standard used when
    transliterating from non-Latin scripts (ALA-LC, BGN/PCGN, Pinyin, ISO 233). Enables
    reverse-transliteration and cross-standard comparison.</li>
-<li><strong><code>regional_canonical[]</code></strong> array — non-English preferred forms are first-class.
+<li><strong><code>regional_canonical[]</code></strong> array (stress test) — non-English preferred forms are first-class.
    Seán, Eoin, Ioan, Johann are not "variants of John" — they are the preferred canonical forms
    in their own language communities.</li>
-<li><strong><code>legal_substitution</code> variant type</strong> — captures name changes imposed by
+<li><strong><code>legal_substitution</code> variant type</strong> (stress test) — captures name changes imposed by
    law or immigration administration (e.g. forced anglicization of immigrant names at Ellis Island).</li>
-<li><strong><code>canonical_script</code></strong> field — drives rendering decisions for bi-directional
+<li><strong><code>canonical_script</code></strong> field (stress test) — drives rendering decisions for bi-directional
     text, font selection, and search index configuration.</li>
 </ol>
 <p><strong>Research gap confirmed.</strong> No existing open, structured, machine-readable standard captures
@@ -532,8 +357,9 @@ Popolo (political entities only). MaxName fills a genuine gap.</p>
   <code>direction</code> (this_derives_from|this_is_source_of|parallel_cognate), <code>attestation_source</code>,
   <code>notes</code>, <code>contributor{}</code></p>
 <p><strong>Fixtures added (4):</strong>
-- A surname fixture with 4 spelling variants, including a disputed variant classification,
-  full phonetic keys, and an etymological_root cognate link to an older root name.
+- <code>test/fixtures/name/valid-v111-maxwell-surname.json</code> — Maxwell surname with 4 variants
+  (Maccuswell, Makeswell, M'Axwell, McAxwell) including a disputed variant classification,
+  full phonetic keys, and an etymological_root cognate link to Maccus.
 - <code>test/fixtures/name/valid-v111-john-given.json</code> — John given name with regional_canonical[]
   for Seán, Eoin, Ioan, Johann; 4 variants (Jon, Joannes, Johnny, Jack); 3 cognate links
   (Johann, Giovanni, Ivan) all parallel_cognate direction.
@@ -551,8 +377,8 @@ Popolo (political entities only). MaxName fills a genuine gap.</p>
 <hr />
 <h2 id="v110-2026-07-01">v1.10 — 2026-07-01</h2>
 <h3 id="maxrecognition-probabilistic-transcription-fields">MaxRecognition — probabilistic transcription fields</h3>
-<p>Three new optional fields on <code>schemas/recognition.schema.json</code>, approved unanimously in
-design review.</p>
+<p>Three new optional fields on <code>schemas/recognition.schema.json</code>. Three-brain panel
+(Grok-3 Engineer + qwen3:14b Contrarian) returned PROCEED unanimously.</p>
 <p><strong><code>word_confidences[].reading_type</code></strong> (enum, optional)
 Captures <em>how</em> each word was produced:
 - <code>observed</code> — directly read from the image (default when omitted)
@@ -563,13 +389,13 @@ Captures <em>how</em> each word was produced:
 Free-text audit trail required whenever <code>reading_type</code> is not <code>observed</code>.
 Explains the basis for the inference so future AI or human reviewers can
 judge whether it was sound. Example: <em>"5 of 6 surrounding entries read
-Whitcombe; characters 4-7 are water-damaged and unreadable."</em></p>
+Maxwell; characters 4-7 are water-damaged and unreadable."</em></p>
 <p><strong><code>searchable_variants[]</code></strong> (string array, top-level, optional)
 All possible full-text spellings this record should be findable under —
 including uncertain readings, alternative spellings, and normalized forms.
 Populated by the contributor at submission time or by a post-processing
 normalizer. If omitted, search engines fall back to <code>output_text</code> only.
-Enables a record to be found under "Whitcombe" AND "Whitcambe" without
+Enables a record to be found under "Maxwell" AND "Maxweil" without
 duplicating the record.</p>
 <p><strong>Design philosophy captured:</strong>
 Traditional genealogy treats a partial read as a dead end. MAXGEN treats
