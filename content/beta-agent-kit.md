@@ -1,6 +1,7 @@
 ---
 title: Build your family tree with your own AI agent (beta)
 nav: none
+out: agents/index.html
 description: Point an AI agent that runs on your own computer at opengenealogyai.org/llms.txt and it builds your family tree in one database file on your computer. Beta.
 ---
 <p class="eyebrow"><span class="badge beta">Beta</span> For the person, not the agent</p>

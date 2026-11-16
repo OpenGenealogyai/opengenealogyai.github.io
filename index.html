@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MAXGEN — the open genealogy standard — MAXGEN · OpenGenealogyAI</title>
-<meta name="description" content="MAXGEN is an open, public-domain data standard for genealogy that treats uncertainty as data. Seven JSON schemas, explained in plain English and in podcasts.">
+<meta name="description" content="MAXGEN is an open, public-domain data standard for genealogy that treats uncertainty as data. Eleven JSON record schemas and one shared building-blocks file, explained in plain English.">
 <link rel="canonical" href="https://opengenealogyai.org/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
 <meta property="og:title" content="MAXGEN — the open genealogy standard">
-<meta property="og:description" content="MAXGEN is an open, public-domain data standard for genealogy that treats uncertainty as data. Seven JSON schemas, explained in plain English and in podcasts.">
+<meta property="og:description" content="MAXGEN is an open, public-domain data standard for genealogy that treats uncertainty as data. Eleven JSON record schemas and one shared building-blocks file, explained in plain English.">
 <meta property="og:url" content="https://opengenealogyai.org/">
 <meta property="og:image" content="https://opengenealogyai.org/assets/img/logo/maxgen-og-1200x630.png">
 <meta property="og:image:width" content="1200">
@@ -43,8 +43,8 @@
 <p class="lede">MAXGEN is a free, open data standard for family history. Every fact carries its source and a confidence score. Conflicting evidence is kept, not deleted. Anyone can use it, build on it, or extend it. No permission required.</p>
 <div class="doors">
 <a href="/standard/"><strong>Read</strong><span>What the standard is and why it exists</span></a>
-<a href="/podcasts/"><strong>Listen</strong><span>Eight podcast episodes, one per schema</span></a>
-<a href="/schemas/"><strong>Download</strong><span>The seven schema files, every version</span></a>
+<a href="/podcasts/"><strong>Listen</strong><span>Eight podcast episodes, recorded for v1.11</span></a>
+<a href="/schemas/"><strong>Download</strong><span>The twelve schema files, every version</span></a>
 </div>
 </div>
 
@@ -52,21 +52,21 @@
 
 <h2 id="the-problem-it-solves">The problem it solves</h2>
 <p>Genealogy has never had more to work with. Close to two billion records are online, archives scan more every year, volunteers transcribe registers by the million, and DNA testing has added a whole new kind of evidence. The formats we exchange that work in were designed for a simpler time: one birth year, one birthplace, one set of parents, written down as settled fact. Real family history rarely arrives that clean. A census says 1843; a gravestone says 1844. A father could be one of three men with the same name.</p>
-<p>MAXGEN writes the doubt down. It stores <strong>what the document says</strong> separately from <strong>what we think it means</strong>, keeps every claim with its source and a 0-to-1 confidence score, and never overwrites anything. Several possible parents can coexist until the evidence resolves them. Every uncertainty becomes a lead worth chasing instead of a dead end, and as each new source corroborates a name or a date you watch the confidence climb. People can read it, researchers can check it, and AI can work with it without inventing anything, because confidence is a machine's native language.</p>
+<p>MAXGEN writes the doubt down. It stores <strong>what the document says</strong> separately from <strong>what we think it means</strong>, keeps every claim with its source and a 0-to-1 confidence score, and never overwrites anything. Several possible parents can coexist until the evidence resolves them. Every uncertainty becomes a lead worth chasing instead of a dead end, and as each new source corroborates a name or a date you watch the evidence for it grow. People can read it, researchers can check it, and AI can work with it without inventing anything, because confidence is a machine's native language.</p>
 <p>MAXGEN is built to sit alongside the archives, record sites, and communities researchers already rely on, not to replace them. It is a shared language they can all speak. Every ancestor. Every source. Every honest doubt.</p>
-<h2 id="the-seven-schemas">The seven schemas</h2>
-<p>A schema is a written rule-set that says exactly what fields a record has and what each one means, so that any program can read a record written by any other program. MAXGEN has seven, and each has its own page and its own podcast episode.</p>
+<h2 id="the-eleven-record-schemas">The eleven record schemas</h2>
+<p>A schema is a written rule-set that says exactly what fields a record has and what each one means, so that any program can read a record written by any other program. MAXGEN 2.0 has eleven record schemas, plus one shared file of building blocks that they all use, and each record schema has its own page.</p>
 <div class="cards"><a class="card" href="/schemas/maxrecord/"><h3>MaxRecord</h3><p>One MaxRecord is one document, copied word for word.</p></a><a class="card" href="/schemas/maxperson/"><h3>MaxPerson</h3><p>One MaxPerson is one person, as a researched conclusion (holds no family links).</p></a><a class="card" href="/schemas/maxrelationship/"><h3>MaxRelationship</h3><p>One MaxRelationship is one family link, stored once: a <code>family</code>, a <code>parent_child</code> pair or an <code>association</code>.</p></a><a class="card" href="/schemas/maxtask/"><h3>MaxTask</h3><p>One MaxTask is one piece of work: research, an import, a review or a proof.</p></a><a class="card" href="/schemas/maxsource/"><h3>MaxSource</h3><p>One MaxSource is one work, collection or repository.</p></a><a class="card" href="/schemas/maxplace/"><h3>MaxPlace</h3><p>One MaxPlace is one real place with its history.</p></a><a class="card" href="/schemas/maxgroup/"><h3>MaxGroup</h3><p>One MaxGroup is one historical group (its own facts only; no member list).</p></a><a class="card" href="/schemas/maxevent/"><h3>MaxEvent</h3><p>One MaxEvent is the identity of one occasion (thin).</p></a><a class="card" href="/schemas/maxname/"><h3>MaxName</h3><p>One MaxName is knowledge about one name.</p></a><a class="card" href="/schemas/maxrecognition/"><h3>MaxRecognition</h3><p>One MaxRecognition is one machine reading of an image.</p></a><a class="card" href="/schemas/maxdna/"><h3>MaxDNA</h3><p>One MaxDNA is one person&#x27;s DNA test and its matches (always private).</p></a></div>
 
 <h2 id="three-promises">Three promises</h2>
 <ol>
 <li><strong>Nothing is ever deleted.</strong> A retracted claim gets a retraction note; it does not vanish. The audit trail is permanent.</li>
 <li><strong>Living people are protected by the schema itself.</strong> A record about a person who may be alive is locked private no matter what any application does.</li>
-<li><strong>Old records stay readable forever.</strong> Within a major version, fields are never renamed or removed. See the <a href="/versions/">versioning policy</a>.</li>
+<li><strong>Records stay valid within a major version.</strong> Within 2.x every change is additive: fields are never renamed or removed, and a file valid under 2.0 stays valid under every 2.x release. See the <a href="/changelog/">changelog</a>.</li>
 </ol>
 <h2 id="who-it-is-for">Who it is for</h2>
 <ul>
-<li><strong>Developers</strong> building genealogy tools or AI agents: seven JSON Schema files at stable addresses, a changelog, fixtures, and a <a href="/validator/">validator</a> that runs in your browser.</li>
+<li><strong>Developers</strong> building genealogy tools or AI agents: twelve JSON Schema files (eleven record schemas and one shared file) at stable addresses, a changelog, made-up examples, and a <a href="/validator/">validator</a> that runs in your browser.</li>
 <li><strong>Genealogists and archivists</strong> deciding whether to trust it: the <a href="/standard/">plain-English guide</a>, the <a href="/faq/">FAQ</a>, and the <a href="/podcasts/">podcasts</a>.</li>
 <li><strong>Institutions</strong> who need to know how it is governed before adopting it: the <a href="/governance/">governance page</a> and the <a href="/license/">licence</a>.</li>
 </ul>

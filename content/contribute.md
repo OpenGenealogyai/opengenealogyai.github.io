@@ -24,9 +24,9 @@ Follow the process on the [governance page](/governance/): problem, proposed cha
 
 You do not need permission. Some useful starting points:
 
-- Validate records against the canonical schemas at `https://opengenealogyai.org/schemas/maxgen/v1/`, or try the [browser validator](/validator/).
-- Keep your own fields in `extensions{}` so your records stay valid across releases.
-- Honour the three normative rules: living people stay private, DNA stays private and never holds raw genotypes, and tasks about living people are never sent outside.
+- Validate records against the canonical schemas at `https://opengenealogyai.org/schemas/maxgen/v2/` (load all twelve files, the shared `maxgen-defs.schema.json` first), or try the [browser validator](/validator/).
+- Keep your own fields in `extensions{}` so your records stay valid across 2.x releases.
+- Honour the privacy rules the schemas carry: every document that names a person says whether that person may be alive, and anyone who may be alive stays private (`tier2-private`); DNA stays private and never holds raw genotypes; and tasks about living people are never opened to outside contributors.
 - Tell us. Implementations are listed on this site, and three independent ones convene the advisory board.
 
 ## Help with the content

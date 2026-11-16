@@ -50,16 +50,16 @@
 </aside><div class="content"><p class="eyebrow">Legal</p>
 <h1 id="licence">Licence</h1>
 <h2 id="the-standard-cc0">The standard: CC0</h2>
-<p>The seven MAXGEN schema files and the text of the standard on this site are dedicated to the public domain under the <a href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons CC0 1.0 Universal</a> dedication. You may copy, change, redistribute and build on them for any purpose, commercial or not, without asking and without attribution.</p>
+<p>The MAXGEN schema files (the twelve files of MAXGEN 2.0 and every archived 1.x file) and the text of the standard on this site are dedicated to the public domain under the <a href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons CC0 1.0 Universal</a> dedication. You may copy, change, redistribute and build on them for any purpose, commercial or not, without asking and without attribution.</p>
 <p>Why CC0 rather than a licence that requires credit? Because a standard only works when adopting it costs nothing, legally or administratively. An archive's counsel should be able to approve MAXGEN in one reading. Credit is welcome, never required.</p>
 <h3 id="if-you-want-to-credit-us-anyway">If you want to credit us anyway</h3>
 <ul>
 <li>In software or documentation: <em>"Uses the MAXGEN standard by OpenGenealogyAI (opengenealogyai.org)."</em></li>
-<li>In a dataset: the <code>schema_version</code> field and the <code>$id</code> reference to <code>opengenealogyai.org</code> in every MAXGEN record already say where it came from.</li>
+<li>In a dataset: every MAXGEN document already carries its <code>schema_version</code>, and the schema files it validates against carry their <code>opengenealogyai.org</code> address in their <code>$id</code>.</li>
 <li>In a paper or article: cite as shown at the bottom of this page.</li>
 </ul>
 <h2 id="records-each-carries-its-own">Records: each carries its own</h2>
-<p>Every record written in MAXGEN declares its own <code>redistribution_license</code>: <code>CC0</code>, <code>public-domain</code>, <code>CC-BY</code>, <code>CC-BY-SA</code>, or <code>tier2-private</code> (never redistribute). Where a source requires attribution, the <code>attribution{}</code> object in the record holds the credit. The standard is public domain; the data written in it is whatever its owner says it is.</p>
+<p>Every MAXGEN document except a MaxTask (a record of work, which has no licence field) declares its own <code>redistribution_license</code>: <code>CC0</code>, <code>public-domain</code>, <code>CC-BY</code>, <code>CC-BY-SA</code>, <code>all_rights_reserved</code>, or <code>tier2-private</code> (keep it private). Where a source requires attribution, the <code>attribution{}</code> object in the record holds the credit. The standard is public domain; the data written in it is whatever its owner says it is.</p>
 <h2 id="code-mit">Code: MIT</h2>
 <p>The validators, fixtures and tooling in the schema repository are released under the <a href="https://opensource.org/license/mit">MIT licence</a>.</p>
 <h2 id="names-and-logo">Names and logo</h2>

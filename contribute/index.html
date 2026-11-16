@@ -58,9 +58,9 @@
 <h2 id="build-on-it">Build on it</h2>
 <p>You do not need permission. Some useful starting points:</p>
 <ul>
-<li>Validate records against the canonical schemas at <code>https://opengenealogyai.org/schemas/maxgen/v1/</code>, or try the <a href="/validator/">browser validator</a>.</li>
-<li>Keep your own fields in <code>extensions{}</code> so your records stay valid across releases.</li>
-<li>Honour the three normative rules: living people stay private, DNA stays private and never holds raw genotypes, and tasks about living people are never sent outside.</li>
+<li>Validate records against the canonical schemas at <code>https://opengenealogyai.org/schemas/maxgen/v2/</code> (load all twelve files, the shared <code>maxgen-defs.schema.json</code> first), or try the <a href="/validator/">browser validator</a>.</li>
+<li>Keep your own fields in <code>extensions{}</code> so your records stay valid across 2.x releases.</li>
+<li>Honour the privacy rules the schemas carry: every document that names a person says whether that person may be alive, and anyone who may be alive stays private (<code>tier2-private</code>); DNA stays private and never holds raw genotypes; and tasks about living people are never opened to outside contributors.</li>
 <li>Tell us. Implementations are listed on this site, and three independent ones convene the advisory board.</li>
 </ul>
 <h2 id="help-with-the-content">Help with the content</h2>

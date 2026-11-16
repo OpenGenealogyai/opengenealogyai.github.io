@@ -13,7 +13,7 @@ MAXGEN is dedicated to the public domain (CC0). Anyone can use it, fork it, exte
 
 ## Today: a steward
 
-The standard's author, Garlon Maxwell, is the steward: the technical lead who has final say on what enters the canonical schemas until the advisory board exists. Every decision is public, reasoned, and recorded in the [changelog](/versions/#changelog). This is the same arrangement most successful standards began with, including the OpenAPI specification before it moved to a foundation, and the page below says exactly when and how it ends.
+The standard's author, Garlon Maxwell, is the steward: the technical lead who has final say on what enters the canonical schemas until the advisory board exists. Every decision is public, reasoned, and recorded in the [changelog](/changelog/). This is the same arrangement most successful standards began with, including the OpenAPI specification before it moved to a foundation, and the page below says exactly when and how it ends.
 
 ## How to propose a change
 

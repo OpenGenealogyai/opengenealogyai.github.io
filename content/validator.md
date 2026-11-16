@@ -1,22 +1,38 @@
 ---
 title: Validator
-description: Paste a JSON record and check it against the current MAXGEN schema, entirely in your browser.
+description: Paste a JSON record and check it against the MAXGEN 2.0 schemas, entirely in your browser.
 ---
 <p class="eyebrow">Tools</p>
 # Check a record
 
-Paste a JSON record, choose the schema, and press **Validate**. The check runs in your browser using the canonical schema files; nothing you paste is sent anywhere.
+Paste a JSON record, choose the schema (or let the page detect the kind from the record), and press **Validate**. The check runs in your browser using the canonical schema files: all twelve MAXGEN 2.0 files are loaded together, the shared building-blocks file first. Nothing you paste is sent anywhere. The archived 1.13 schemas are in the list too.
 
 <div class="validator">
 <label for="schema-select"><strong>Schema</strong></label><br>
 <select id="schema-select">
-<option value="person">MaxPerson (person.schema.json)</option>
+<option value="auto">Detect the kind from the record (MAXGEN 2.0)</option>
+<optgroup label="MAXGEN 2.0">
 <option value="raw-record">MaxRecord (raw-record.schema.json)</option>
+<option value="person">MaxPerson (person.schema.json)</option>
+<option value="relationship">MaxRelationship (relationship.schema.json)</option>
 <option value="task-queue">MaxTask (task-queue.schema.json)</option>
-<option value="dna">MaxDNA (dna.schema.json)</option>
 <option value="source">MaxSource (source.schema.json)</option>
-<option value="recognition">MaxRecognition (recognition.schema.json)</option>
+<option value="place">MaxPlace (place.schema.json)</option>
+<option value="group">MaxGroup (group.schema.json)</option>
+<option value="event">MaxEvent (event.schema.json)</option>
 <option value="name">MaxName (name.schema.json)</option>
+<option value="recognition">MaxRecognition (recognition.schema.json)</option>
+<option value="dna">MaxDNA (dna.schema.json)</option>
+</optgroup>
+<optgroup label="MAXGEN 1.13 (archived)">
+<option value="v1:person">MaxPerson 1.13 (person.schema.json)</option>
+<option value="v1:raw-record">MaxRecord 1.13 (raw-record.schema.json)</option>
+<option value="v1:task-queue">MaxTask 1.13 (task-queue.schema.json)</option>
+<option value="v1:dna">MaxDNA 1.13 (dna.schema.json)</option>
+<option value="v1:source">MaxSource 1.13 (source.schema.json)</option>
+<option value="v1:recognition">MaxRecognition 1.13 (recognition.schema.json)</option>
+<option value="v1:name">MaxName 1.13 (name.schema.json)</option>
+</optgroup>
 </select>
 <button id="sample" type="button">Load a sample</button>
 <br>
