@@ -1,0 +1,41 @@
+{
+  "recognition_id": "c1900000-0002-4000-8000-000000000001",
+  "schema_version": "1.13",
+  "recognition_type": "htr",
+  "image_url": "https://www.archion.de/de/browse/?no_cache=1&type=churchRegister&pid=12345",
+  "raw_record_id": "a1600000-0001-4000-8000-000000000001",
+  "output_text": "Johann Maier, geb. 14 März 1842, Sohn des Georg Maier und der Maria Huber.",
+  "processing_date": "2026-06-20T14:00:00Z",
+  "language": "de",
+  "contributor": {
+    "contributor_type": "human",
+    "contributor_name": "Helga Brandt",
+    "contributor_id": "ogai-user-00042",
+    "profile_url": "https://opengenealogyai.org/users/helga-brandt",
+    "credentials": ["AG", "Kurrent specialist", "German parish records"],
+    "specialty_scripts": ["kurrent", "gothic_fraktur"],
+    "specialty_languages": ["de", "la"],
+    "specialty_regions": ["Bavaria", "Baden-Württemberg", "Württemberg"],
+    "records_transcribed": 14720,
+    "training_notes": "German Genealogical Society Kurrent certification 2019. Specializes in Württemberg Lutheran Kirchenbücher 1650-1875. Completed the entire Maulbronn parish register collection (3,200 entries)."
+  },
+  "confidence": 0.94,
+  "word_confidences": [
+    { "word": "Maier", "char_offset": 7, "confidence": 0.82, "reading_type": "observed",
+      "alternatives": [
+        { "text": "Mäier", "confidence": 0.18 }
+      ]
+    }
+  ],
+  "searchable_variants": [
+    "Johann Maier geb 14 März 1842 Sohn Georg Maier Maria Huber",
+    "Johann Mäier geb 14 März 1842 Sohn Georg Mäier Maria Huber"
+  ],
+  "consensus_group_id": "d1900000-0001-4000-8000-000000000099",
+  "is_independent": true,
+  "is_human_reviewed": true,
+  "review_status": "approved",
+  "redistribution_license": "CC-BY",
+  "script_type": "kurrent",
+  "approx_century": 1800
+}

@@ -25,8 +25,11 @@ import markdown
 SITE = Path(__file__).resolve().parents[1]
 CONTENT = SITE / "content"
 SCHEMA_DIR = SITE / "schemas" / "maxgen"
-FIXTURES = Path(r"C:\Users\stock\dev\opengenealogyai\test\fixtures")
-CHANGELOG = Path(r"C:\Users\stock\dev\opengenealogyai\docs\SCHEMA_CHANGELOG.md")
+# Pinned copies of the published text. Never read the schema repo's working files here: they can
+# hold an unreleased version (2026-11-16 a rebuild pulled the unpublished 2.0 changelog onto /versions/).
+FIXTURES = CONTENT / "fixtures-v1"
+CHANGELOG = CONTENT / "changelog-v1.html"   # rendered HTML exactly as published for 1.13
+PODCAST_PUBDATE = "Mon, 07 Sep 2026 19:00:00 +0000"   # site launch; fixed so rebuilds do not re-date episodes
 AUDIO_SRC = Path(r"E:\BuildGenealogy\podcast-scripts\audio")
 
 BASE_URL = "https://opengenealogyai.org"
@@ -307,7 +310,7 @@ def build_podcasts() -> None:
     # (study guides are deliberately not published — Garlon, 2026-09-07)
 
     # RSS feed
-    now = format_datetime(datetime.now(timezone.utc))
+    now = PODCAST_PUBDATE
     items = []
     for n, stem, title, blurb, secs, size in EPISODES:
         items.append(f"""  <item>
@@ -350,11 +353,15 @@ def build_versions() -> None:
     table = ('<div class="table-wrap"><table><thead><tr><th>Version</th><th>Schemas</th><th>Files (permanent links)</th></tr></thead>'
              f"<tbody>{''.join(rows)}</tbody></table></div>")
     changelog = CHANGELOG.read_text(encoding="utf-8")
-    changelog = changelog.split("\n", 1)[1]  # drop the H1
-    # Relative links inside the changelog point at files in the schema repo's docs/ folder.
-    changelog = re.sub(r"\]\((?!https?://|/)([A-Za-z0-9_./-]+\.md)\)",
-                       r"](https://github.com/OpenGenealogyai/opengenealogyai/blob/main/docs/\1)", changelog)
-    body = md(intro).replace("<!--CURRENT-->", CURRENT).replace("<!--VERSIONS-->", table) + "<h2 id=\"changelog\">Changelog</h2>" + md(changelog)
+    if CHANGELOG.suffix == ".html":
+        changelog_html = changelog
+    else:
+        changelog = changelog.split("\n", 1)[1]  # drop the H1
+        # Relative links inside the changelog point at files in the schema repo's docs/ folder.
+        changelog = re.sub(r"\]\((?!https?://|/)([A-Za-z0-9_./-]+\.md)\)",
+                           r"](https://github.com/OpenGenealogyai/opengenealogyai/blob/main/docs/\1)", changelog)
+        changelog_html = md(changelog)
+    body = md(intro).replace("<!--CURRENT-->", CURRENT).replace("<!--VERSIONS-->", table) + "<h2 id=\"changelog\">Changelog</h2>" + changelog_html
     write(SITE / "versions" / "index.html", layout("Versions", body, "/versions/", meta.get("description", ""), path="/versions/", ld=jsonld(ORG_JSONLD),
                                                    toc=toc_from_html(body)))
 
@@ -425,7 +432,7 @@ def faq_ld(body_html: str) -> dict:
 # ---------------------------------------------------------------- plain pages
 def build_pages() -> None:
     for f in sorted(CONTENT.glob("*.md")):
-        if f.stem in {"podcasts", "versions", "schemas-index"}:
+        if f.stem in {"podcasts", "versions", "schemas-index", "changelog-v1"}:
             continue
         meta, text = front_matter(f.read_text(encoding="utf-8"))
         out = meta.get("out", f"{f.stem}/index.html")

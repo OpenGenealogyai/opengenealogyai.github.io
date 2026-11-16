@@ -1,0 +1,105 @@
+{
+  "name_id": "e1f2a3b4-c5d6-4789-9abc-de0123456789",
+  "schema_version": "1.13",
+  "canonical_form": "Seán",
+  "canonical_script": "latin",
+  "name_type": "given",
+  "gender": "masculine",
+  "language_of_origin": "sga",
+  "etymology": "Seán is the Irish form of John, borrowed from the Anglo-Norman Jehan rather than directly from the Latin Iohannes. Norman French speakers arriving in Ireland from the twelfth century brought Jehan with them; Irish speakers adapted it to their own sound system as Seán. The name therefore sits one step further along the chain than most European forms of John — it descends from a French intermediary, not from the Latin original, which is why it looks so unlike Johannes while meaning exactly the same thing.",
+  "regional_canonical": [
+    {
+      "form": "Seán",
+      "language": "ga",
+      "locale": "IE",
+      "notes": "Standard modern Irish spelling with the síneadh fada on the a."
+    },
+    {
+      "form": "Eoin",
+      "language": "ga",
+      "locale": "IE",
+      "notes": "A separate Irish form of John taken directly from the Latin Iohannes rather than via Norman French. Eoin and Seán coexist in Irish; Eoin is conventionally used for the biblical John."
+    }
+  ],
+  "variants": [
+    {
+      "variant_id": "f2a3b4c5-d6e7-4890-abcd-ef1234567890",
+      "variant_text": "Shane",
+      "variant_type": "anglicization",
+      "locale": "IE",
+      "language": "en",
+      "script": "latin",
+      "period_start": 1600,
+      "frequency": "common",
+      "attestation_source": "Ó Corráin & Maguire, Irish Names (1981), entry for Seán.",
+      "notes": "Phonetic English respelling of Seán, which later became an independent given name in its own right in the anglophone world.",
+      "confidence": 0.97
+    },
+    {
+      "variant_id": "a3b4c5d6-e7f8-4901-bcde-f01234567891",
+      "variant_text": "Seaán",
+      "variant_type": "spelling_variant",
+      "locale": "IE",
+      "language": "ga",
+      "script": "latin",
+      "period_start": 1400,
+      "period_end": 1900,
+      "frequency": "occasional",
+      "attestation_source": "Ó Corráin & Maguire, Irish Names (1981), entry for Seán.",
+      "notes": "Older Irish orthography, superseded by the modern standardised spelling.",
+      "confidence": 0.93
+    }
+  ],
+  "phonetic_keys": {
+    "soundex": { "value": "S500", "algorithm_version": "american-1918" },
+    "metaphone": { "value": "SN", "algorithm_version": "jellyfish-1.x" }
+  },
+  "cognates": [
+    {
+      "cognate_id": "b4c5d6e7-f8a9-4012-cdef-012345678902",
+      "related_canonical_form": "John",
+      "relationship_type": "cross_language_cognate",
+      "direction": "parallel_cognate",
+      "attestation_source": "Ó Corráin & Maguire, Irish Names (1981); Withycombe, Oxford Dictionary of English Christian Names (3rd ed. 1977).",
+      "notes": "MAXGEN v1.13 UNRESOLVED COGNATE — this link was recorded during first-pass research, before a MaxName record for 'John' existed. It carries related_canonical_form but no related_name_id, which the schema permits from v1.13 onward. A later linking pass resolves the UUID. Under v1.12 this fact could not be stored at all and would have been discarded.",
+      "contributor": {
+        "contributor_type": "ai",
+        "contributor_id": "maxname-worker-1",
+        "asserted_at": "2026-08-14T00:00:00Z"
+      }
+    },
+    {
+      "cognate_id": "c5d6e7f8-a9b0-4123-def0-123456789013",
+      "related_canonical_form": "Jehan",
+      "relationship_type": "etymological_root",
+      "direction": "this_derives_from",
+      "attestation_source": "Ó Corráin & Maguire, Irish Names (1981), entry for Seán.",
+      "notes": "Anglo-Norman intermediary. Also unresolved — recorded by canonical form only.",
+      "contributor": {
+        "contributor_type": "ai",
+        "contributor_id": "maxname-worker-1",
+        "asserted_at": "2026-08-14T00:00:00Z"
+      }
+    },
+    {
+      "cognate_id": "d6e7f8a9-b0c1-4234-ef01-234567890124",
+      "related_name_id": "a1b2c3d4-e5f6-4789-abcd-ef0123456789",
+      "related_canonical_form": "Eoin",
+      "relationship_type": "cross_language_cognate",
+      "direction": "parallel_cognate",
+      "attestation_source": "Ó Corráin & Maguire, Irish Names (1981).",
+      "notes": "RESOLVED COGNATE — carries both the UUID and the readable form. This is the end state a linking pass produces.",
+      "contributor": {
+        "contributor_type": "ai",
+        "contributor_id": "maxname-linker",
+        "asserted_at": "2026-08-14T00:00:00Z"
+      }
+    }
+  ],
+  "redistribution_license": "CC-BY",
+  "contributor": {
+    "contributor_type": "ai",
+    "contributor_id": "maxname-worker-1",
+    "asserted_at": "2026-08-14T00:00:00Z"
+  }
+}
