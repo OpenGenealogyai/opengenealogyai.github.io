@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaxPlace — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MaxPlace, the MAXGEN 2.0 schema: one MaxPlace is one real place with its history.">
+<link rel="canonical" href="https://opengenealogyai.org/schemas/maxplace/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MaxPlace">
+<meta property="og:description" content="MaxPlace, the MAXGEN 2.0 schema: one MaxPlace is one real place with its history.">
+<meta property="og:url" content="https://opengenealogyai.org/schemas/maxplace/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/logo/maxgen-og-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/img/logo/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/assets/img/logo/maxgen-icon-dark.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/logo/favicon-180.png">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/logo/maxgen-icon-dark-512.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxPlace — MAXGEN schema v2.0", "description": "MAXGEN 2.0 -- one MaxPlace document is one real place with its own history (its names, kinds, parent places and coordinates over time), each fact stored once as a claim with evidence so that many claims can point at it.", "url": "https://opengenealogyai.org/schemas/maxplace/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v2/place.schema.json", "encodingFormat": "application/schema+json"}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MAXGEN", "item": "https://opengenealogyai.org/"}, {"@type": "ListItem", "position": 2, "name": "Schemas", "item": "https://opengenealogyai.org/schemas/"}, {"@type": "ListItem", "position": 3, "name": "MaxPlace", "item": "https://opengenealogyai.org/schemas/maxplace/"}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img class="lockup" src="/assets/img/logo/maxgen-horizontal-dark.svg" alt="MAXGEN — Maxwell Genealogy Standard" width="180" height="68"><span class="brand-text"><small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc"><ul><li class="lvl2"><a href="#definition">Definition</a></li><li class="lvl2"><a href="#fields">Fields</a></li><li class="lvl2"><a href="#example">A made-up example</a></li><li class="lvl2"><a href="#what-changed">What changed from 1.13</a></li><li class="lvl2"><a href="#listen">Listen</a></li></ul></div></aside><div class="content"><div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v2.0 · new in 2.0</p>
+  <h1>MaxPlace</h1>
+  <p class="tagline">One MaxPlace is one real place with its history.</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v2/place.schema.json">Download MaxPlace (2.0)</a>
+     <a class="btn ghost" href="/versions/">All versions</a>
+     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v2/place.schema.json</code></p>
+  <p class="sha">SHA-256 <code>6940b499ea549f8314227906ae120f90fdc90e536e5824b5f34233a9c16fff4d</code></p>
+</div><h2 id="definition">Definition</h2>
+<blockquote class="schema-desc"><p>MAXGEN 2.0 -- one MaxPlace document is one real place with its own history (its names, kinds, parent places and coordinates over time), each fact stored once as a claim with evidence so that many claims can point at it.</p></blockquote>
+<p class="muted">The schema's own description, word for word.</p>
+<h2 id="fields">Fields</h2>
+<p>The top-level fields of a MaxPlace document. Parts shared by every schema (the date block, the place block, the evidence link, the claim header and others) are defined once in the <a href="/schemas/#shared-building-blocks">shared building-blocks file</a>.</p>
+<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>place_id</code> <span class="req">required</span></td><td class="type">uuid</td><td>The place&#x27;s permanent id: a random UUID created once by the writer (an import_file, resolve_conflict or build_tree task, R-24), never computed from a gazetteer or other outside id, and kept through renaming, re-typing an</td></tr><tr><td><code>redistribution_license</code> <span class="req">required</span></td><td class="type">licence</td><td>The licence under which this place document may be shared; when it is unclear, ask and never guess (RULES 7).</td></tr><tr><td><code>name_assertions</code> <span class="req">required</span></td><td class="type">array of name_claim</td><td>The names this place has had, at this level only (not the parent places), each a claim with its own evidence; at least one is required.</td></tr><tr><td><code>kind_assertions</code> </td><td class="type">array of kind_claim</td><td>What kind of place this was over time (a territory that became a state, a village that became a city), each a dated claim with its own evidence.</td></tr><tr><td><code>parent_place_assertions</code> </td><td class="type">array of parent_place_claim</td><td>The places this place lay inside over time, in one or more hierarchies (civil, church, judicial, census ...), each dated as closely as the evidence allows and each a claim with its own evidence; imported parents stay pro</td></tr><tr><td><code>coordinate_assertions</code> </td><td class="type">array of coordinate_claim</td><td>Where this place is on the earth, each with an uncertainty radius and its own evidence; several are allowed for places that moved.</td></tr><tr><td><code>related_place_assertions</code> </td><td class="type">array of related_place_claim</td><td>Links to other places this one was formed from, split from, merged into, succeeded or preceded, each a dated claim with its own evidence; a new county or a split is a new place, linked here.</td></tr><tr><td><code>cited_record_ids</code> </td><td class="type">array of uuid</td><td>Records (MaxRecord ids) that are about the place as a whole, such as a parish history or a gazetteer page; research pointers kept beside the claims, each of which must exist (Appendix C).</td></tr><tr><td><code>media_refs</code> </td><td class="type">array of media_ref</td><td>Maps and photographs of this place, pointed at by fingerprint on the record that holds each file (each file is described once, on the record that captured it).</td></tr><tr><td><code>is_private</code> </td><td class="type">boolean</td><td>True hides this place from anything shareable; it can only rise (the helper refuses lowering it), and a small place (street, address, building, farm, estate or of no stated kind) that a possibly living person&#x27;s live clai</td></tr></tbody></table></div>
+<h2 id="example">A made-up example</h2>
+<p>Every example on this site is invented: no real person, family or place. This one is <code>town_with_dated_kinds.json</code> from the standard's test files, copied as it is.</p>
+<pre class="json"><code>{
+  &quot;place_id&quot;: &quot;3a0f73f0-79e6-5b11-a922-959737a98176&quot;,
+  &quot;schema_version&quot;: &quot;2.0&quot;,
+  &quot;redistribution_license&quot;: &quot;CC0&quot;,
+  &quot;name_assertions&quot;: [
+    {
+      &quot;name_as_written&quot;: &quot;Tumblebrook&quot;,
+      &quot;name_type&quot;: &quot;official&quot;,
+      &quot;is_preferred&quot;: true,
+      &quot;confidence&quot;: 0.4,
+      &quot;task_id&quot;: &quot;5ee56274-20f4-5fab-8a2b-34d52efbfc83&quot;,
+      &quot;evidence&quot;: {
+        &quot;basis&quot;: &quot;document&quot;,
+        &quot;source_record_id&quot;: &quot;6f18ce6f-6131-5e45-83fe-6bc30266f9bd&quot;,
+        &quot;mention_id&quot;: &quot;g2&quot;,
+        &quot;quote&quot;: &quot;TUMBLEBROOK&quot;,
+        &quot;kind&quot;: &quot;direct&quot;,
+        &quot;about&quot;: &quot;other_mention&quot;,
+        &quot;note&quot;: &quot;the Tumblebrook entry is the line that also names the rector&quot;
+      }
+    }
+  ],
+  &quot;kind_assertions&quot;: [
+    {
+      &quot;kind&quot;: &quot;village&quot;,
+      &quot;date&quot;: {
+        &quot;modifier&quot;: &quot;to&quot;,
+        &quot;value&quot;: {
+          &quot;year&quot;: 1902
+        },
+        &quot;as_written&quot;: &quot;until 1902&quot;
+      },
+      &quot;confidence&quot;: 0.4,
+      &quot;task_id&quot;: &quot;5ee56274-20f4-5fab-8a2b-34d52efbfc83&quot;,
+      &quot;evidence&quot;: {
+        &quot;basis&quot;: &quot;document&quot;,
+        &quot;source_record_id&quot;: &quot;6f18ce6f-6131-5e45-83fe-6bc30266f9bd&quot;,
+        &quot;mention_id&quot;: &quot;g2&quot;,
+        &quot;quote&quot;: &quot;a village until 1902&quot;,
+        &quot;kind&quot;: &quot;direct&quot;,
+        &quot;about&quot;: &quot;other_mention&quot;,
+        &quot;note&quot;: &quot;the Tumblebrook entry is the line that also names the rector&quot;
+      }
+    },
+    {
+      &quot;kind&quot;: &quot;town&quot;,
+      &quot;date&quot;: {
+        &quot;modifier&quot;: &quot;from&quot;,
+        &quot;value&quot;: {
+          &quot;year&quot;: 1902
+        },
+        &quot;as_written&quot;: &quot;from 1902&quot;
+      },
+      &quot;confidence&quot;: 0.4,
+      &quot;task_id&quot;: &quot;5ee56274-20f4-5fab-8a2b-34d52efbfc83&quot;,
+      &quot;evidence&quot;: {
+        &quot;basis&quot;: &quot;document&quot;,
+        &quot;source_record_id&quot;: &quot;6f18ce6f-6131-5e45-83fe-6bc30266f9bd&quot;,
+        &quot;mention_id&quot;: &quot;g2&quot;,
+        &quot;quote&quot;: &quot;a town from 1902&quot;,
+        &quot;kind&quot;: &quot;direct&quot;,
+        &quot;about&quot;: &quot;other_mention&quot;,
+        &quot;note&quot;: &quot;the Tumblebrook entry is the line that also names the rector&quot;
+      }
+    }
+  ],
+  &quot;parent_place_assertions&quot;: [
+    {
+      &quot;parent_place_id&quot;: &quot;153a6f70-4f7f-5432-8fbf-9a0e0e20906c&quot;,
+      &quot;hierarchy&quot;: &quot;civil&quot;,
+      &quot;confidence&quot;: 0.4,
+      &quot;task_id&quot;: &quot;5ee56274-20f4-5fab-8a2b-34d52efbfc83&quot;,
+      &quot;evidence&quot;: {
+        &quot;basis&quot;: &quot;document&quot;,
+        &quot;source_record_id&quot;: &quot;6f18ce6f-6131-5e45-83fe-6bc30266f9bd&quot;,
+        &quot;mention_id&quot;: &quot;g1&quot;,
+        &quot;quote&quot;: &quot;County town: Tumblebrook&quot;,
+        &quot;kind&quot;: &quot;direct&quot;,
+        &quot;about&quot;: &quot;other_mention&quot;,
+        &quot;note&quot;: &quot;the county entry is the line that also names the Lord Lieutenant&quot;
+      }
+    }
+  ],
+  &quot;coordinate_assertions&quot;: [
+    {
+      &quot;latitude&quot;: -48.87,
+      &quot;longitude&quot;: -123.39,
+      &quot;uncertainty_m&quot;: 1500,
+      &quot;confidence&quot;: 0.4,
+      &quot;task_id&quot;: &quot;5ee56274-20f4-5fab-8a2b-34d52efbfc83&quot;,
+      &quot;evidence&quot;: {
+        &quot;basis&quot;: &quot;document&quot;,
+        &quot;source_record_id&quot;: &quot;6f18ce6f-6131-5e45-83fe-6bc30266f9bd&quot;,
+        &quot;mention_id&quot;: &quot;g1&quot;,
+        &quot;quote&quot;: &quot;48.87 S, 123.39 W&quot;,
+        &quot;kind&quot;: &quot;direct&quot;,
+        &quot;about&quot;: &quot;other_mention&quot;,
+        &quot;note&quot;: &quot;the county entry is the line that also names the Lord Lieutenant&quot;
+      }
+    }
+  ],
+  &quot;created_by_task_id&quot;: &quot;5ee56274-20f4-5fab-8a2b-34d52efbfc83&quot;,
+  &quot;extensions&quot;: {
+    &quot;fixture&quot;: &quot;made up&quot;
+  }
+}
+</code></pre>
+<h2 id="what-changed">What changed from 1.13</h2>
+<p>A slim place authority: one real place with its names, kinds, parent places (dated, with
+evidence) and coordinates (with their uncertainty when the evidence states one, never
+invented) over time, related places (formed from, split from, merged into, succeeded by,
+preceded by), gazetteer ids as outside ids, and undoable merges and <code>distinct_from</code>.
+Every place claim cites evidence (a gazetteer page is saved as a record first). Made only by
+import and analysis tasks.</p>
+<p><a href="/changelog/#v20-2026-10-16">The whole v2.0 changelog entry</a></p>
+<h2 id="listen">Listen</h2>
+<p>There is no episode for MaxPlace yet: it is new in MAXGEN 2.0. The <a href="/podcasts/#ep0">overview episode</a> explains the ideas it builds on.</p><p class="backlink"><a href="/schemas/">← All eleven schemas</a></p></div></div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v2.0</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

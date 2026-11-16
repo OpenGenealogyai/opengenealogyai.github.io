@@ -1,0 +1,5 @@
+# Files served byte for byte with published SHA-256 fingerprints: never convert line endings.
+schemas/maxgen/** -text
+agents/** -text
+onboarding/** -text
+content/v2/** -text

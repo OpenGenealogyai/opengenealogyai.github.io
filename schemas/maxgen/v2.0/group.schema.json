@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opengenealogyai.org/schemas/maxgen/v2/group.schema.json",
+  "title": "MaxGroup",
+  "description": "MAXGEN 2.0 -- one MaxGroup document is one historical group (an emigrant company, a regiment, a congregation, a household followed across documents) holding only the group's own facts, once, and no member list, because each membership is a claim on the person with group_id.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "maxgen-defs.schema.json#/$defs/common_fields"},
+    {"$ref": "maxgen-defs.schema.json#/$defs/lifecycle_fields"},
+    {
+      "if": {"properties": {"is_living_flag": {"const": true}}, "required": ["is_living_flag"]},
+      "then": {"required": ["redistribution_license"], "properties": {"redistribution_license": {"const": "tier2-private"}}}
+    }
+  ],
+  "required": ["group_id", "is_living_flag", "redistribution_license", "group_kind", "name_assertions"],
+  "properties": {
+    "group_id": {
+      "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+      "description": "The group's permanent id: a random UUID created once by the writer (an import_file, resolve_conflict or build_tree task, R-24); merges and splits are made only by analysis (R-28)."
+    },
+    "is_living_flag": {
+      "type": "boolean",
+      "description": "Living A for the group file itself: true when its period or its names (such as 'the Mossbury household') touch someone who may be alive; when unsure, true; never worked out from members; a floor that only rises; true requires tier2-private."
+    },
+    "redistribution_license": {
+      "$ref": "maxgen-defs.schema.json#/$defs/licence",
+      "description": "The licence under which this group document may be shared; must be tier2-private when is_living_flag is true."
+    },
+    "group_kind": {
+      "enum": ["emigrant_company", "handcart_company", "wagon_train", "ship_company", "regiment", "military_unit",
+               "congregation", "ward", "institution", "school_class", "settlement", "enslaved_community", "household",
+               "work_crew", "society", "other"],
+      "description": "What kind of historical group this is (there is no kind for a research cluster of friends, associates and neighbours: those stay as MaxTask results); when no value fits, write other and give the words in group_kind_as_written."
+    },
+    "group_kind_as_written": {
+      "type": "string", "maxLength": 200,
+      "description": "The source's or program's own words for the kind of group."
+    },
+    "group_kind_uri": {
+      "$ref": "maxgen-defs.schema.json#/$defs/uri",
+      "description": "The address of the kind in a published vocabulary of group types, when there is one."
+    },
+    "name_assertions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/name_claim"},
+      "description": "The names the group was known by, each a claim with its own evidence; at least one is required."
+    },
+    "fact_assertions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/fact_claim"},
+      "description": "The group's own dated facts (organized, departed, arrived ...), each stored once here with its own evidence and never copied onto members; a member's page shows those inside the membership period at read time."
+    },
+    "parent_group_assertions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/parent_group_claim"},
+      "description": "Larger groups this group belonged to during a period (a company inside a regiment), each a claim with its own evidence."
+    },
+    "observed_in": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/observed_in_item"},
+      "description": "The documents that describe the group, including ones that name none of its members."
+    },
+    "media_refs": {
+      "type": "array",
+      "items": {"$ref": "maxgen-defs.schema.json#/$defs/media_ref"},
+      "description": "Photographs and other files of the group, pointed at by fingerprint on the record that holds each file (each file is described once, on the record that captured it)."
+    }
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "name_claim": {
+      "type": "object",
+      "description": "One name the group was known by, from one piece of evidence.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["name_as_written", "evidence", "confidence"],
+      "properties": {
+        "name_as_written": {
+          "type": "string", "minLength": 1, "maxLength": 1000,
+          "description": "The group's name exactly as the evidence gives it."
+        },
+        "lang": {
+          "$ref": "maxgen-defs.schema.json#/$defs/lang",
+          "description": "The language of the name (a BCP 47 tag such as en or de)."
+        },
+        "name_type": {
+          "enum": ["official", "as_recorded", "leader_name", "other"],
+          "description": "What kind of name this is (leader_name for a company known by its captain's name); when no value fits, write other and give the words in name_type_as_written."
+        },
+        "name_type_as_written": {
+          "type": "string", "maxLength": 200,
+          "description": "The source's own words for the kind of name."
+        },
+        "date": {
+          "$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "The period in which the group carried this name."
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "fact_claim": {
+      "type": "object",
+      "description": "One fact about the group itself (it departed on a day, it was mustered at a place), from one piece of evidence; a person-level claim for the same event needs basis conclusion.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["fact_type", "evidence", "confidence"],
+      "properties": {
+        "fact_type": {
+          "enum": ["organized", "departed", "arrived", "mustered", "disbanded", "residence", "existence", "other"],
+          "description": "What happened to the group or what is known of it (existence: the group is shown to have existed); when no value fits, write other and give the words in fact_type_as_written."
+        },
+        "fact_type_as_written": {
+          "type": "string", "maxLength": 200,
+          "description": "The source's own words for the fact."
+        },
+        "date": {
+          "$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "When the fact happened, or the period it covers."
+        },
+        "place": {
+          "$ref": "maxgen-defs.schema.json#/$defs/place_ref",
+          "description": "Where the fact happened, as written in the evidence."
+        },
+        "place_role_as_written": {
+          "type": "string", "maxLength": 200,
+          "description": "The source's own words for the place's part in the fact (departed from, arrived at, camped near)."
+        },
+        "occurrence_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The MaxEvent occasion this fact is about; for basis document it must equal the cited same-occasion entry's occurrence (the helper fills it when absent) and be absent when the entry is used indirectly; other rules as in spec 5.1."
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "parent_group_claim": {
+      "type": "object",
+      "description": "One larger group this group belonged to during a period (a company inside a regiment), from one piece of evidence.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["group_id", "evidence", "confidence"],
+      "properties": {
+        "group_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The larger MaxGroup, written by the writer of this claim; it must exist and be active when written (followed through merge redirects, Appendix C)."
+        },
+        "date": {
+          "$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "The period in which this group was part of the larger one."
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "observed_in_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "One document that describes the group, which may name none of its members.",
+      "required": ["record_id"],
+      "properties": {
+        "record_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The MaxRecord that describes the group; it must exist and be active when written (followed through merge redirects, Appendix C)."
+        },
+        "record_event_ref": {
+          "$ref": "maxgen-defs.schema.json#/$defs/label",
+          "description": "The event entry on that record that concerns the group, looked up on that record only (labels are never redirected)."
+        },
+        "note": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "description": "What the document shows about the group, in plain words."
+        }
+      }
+    }
+  }
+}

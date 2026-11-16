@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MaxSource — MAXGEN · OpenGenealogyAI</title>
-<meta name="description" content="MaxSource describes genealogical sources (archives, wikis, catalogues, databases) with structured coverage, access and provenance so a system can route a researcher to the right place.">
+<meta name="description" content="MaxSource, the MAXGEN 2.0 schema: one MaxSource is one work, collection or repository.">
 <link rel="canonical" href="https://opengenealogyai.org/schemas/maxsource/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
 <meta property="og:title" content="MaxSource">
-<meta property="og:description" content="MaxSource describes genealogical sources (archives, wikis, catalogues, databases) with structured coverage, access and provenance so a system can route a researcher to the right place.">
+<meta property="og:description" content="MaxSource, the MAXGEN 2.0 schema: one MaxSource is one work, collection or repository.">
 <meta property="og:url" content="https://opengenealogyai.org/schemas/maxsource/">
 <meta property="og:image" content="https://opengenealogyai.org/assets/img/logo/maxgen-og-1200x630.png">
 <meta property="og:image:width" content="1200">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="/assets/img/logo/favicon-180.png">
 <link rel="stylesheet" href="/assets/css/site.css">
 <link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/logo/maxgen-icon-dark-512.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxSource — MAXGEN schema v1.13", "description": "MaxSource describes genealogical sources (archives, wikis, catalogues, databases) with structured coverage, access and provenance so a system can route a researcher to the right place.", "url": "https://opengenealogyai.org/schemas/maxsource/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v1/source.schema.json", "encodingFormat": "application/schema+json"}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MAXGEN", "item": "https://opengenealogyai.org/"}, {"@type": "ListItem", "position": 2, "name": "Schemas", "item": "https://opengenealogyai.org/schemas/"}, {"@type": "ListItem", "position": 3, "name": "MaxSource", "item": "https://opengenealogyai.org/schemas/maxsource/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/logo/maxgen-icon-dark-512.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxSource — MAXGEN schema v2.0", "description": "MAXGEN 2.0 -- One MaxSource is one work, collection or repository that documents come from or are held by (a book, a periodical, a census collection, a microfilm publication, a family Bible, an archive, a library or a website), with what it covers and how to search it.", "url": "https://opengenealogyai.org/schemas/maxsource/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v2/source.schema.json", "encodingFormat": "application/schema+json"}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MAXGEN", "item": "https://opengenealogyai.org/"}, {"@type": "ListItem", "position": 2, "name": "Schemas", "item": "https://opengenealogyai.org/schemas/"}, {"@type": "ListItem", "position": 3, "name": "MaxSource", "item": "https://opengenealogyai.org/schemas/maxsource/"}]}</script>
 
 </head>
 <body>
@@ -35,103 +35,114 @@
   </div>
 </header>
 <main id="main" class="wrap">
-<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc"><ul><li class="lvl2"><a href="#the-navigators-problem">The navigator's problem</a></li><li class="lvl2"><a href="#what-it-is">What it is</a></li><li class="lvl2"><a href="#the-copyright-question">The copyright question</a></li><li class="lvl2"><a href="#source-types">Source types</a></li><li class="lvl2"><a href="#fields">Fields</a></li><li class="lvl2"><a href="#example">Example</a></li><li class="lvl2"><a href="#listen">Listen</a></li></ul></div></aside><div class="content"><div class="schema-head">
-  <p class="eyebrow">MAXGEN schema · v1.13</p>
+<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc"><ul><li class="lvl2"><a href="#definition">Definition</a></li><li class="lvl2"><a href="#fields">Fields</a></li><li class="lvl2"><a href="#example">A made-up example</a></li><li class="lvl2"><a href="#what-changed">What changed from 1.13</a></li><li class="lvl2"><a href="#listen">Listen</a></li></ul></div></aside><div class="content"><div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v2.0</p>
   <h1>MaxSource</h1>
-  <p class="tagline">A catalogue of where records live, built for the question &quot;where do I look next?&quot;</p>
-  <p class="dl"><a class="btn" href="/schemas/maxgen/v1/source.schema.json">Download MaxSource v1.13</a>
+  <p class="tagline">One MaxSource is one work, collection or repository.</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v2/source.schema.json">Download MaxSource (2.0)</a>
      <a class="btn ghost" href="/versions/">All versions</a>
-     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v1/source.schema.json</code></p>
-</div><h2 id="the-navigators-problem">The navigator's problem</h2>
-<p>A researcher needs the church records of a Lutheran family in Württemberg in the 1840s. If she knows German genealogy, she knows the answer: Archion and Matricula for the parish books, the state archive and Ancestry for emigration lists, the FamilySearch Research Wiki for which parishes cover which years. If she does not know, finding that out takes hours of catalogues, link directories, forum posts and emails.</p>
-<p>MaxSource makes that knowledge machine-readable.</p>
-<h2 id="what-it-is">What it is</h2>
-<p>MaxSource is <strong>not</strong> a database of records. It is a database of <strong>where records live</strong>. One MaxSource record describes one source: its name and URL, what kind of thing it is, what it covers, how to get in, and how we came to know about it.</p>
-<ul>
-<li><strong><code>source_type</code></strong>: directory index, research wiki, record catalogue, record database, archive, DNA database, library, newspaper archive, forum, blog, society, other. The type decides how a system interacts with the source.</li>
-<li><strong><code>coverage{}</code></strong>: places (with country, state, county, town), record types, a time period as <code>year_min</code> / <code>year_max</code>, languages, and ethnic or religious groups. It answers queries like "everything covering Bavaria, death records, 1840 to 1870".</li>
-<li><strong><code>access{}</code></strong>: free web, paid subscription, API, bulk download, scrape-only, or on-site only; whether a login is needed; the API base URL; whether robots.txt allows crawling; and crawl notes that hold the etiquette robots.txt does not ("batch 50 items per call, five seconds between requests").</li>
-<li><strong><code>embedding_text</code></strong>: a natural-language description built for a vector database (a search index that matches meaning rather than exact words), so "Lutheran records in Württemberg in the 1840s" finds Archion even though no keyword matched.</li>
-<li><strong><code>provenance{}</code></strong>: which seed source found this, its status (active, dead link, superseded, unverified), who asserted it and when it was last verified. Dead links are marked, not deleted.</li>
-<li><strong><code>parent_source_id</code></strong> and <strong><code>coverage.record_count_estimate</code></strong>: sub-collections link to their parent, and an estimated record count is the primary ranking signal between a national index and a single parish page.</li>
-</ul>
-<h2 id="the-copyright-question">The copyright question</h2>
-<p>Some source catalogues are other people's curated work. MaxSource handles this with the licence field: an entry derived from a third-party directory is marked <code>tier2-private</code> and used internally for routing only. Openly licensed entries can be published. The standard makes the decision explicit and auditable; the operator makes the decision.</p>
-<h2 id="source-types">Source types</h2>
-<p class="enum"><code>directory_index</code> <code>research_wiki</code> <code>record_catalog</code> <code>record_database</code> <code>archive</code> <code>dna_database</code> <code>library</code> <code>newspaper_archive</code> <code>forum</code> <code>blog</code> <code>society</code> <code>other</code></p>
-
+     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v2/source.schema.json</code></p>
+  <p class="sha">SHA-256 <code>c20053e226e30f3c83fc33a0899b60969deb54195e860ab4dd3823c4281ef1ac</code></p>
+</div><h2 id="definition">Definition</h2>
+<blockquote class="schema-desc"><p>MAXGEN 2.0 -- One MaxSource is one work, collection or repository that documents come from or are held by (a book, a periodical, a census collection, a microfilm publication, a family Bible, an archive, a library or a website), with what it covers and how to search it.</p></blockquote>
+<p class="muted">The schema's own description, word for word.</p>
 <h2 id="fields">Fields</h2>
-<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>source_id</code> <span class="req">required</span></td><td class="type">string</td><td>Globally unique identifier for this source entry.</td></tr><tr><td><code>schema_version</code> </td><td class="type">const &quot;1.13&quot;</td><td>MAXGEN version this record conforms to.</td></tr><tr><td><code>parent_source_id</code> </td><td class="type">string</td><td>MAXGEN v1.12 — UUID of the parent MaxSource record, when this entry is a sub-collection of a larger source.</td></tr><tr><td><code>name</code> <span class="req">required</span></td><td class="type">string</td><td>Human-readable name of the source, e.g.</td></tr><tr><td><code>source_url</code> <span class="req">required</span></td><td class="type">string</td><td>Canonical URL of the source or the specific category/page within it.</td></tr><tr><td><code>source_type</code> <span class="req">required</span></td><td class="type">enum</td><td>What KIND of source this is.</td></tr><tr><td><code>redistribution_license</code> <span class="req">required</span></td><td class="type">enum</td><td>Whether this source entry may be redistributed — same enum as MaxRecord.</td></tr><tr><td><code>description</code> </td><td class="type">string</td><td>Free-text summary of what this source holds and who it serves.</td></tr><tr><td><code>embedding_text</code> </td><td class="type">string</td><td>Denormalized natural-language text built from name + description + coverage, embedded into the vector DB so a query like &#x27;German Lutheran parish records, Pomerania, early 1800s&#x27; retrieves this source.</td></tr><tr><td><code>coverage</code> </td><td class="type">object</td><td>What this source covers — drives &#x27;where do I find X&#x27; matching.</td></tr><tr><td><code>access</code> </td><td class="type">object</td><td>How a harvester reaches the data — the politeness and method contract.</td></tr><tr><td><code>provenance</code> </td><td class="type">object</td><td>Where this entry came from and whether it is still good.</td></tr><tr><td><code>extensions</code> </td><td class="type">object</td><td>Product/implementation-specific fields live here, never in the core — e.g.</td></tr></tbody></table></div>
-
-<h2 id="example">Example</h2>
-<p>A FamilySearch Research Wiki article catalogued as a public MaxSource.</p>
+<p>The top-level fields of a MaxSource document. Parts shared by every schema (the date block, the place block, the evidence link, the claim header and others) are defined once in the <a href="/schemas/#shared-building-blocks">shared building-blocks file</a>.</p>
+<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>source_id</code> <span class="req">required</span></td><td class="type">uuid</td><td>This source&#x27;s own id: a random UUID created once by the writer and never reused.</td></tr><tr><td><code>name</code> <span class="req">required</span></td><td class="type">string</td><td>The source&#x27;s name in plain words, such as a made-up &#x27;Tumblebrook parish registers, 1801-1900&#x27;.</td></tr><tr><td><code>source_type</code> <span class="req">required</span></td><td class="type">enum</td><td>What kind of source this is.</td></tr><tr><td><code>source_type_as_written</code> </td><td class="type">string</td><td>The kind of source in the writer&#x27;s or the other program&#x27;s own words, given when source_type is other.</td></tr><tr><td><code>redistribution_license</code> <span class="req">required</span></td><td class="type">licence</td><td>Whether this source entry may be shared (unclear means ask, never guess); a tier2-private entry never appears in any open dataset, share, export, public embedding or commit.</td></tr><tr><td><code>is_living_flag</code> <span class="req">required</span></td><td class="type">boolean</td><td>Living A floor: true when this source entry names someone who may be alive, such as a privately held family Bible (unsure means true; credits never set it); true requires tier2-private.</td></tr><tr><td><code>source_url</code> </td><td class="type">uri</td><td>The source&#x27;s own address, when it has one; optional (a book or a family Bible has none) and never invented.</td></tr><tr><td><code>parent_source_id</code> </td><td class="type">uuid</td><td>The larger MaxSource this one is part of, such as the collection that holds this series.</td></tr><tr><td><code>description</code> </td><td class="type">text</td><td>What this source holds and who it serves, in plain words.</td></tr><tr><td><code>embedding_text</code> </td><td class="type">text</td><td>Plain text built from the name, description and coverage, for search indexes.</td></tr><tr><td><code>bibliographic</code> </td><td class="type">bibliographic</td><td>How the work is cited: title, creators, publisher and edition.</td></tr><tr><td><code>holdings</code> </td><td class="type">array of holding</td><td>The repositories that hold this source, with call numbers.</td></tr><tr><td><code>coverage</code> </td><td class="type">coverage</td><td>What the source covers, including, for each place, which years it holds and the exact words to search with (routing lives only here).</td></tr><tr><td><code>access</code> </td><td class="type">access</td><td>How the source is reached, and the polite way to search it.</td></tr><tr><td><code>link_status</code> </td><td class="type">enum</td><td>Whether the source&#x27;s address still works; a dead link is marked, never deleted.</td></tr><tr><td><code>last_verified_at</code> </td><td class="type">timestamp</td><td>When the address was last confirmed to work.</td></tr><tr><td><code>discovered_via</code> </td><td class="type">enum</td><td>How this source entry was first found.</td></tr><tr><td><code>discovered_via_as_written</code> </td><td class="type">string</td><td>How it was found, in the writer&#x27;s own words, given when discovered_via is other.</td></tr><tr><td><code>external_ref</code> </td><td class="type">string</td><td>The link, category path or article title where this entry was found.</td></tr><tr><td><code>attribution</code> </td><td class="type">attribution</td><td>Credit to the human who compiled or contributed this entry (a credit never sets the living flag).</td></tr><tr><td><code>media_refs</code> </td><td class="type">array of media_ref</td><td>Files that show this source (a title page, a repository photograph), each described once on the record that captured it.</td></tr></tbody></table></div>
+<h2 id="example">A made-up example</h2>
+<p>Every example on this site is invented: no real person, family or place. This one is <code>census_collection_with_routing.json</code> from the standard's test files, copied as it is.</p>
 <pre class="json"><code>{
-  &quot;source_id&quot;: &quot;f1700000-0002-4000-8000-000000000002&quot;,
-  &quot;schema_version&quot;: &quot;1.13&quot;,
-  &quot;name&quot;: &quot;FamilySearch Research Wiki — Pomerania, Germany Genealogy&quot;,
-  &quot;source_url&quot;: &quot;https://www.familysearch.org/en/wiki/Pomerania,_Germany_Genealogy&quot;,
-  &quot;source_type&quot;: &quot;research_wiki&quot;,
-  &quot;redistribution_license&quot;: &quot;CC-BY&quot;,
-  &quot;description&quot;: &quot;FamilySearch Research Wiki locality article describing what records exist for Pomerania and where to find them. Openly licensed content, machine-readable via the MediaWiki API.&quot;,
-  &quot;embedding_text&quot;: &quot;Pomerania Germany genealogy research: civil registration, Lutheran church books, census, emigration records; where Pomeranian records are held and how to access them.&quot;,
+  &quot;source_id&quot;: &quot;2a140cc7-1211-5c72-8071-ccd81e1ddcc7&quot;,
+  &quot;schema_version&quot;: &quot;2.0&quot;,
+  &quot;name&quot;: &quot;Erewhon census of 1940 (made up)&quot;,
+  &quot;source_type&quot;: &quot;census_collection&quot;,
+  &quot;redistribution_license&quot;: &quot;CC0&quot;,
+  &quot;is_living_flag&quot;: false,
+  &quot;source_url&quot;: &quot;https://records.example.org/sample/census-1940&quot;,
+  &quot;holdings&quot;: [
+    {
+      &quot;repository_name&quot;: &quot;Erewhon National Archive (made up)&quot;,
+      &quot;holds_original&quot;: true,
+      &quot;call_number&quot;: &quot;CEN-1940&quot;,
+      &quot;medium_as_written&quot;: &quot;bound enumeration books&quot;
+    },
+    {
+      &quot;repository_name&quot;: &quot;Example Records Online (made up publisher)&quot;,
+      &quot;holds_original&quot;: false,
+      &quot;medium_as_written&quot;: &quot;digital images&quot;
+    }
+  ],
   &quot;coverage&quot;: {
     &quot;places&quot;: [
       {
-        &quot;place_as_written&quot;: &quot;Pomerania, Germany&quot;,
-        &quot;country_code&quot;: &quot;DE&quot;,
-        &quot;state_province&quot;: &quot;Pomerania&quot;
+        &quot;place&quot;: {
+          &quot;place_as_written&quot;: &quot;Tumblebrook, Wrenshire, Erewhon&quot;
+        },
+        &quot;span&quot;: {
+          &quot;value&quot;: {
+            &quot;year&quot;: 1940
+          },
+          &quot;as_written&quot;: &quot;1940&quot;,
+          &quot;derivation&quot;: &quot;interpreted&quot;
+        },
+        &quot;search_as&quot;: &quot;Tumblebrook district 4&quot;
+      },
+      {
+        &quot;place&quot;: {
+          &quot;place_as_written&quot;: &quot;Larkspur hamlet, Wrenshire, Erewhon&quot;
+        },
+        &quot;span&quot;: {
+          &quot;value&quot;: {
+            &quot;year&quot;: 1940
+          },
+          &quot;as_written&quot;: &quot;1940&quot;,
+          &quot;derivation&quot;: &quot;interpreted&quot;
+        },
+        &quot;search_as&quot;: &quot;Tumblebrook district 4&quot;,
+        &quot;note&quot;: &quot;Larkspur hamlet is filed with the Tumblebrook district in 1940.&quot;
       }
     ],
     &quot;record_types&quot;: [
-      &quot;parish_register&quot;,
-      &quot;census_row&quot;,
-      &quot;immigration_record&quot;,
-      &quot;land_deed&quot;
+      &quot;census_household&quot;
     ],
-    &quot;time_period&quot;: {
-      &quot;year_min&quot;: 1650,
-      &quot;year_max&quot;: 1945
-    },
     &quot;languages&quot;: [
-      &quot;de&quot;,
-      &quot;la&quot;
+      &quot;en&quot;
     ],
-    &quot;ethnic_or_religious_groups&quot;: [
-      &quot;Lutheran&quot;
-    ]
+    &quot;span&quot;: {
+      &quot;value&quot;: {
+        &quot;year&quot;: 1940
+      },
+      &quot;derivation&quot;: &quot;interpreted&quot;
+    }
   },
-  &quot;access&quot;: {
-    &quot;access_method&quot;: &quot;api&quot;,
-    &quot;requires_auth&quot;: false,
-    &quot;api_base_url&quot;: &quot;https://www.familysearch.org/en/wiki/api.php&quot;,
-    &quot;robots_allowed&quot;: true,
-    &quot;crawl_notes&quot;: &quot;Use MediaWiki api.php, batched up to 50 pages/call; pull locality + record-type articles only, not all 100k pages.&quot;
-  },
-  &quot;provenance&quot;: {
-    &quot;discovered_via&quot;: &quot;fs_research_wiki&quot;,
-    &quot;external_ref&quot;: &quot;Pomerania, Germany Genealogy&quot;,
-    &quot;status&quot;: &quot;active&quot;,
-    &quot;asserted_by&quot;: &quot;source-crawler-agent-001&quot;,
-    &quot;asserted_at&quot;: &quot;2026-06-25T17:05:00Z&quot;,
-    &quot;last_verified_at&quot;: &quot;2026-06-25T17:05:00Z&quot;
-  },
+  &quot;link_status&quot;: &quot;active&quot;,
+  &quot;last_verified_at&quot;: &quot;2026-10-16T12:00:00Z&quot;,
+  &quot;discovered_via&quot;: &quot;manual&quot;,
+  &quot;created_by_task_id&quot;: &quot;a90fb929-e2f7-5bc9-9d68-16e1f280bf3a&quot;,
   &quot;extensions&quot;: {
-    &quot;harvester_adapter&quot;: &quot;fs-wiki-adapter&quot;,
-    &quot;query_pattern&quot;: &quot;by_place&quot;
+    &quot;fixture&quot;: &quot;made up&quot;
   }
-}</code></pre>
-
+}
+</code></pre>
+<h2 id="what-changed">What changed from 1.13</h2>
+<p><code>source_url</code> becomes optional; the <code>provenance</code> block is dissolved (<code>status</code> → <code>link_status</code>,
+<code>asserted_by</code> → <code>created_by_task_id</code>, <code>asserted_at</code> → <code>created_at</code>); <code>coverage.time_period</code>
+becomes <code>coverage.span</code> (a date block, no year cap); places use the place block. Added:
+<code>bibliographic</code> (title, creators, publisher, edition), <code>holdings</code> (which repository holds the
+original), <code>is_living_flag</code> (required), a wider <code>source_type</code> list, <code>discovered_via</code>.</p>
+<p><a href="/changelog/#v20-2026-10-16">The whole v2.0 changelog entry</a></p>
 <h2 id="listen">Listen</h2>
 <div class="episode" id="ep5">
   <div class="ep-head"><span class="ep-num">Episode 5</span><h3>MaxSource — The routing brain</h3><span class="ep-len">18:16</span></div>
   <p>Where records hide: coverage, access, provenance, and semantic search over sources.</p>
+  <p class="ep-note">This episode describes MAXGEN v1.11. <a href="/changelog/#v20-2026-10-16">What changed since: the v2.0 changelog entry</a>.</p>
   <audio controls preload="none" src="https://opengenealogyai.org/podcasts/audio/MAXGEN-05-maxsource.mp3"></audio>
   <p class="ep-links"><a href="https://opengenealogyai.org/podcasts/audio/MAXGEN-05-maxsource.mp3">Download MP3</a> (35 MB)</p>
-</div><p class="backlink"><a href="/schemas/">← All seven schemas</a></p></div></div>
+</div><p class="backlink"><a href="/schemas/">← All eleven schemas</a> · <a href="/schemas/v1.13/maxsource/">The archived 1.13 page</a></p></div></div>
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v1.13</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v2.0</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
     <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
     <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
   </div>

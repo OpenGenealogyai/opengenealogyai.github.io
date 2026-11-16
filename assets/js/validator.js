@@ -1,5 +1,6 @@
-/* Browser-side MAXGEN validator. Uses Ajv (JSON Schema 2020-12) loaded from /assets/js/ajv2020.min.js.
-   Nothing you paste leaves your browser. */
+/* Browser-side MAXGEN validator. Uses Ajv (JSON Schema 2020-12) loaded from a public content network.
+   MAXGEN 2.0: all twelve files are loaded into one Ajv registry (the shared building-blocks file first), as the
+   schema repo's own validators do. Nothing you paste leaves your browser. */
 (function () {
   var sel = document.getElementById("schema-select");
   var ta = document.getElementById("record");
@@ -8,71 +9,137 @@
   var sample = document.getElementById("sample");
   if (!sel || !ta || !out || !btn) return;
 
-  var cache = {};
-  function show(cls, html) { out.className = cls; out.innerHTML = html; out.hidden = false; }
+  var V2 = "/schemas/maxgen/v2/";
+  var DEFS = "maxgen-defs.schema.json";
+  // [value, label, file, example] in the order of the schema pages
+  var KINDS = [
+    ["raw-record", "MaxRecord", "raw-record.schema.json", "record/marriage_register_1880_obadiah_patience.json"],
+    ["person", "MaxPerson", "person.schema.json", "person/birth_calculated_from_census_age.json"],
+    ["relationship", "MaxRelationship", "relationship.schema.json", "relationship/parent_child_candidate_father_a.json"],
+    ["task-queue", "MaxTask", "task-queue.schema.json", "task/extract_record_with_steps.json"],
+    ["source", "MaxSource", "source.schema.json", "source/census_collection_with_routing.json"],
+    ["place", "MaxPlace", "place.schema.json", "place/town_with_dated_kinds.json"],
+    ["group", "MaxGroup", "group.schema.json", "group/emigrant_company_no_members.json"],
+    ["event", "MaxEvent", "event.schema.json", "event/marriage_shared_by_three_documents.json"],
+    ["name", "MaxName", "name.schema.json", "name/quillfeather_surname_variants_with_status.json"],
+    ["recognition", "MaxRecognition", "recognition.schema.json", "recognition/htr_reading_with_region.json"],
+    ["dna", "MaxDNA", "dna.schema.json", "dna/autosomal_with_match_ids.json"]
+  ];
+  // A document's kind is the first of these keys found at its top level (schemas/README-v2.md).
+  var KIND_KEYS = [["dna_id", "dna"], ["recognition_id", "recognition"], ["name_id", "name"],
+    ["relationship_id", "relationship"], ["occurrence_id", "event"], ["place_id", "place"], ["group_id", "group"],
+    ["record_id", "raw-record"], ["task_id", "task-queue"], ["source_id", "source"], ["person_id", "person"]];
+  var V1 = [["v1:person", "MaxPerson"], ["v1:raw-record", "MaxRecord"], ["v1:task-queue", "MaxTask"], ["v1:dna", "MaxDNA"],
+    ["v1:source", "MaxSource"], ["v1:recognition", "MaxRecognition"], ["v1:name", "MaxName"]];
 
-  function loadSchema(name) {
-    if (cache[name]) return Promise.resolve(cache[name]);
-    return fetch("/schemas/maxgen/v1/" + name + ".schema.json").then(function (r) {
-      if (!r.ok) throw new Error("Could not load schema (" + r.status + ")");
-      return r.json();
-    }).then(function (s) { cache[name] = s; return s; });
+  // Build the menu: detect, the eleven 2.0 kinds, then the archived 1.13 schemas.
+  sel.innerHTML = "";
+  function opt(parent, value, text) { var o = document.createElement("option"); o.value = value; o.textContent = text; parent.appendChild(o); }
+  opt(sel, "auto", "Detect the kind from the record (MAXGEN 2.0)");
+  var g2 = document.createElement("optgroup"); g2.label = "MAXGEN 2.0"; sel.appendChild(g2);
+  KINDS.forEach(function (k) { opt(g2, k[0], k[1] + " (" + k[2] + ")"); });
+  var g1 = document.createElement("optgroup"); g1.label = "MAXGEN 1.13 (archived)"; sel.appendChild(g1);
+  V1.forEach(function (k) { opt(g1, k[0], k[1] + " 1.13 (" + k[0].slice(3) + ".schema.json)"); });
+
+  function show(cls, html) { out.className = cls; out.innerHTML = html; out.hidden = false; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function getJSON(url) {
+    return fetch(url).then(function (r) { if (!r.ok) throw new Error("Could not load " + url + " (" + r.status + ")"); return r.json(); });
+  }
+  function newAjv() {
+    var ajv = new window.ajv2020({ allErrors: true, strict: false, allowUnionTypes: true });
+    // The formats MAXGEN schemas use, implemented inline so no extra library is needed.
+    var URI = /^[a-z][a-z0-9+.-]*:[^\s]+$/i;
+    ajv.addFormat("uuid", /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+    ajv.addFormat("date", /^\d{4}-\d{2}-\d{2}$/);
+    ajv.addFormat("date-time", /^\d{4}-\d{2}-\d{2}[Tt ]\d{2}:\d{2}:\d{2}(\.\d+)?([Zz]|[+-]\d{2}:\d{2})$/);
+    ajv.addFormat("uri", URI);
+    ajv.addFormat("iri", URI);
+    ajv.addFormat("uri-reference", /^\S*$/);
+    ajv.addFormat("email", /^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+    ajv.addFormat("hostname", /^[a-z0-9.-]+$/i);
+    ajv.addFormat("ipv4", /^(\d{1,3}\.){3}\d{1,3}$/);
+    ajv.addFormat("regex", function () { return true; });
+    return ajv;
+  }
+
+  var v2ajv = null;   // one registry with all twelve files, built once
+  function loadV2() {
+    if (v2ajv) return Promise.resolve(v2ajv);
+    var files = [DEFS].concat(KINDS.map(function (k) { return k[2]; }));
+    return Promise.all(files.map(function (f) { return getJSON(V2 + f); })).then(function (schemas) {
+      var ajv = newAjv();
+      schemas.forEach(function (s) { ajv.addSchema(s); });   // the shared file is first
+      v2ajv = ajv;
+      return ajv;
+    });
+  }
+  var v1cache = {};
+  function loadV1(name) {
+    if (v1cache[name]) return Promise.resolve(v1cache[name]);
+    return getJSON("/schemas/maxgen/v1/" + name + ".schema.json").then(function (s) {
+      // Some 1.x files name an older draft in $schema; the 2020-12 engine reads their keywords the same way.
+      delete s.$schema;
+      var ajv = newAjv(); v1cache[name] = ajv.compile(s); v1cache[name].title = s.title; return v1cache[name];
+    });
+  }
+  function kindOf(data) {
+    if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+    for (var i = 0; i < KIND_KEYS.length; i++) if (Object.prototype.hasOwnProperty.call(data, KIND_KEYS[i][0])) return KIND_KEYS[i][1];
+    return null;
+  }
+  function kindInfo(value) { for (var i = 0; i < KINDS.length; i++) if (KINDS[i][0] === value) return KINDS[i]; return null; }
+
+  function report(validate, label) {
+    if (validate.errors === null || validate.errors === undefined || validate.errors.length === 0) {
+      show("ok", "<strong>Valid.</strong> This record conforms to " + esc(label) + "."); return;
+    }
+    var items = validate.errors.slice(0, 40).map(function (e) {
+      var where = e.instancePath || "(top level)";
+      var extra = "";
+      if (e.params && e.params.additionalProperty) extra = " — unexpected field <code>" + esc(e.params.additionalProperty) + "</code>";
+      if (e.params && e.params.unevaluatedProperty) extra = " — unexpected field <code>" + esc(e.params.unevaluatedProperty) + "</code>";
+      if (e.params && e.params.allowedValues) extra = " — allowed: <code>" + e.params.allowedValues.map(esc).join("</code>, <code>") + "</code>";
+      return "<li><code>" + esc(where) + "</code> " + esc(e.message) + extra + "</li>";
+    });
+    var n = validate.errors.length;
+    show("bad", "<strong>" + n + " problem" + (n === 1 ? "" : "s") + " found against " + esc(label) + ".</strong><ul>" + items.join("") + "</ul>");
   }
 
   btn.addEventListener("click", function () {
-    var name = sel.value;
     var data;
     try { data = JSON.parse(ta.value); }
-    catch (e) { show("bad", "<strong>That is not valid JSON.</strong> " + e.message); return; }
+    catch (e) { show("bad", "<strong>That is not valid JSON.</strong> " + esc(e.message)); return; }
     if (typeof window.ajv2020 !== "function") { show("bad", "The validator library did not load. Check your connection and reload."); return; }
-    loadSchema(name).then(function (schema) {
-      var Ajv = window.ajv2020;
-      var ajv = new Ajv({ allErrors: true, strict: false, allowUnionTypes: true });
-      // The formats MAXGEN schemas use, implemented inline so no extra library is needed.
-      var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      var DATE = /^\d{4}-\d{2}-\d{2}$/;
-      var DATETIME = /^\d{4}-\d{2}-\d{2}[Tt ]\d{2}:\d{2}:\d{2}(\.\d+)?([Zz]|[+-]\d{2}:\d{2})$/;
-      var URI = /^[a-z][a-z0-9+.-]*:[^\s]+$/i;
-      var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      ajv.addFormat("uuid", UUID);
-      ajv.addFormat("date", DATE);
-      ajv.addFormat("date-time", DATETIME);
-      ajv.addFormat("uri", URI);
-      ajv.addFormat("uri-reference", /^\S*$/);
-      ajv.addFormat("email", EMAIL);
-      ajv.addFormat("hostname", /^[a-z0-9.-]+$/i);
-      ajv.addFormat("ipv4", /^(\d{1,3}\.){3}\d{1,3}$/);
-      ajv.addFormat("iri", URI);
-      ajv.addFormat("regex", function () { return true; });
+    var choice = sel.value;
+    if (choice.indexOf("v1:") === 0) {
+      var name = choice.slice(3);
+      loadV1(name).then(function (validate) { validate(data); report(validate, (validate.title || name) + " 1.13 (archived)"); })
+        .catch(function (e) { show("bad", esc(e.message)); });
+      return;
+    }
+    var kind = choice === "auto" ? kindOf(data) : choice;
+    if (!kind) { show("bad", "<strong>Could not tell which kind of record this is.</strong> A MAXGEN 2.0 document has one of these keys at its top level: <code>" + KIND_KEYS.map(function (k) { return k[0]; }).join("</code>, <code>") + "</code>. Or choose the schema from the list."); return; }
+    var info = kindInfo(kind);
+    loadV2().then(function (ajv) {
       var validate;
-      try { validate = ajv.compile(schema); }
-      catch (e) { show("bad", "Schema could not be compiled: " + e.message); return; }
-      var ok = validate(data);
-      if (ok) {
-        show("ok", "<strong>Valid.</strong> This record conforms to " + (schema.title || name) + " v" + (schema.properties && schema.properties.schema_version && schema.properties.schema_version.const || "") + ".");
-      } else {
-        var items = validate.errors.map(function (e) {
-          var where = e.instancePath || "(top level)";
-          var extra = e.params && e.params.additionalProperty ? " — unexpected field <code>" + e.params.additionalProperty + "</code>" : "";
-          if (e.params && e.params.allowedValues) extra = " — allowed: <code>" + e.params.allowedValues.join("</code>, <code>") + "</code>";
-          return "<li><code>" + where + "</code> " + e.message + extra + "</li>";
-        });
-        show("bad", "<strong>" + validate.errors.length + " problem" + (validate.errors.length === 1 ? "" : "s") + " found.</strong><ul>" + items.join("") + "</ul>");
-      }
-    }).catch(function (e) { show("bad", e.message); });
+      try { validate = ajv.getSchema("https://opengenealogyai.org" + V2 + info[2]); }   // each file's $id
+      catch (e) { show("bad", "Schema could not be compiled: " + esc(e.message)); return; }
+      if (!validate) { show("bad", "Schema " + esc(info[2]) + " is not loaded."); return; }
+      validate(data);
+      report(validate, info[1] + " (MAXGEN 2.0)" + (choice === "auto" ? ", detected from the record" : ""));
+    }).catch(function (e) { show("bad", esc(e.message)); });
   });
 
   if (sample) sample.addEventListener("click", function () {
-    var samples = {
-      "raw-record": { record_id: "a1b2c3d4-0003-4000-8000-000000000003", schema_version: "1.13", record_type: "marriage_certificate", redistribution_license: "CC0", is_living_flag: false, source_url: "https://archive.org/details/illinois-marriage-1842-sangamon", extraction_confidence: 0.97, persons_mentioned: [{ name_as_written: "Abraham Lincoln", role: "subject" }, { name_as_written: "Mary Todd", role: "spouse" }], record_date: { year_min: 1842, year_max: 1842, month: 11, day: 4, date_type: "exact" } },
-      "person": { person_id: "b1000000-0006-4000-8000-000000000006", schema_version: "1.13", is_living: false, name_assertions: [{ name_as_written: "Mary Todd", confidence: 0.95, source_record_id: "a1b2c3d4-0003-4000-8000-000000000003", asserted_by: "you", asserted_at: "2026-05-01T14:00:00Z" }], asserted_by: "you", asserted_at: "2026-05-01T14:00:00Z" },
-      "task-queue": { task_id: "c1000000-0097-4000-8000-000000000097", schema_version: "1.13", task_type: "validate_record", status: "pending", created_at: "2026-05-01T00:00:00Z", created_by: "you" },
-      "source": { source_id: "f1700000-0001-4000-8000-000000000001", schema_version: "1.13", name: "FamilySearch Research Wiki — Bavaria Church Records", source_url: "https://www.familysearch.org/en/wiki/Bavaria_Church_Records", source_type: "research_wiki", redistribution_license: "CC-BY-SA" },
-      "recognition": { recognition_id: "c1900000-0002-4000-8000-000000000001", schema_version: "1.13", recognition_type: "htr", image_url: "https://example.org/register-page-12.jpg", output_text: "Johann Maier, geb. 14 März 1842", processing_date: "2026-06-20T14:00:00Z", contributor: { contributor_type: "human", contributor_name: "A. Reader" } },
-      "name": { name_id: "e1f2a3b4-c5d6-4789-9abc-de0123456789", schema_version: "1.13", canonical_form: "Maxwell", name_type: "surname" },
-      "dna": { dna_id: "d1000000-0001-4000-8000-000000000001", schema_version: "1.13", person_id: "b1000000-0006-4000-8000-000000000006", test_type: "autosomal", kit_id_hash: "0000000000000000000000000000000000000000000000000000000000000000", kit_source: "other", is_living_flag: true, redistribution_license: "tier2-private", raw_genotype_stored: false, consent_status: "subject_explicit_opt_in", asserted_by: "you", asserted_at: "2026-05-01T00:00:00Z" }
-    };
-    ta.value = JSON.stringify(samples[sel.value] || samples.person, null, 2);
-    out.hidden = true;
+    var info = kindInfo(sel.value);
+    if (!info) {
+      if (sel.value.indexOf("v1:") === 0) { show("bad", "Samples are offered for MAXGEN 2.0 only."); return; }
+      info = kindInfo("person");
+    }
+    getJSON("/content/v2/examples/" + info[3]).then(function (d) {
+      ta.value = JSON.stringify(d, null, 2);
+      out.hidden = true;
+    }).catch(function (e) { show("bad", esc(e.message)); });
   });
 })();

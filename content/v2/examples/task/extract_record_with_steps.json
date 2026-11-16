@@ -1,0 +1,84 @@
+{
+  "task_id": "79f310ff-0478-5af4-abc5-f6316de4cffb",
+  "schema_version": "2.0",
+  "task_type": "extract_record",
+  "status": "done",
+  "payload": {
+    "kind": "extract",
+    "person_id": "0aacaa81-8ca0-5df6-8ff8-2a9f7067d76f"
+  },
+  "result": {
+    "hypothesis_tested": "Mabel was baptised at Tumblebrook in 1924.",
+    "what_we_did_and_result": "Searched two collections; found the baptism entry; one site needed a login.",
+    "steps": [
+      {
+        "step_no": 1,
+        "action": "search",
+        "source": "Tumblebrook parish registers (made-up online images)",
+        "source_id": "75df6185-5f2f-5652-afb4-fb6349ea015f",
+        "source_url": "https://records.example.org/sample/tumblebrook-baptisms",
+        "query": "Thistlewood baptisms 1920-1930",
+        "coverage": {
+          "span": {
+            "modifier": "from_to",
+            "value": {
+              "year": 1920
+            },
+            "value2": {
+              "year": 1930
+            },
+            "derivation": "interpreted"
+          },
+          "place": {
+            "place_as_written": "Tumblebrook"
+          },
+          "record_types": [
+            "parish_register"
+          ]
+        },
+        "found": "one entry: Mabel, baptised 16 March 1924",
+        "record_id": "d990b9d1-f418-573b-83e7-21792a44085d",
+        "person_id": "0aacaa81-8ca0-5df6-8ff8-2a9f7067d76f",
+        "verdict": "key_finding",
+        "confidence": 0.95,
+        "at": "2026-10-16T12:00:00Z"
+      },
+      {
+        "step_no": 2,
+        "action": "search",
+        "source": "Erewhon civil birth index (made up)",
+        "source_url": "https://index.example.org/births",
+        "query": "Thistlewood births 1924",
+        "found": "The site asked for a login. Not searched; agents never handle passwords.",
+        "verdict": "inaccessible",
+        "at": "2026-10-16T12:00:00Z"
+      }
+    ],
+    "verdict": "usable",
+    "verdict_reason": "the baptism entry was found and transcribed",
+    "confidence": 0.9
+  },
+  "is_living_flag": false,
+  "contributor_eligibility": "first_party_only",
+  "provenance": {
+    "agent_id": "db:99a01bf5-fdde-51dc-af11-eef027d87f5b/Genealogist",
+    "agent_kind": "ai",
+    "role": "Genealogist",
+    "party": "db:99a01bf5-fdde-51dc-af11-eef027d87f5b",
+    "run_id": "r1",
+    "display_name": "Genealogist",
+    "model": {
+      "provider": "example",
+      "name": "fixture-model",
+      "attested_by": "self_reported"
+    },
+    "claimed_at": "2026-10-16T12:00:00Z",
+    "channel": "cli"
+  },
+  "created_by": "db:99a01bf5-fdde-51dc-af11-eef027d87f5b/Genealogist",
+  "started_at": "2026-10-16T12:00:00Z",
+  "completed_at": "2026-10-16T12:30:00Z",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

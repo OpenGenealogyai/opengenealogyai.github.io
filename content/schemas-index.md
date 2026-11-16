@@ -1,29 +1,27 @@
 ---
-title: The seven schemas
-description: MaxRecord, MaxPerson, MaxTask, MaxDNA, MaxSource, MaxRecognition and MaxName — the seven MAXGEN schema files, explained and downloadable.
+title: The MAXGEN schemas
+description: The eleven MAXGEN 2.0 record schemas (MaxRecord, MaxPerson, MaxRelationship, MaxTask, MaxSource, MaxPlace, MaxGroup, MaxEvent, MaxName, MaxRecognition, MaxDNA) and the shared building-blocks file, explained and downloadable.
 ---
-<p class="eyebrow">MAXGEN v<!--CURRENT--> · lockstep release</p>
-# The seven schemas
+<p class="eyebrow">MAXGEN v<!--CURRENT--> · twelve files, one version</p>
+# The schemas
 
-All seven files share one version number. When any of them changes, the whole standard moves to the next number, so you adopt "MAXGEN v<!--CURRENT-->" as a set and never have to wonder which schema goes with which.
+MAXGEN 2.0 is one release: eleven record schemas plus one shared building-blocks file. Every file is JSON Schema Draft 2020-12. All twelve files share one version number, and within 2.x every change is additive: a file valid under 2.0 stays valid under every 2.x.
 
 <!--CARDS-->
 
+## Shared building blocks
+
+`maxgen-defs.schema.json` is not a record type: no document is valid against it alone. It holds the parts every record schema uses: ids and small types, the date block, the place block, the evidence link (the part of every claim that says which evidence it rests on), the quote check, saved copies, regions and media pointers, roles and event types, the claim header, the common and lifecycle fields, and the task provenance block. [Download the shared file](/schemas/maxgen/v2/maxgen-defs.schema.json).
+
 ## Canonical addresses
 
-Every schema file declares its own permanent address in its `$id` field. Tools that validate records fetch the schema from there.
+<!--ADDRESSES-->
 
-| Schema | Latest v1 (always current) | File |
-|---|---|---|
-| MaxRecord | `/schemas/maxgen/v1/raw-record.schema.json` | [download](/schemas/maxgen/v1/raw-record.schema.json) |
-| MaxPerson | `/schemas/maxgen/v1/person.schema.json` | [download](/schemas/maxgen/v1/person.schema.json) |
-| MaxTask | `/schemas/maxgen/v1/task-queue.schema.json` | [download](/schemas/maxgen/v1/task-queue.schema.json) |
-| MaxDNA | `/schemas/maxgen/v1/dna.schema.json` | [download](/schemas/maxgen/v1/dna.schema.json) |
-| MaxSource | `/schemas/maxgen/v1/source.schema.json` | [download](/schemas/maxgen/v1/source.schema.json) |
-| MaxRecognition | `/schemas/maxgen/v1/recognition.schema.json` | [download](/schemas/maxgen/v1/recognition.schema.json) |
-| MaxName | `/schemas/maxgen/v1/name.schema.json` | [download](/schemas/maxgen/v1/name.schema.json) |
+Every file declares its own address in its `$id`. A record schema points into the shared file by a relative address, so all twelve files sit side by side in one folder. Validators load all twelve files into one registry and never fetch anything over the network; the addresses do not need to be reachable for validation to work. The fingerprints are also in [SHA256SUMS.txt](/schemas/maxgen/v2/SHA256SUMS.txt), and a machine-readable list of every version is at [`/schemas/maxgen/index.json`](/schemas/maxgen/index.json).
 
-Frozen copies of every past release live under `/schemas/maxgen/v1.NN/` and are listed on the [versions page](/versions/). A machine-readable list is at [`/schemas/maxgen/index.json`](/schemas/maxgen/index.json).
+## MAXGEN 1.13 (archived) {#archived-113}
+
+The seven 1.13 schema files stay exactly as they were, at their permanent addresses under `/schemas/maxgen/v1/` and `/schemas/maxgen/v1.NN/`. MAXGEN 2.0 does not read 1.x files. The 1.13 pages are kept for reference: <!--ARCHIVED-->.
 
 ## Check a record
 

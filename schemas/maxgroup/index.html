@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaxGroup — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MaxGroup, the MAXGEN 2.0 schema: one MaxGroup is one historical group (its own facts only; no member list).">
+<link rel="canonical" href="https://opengenealogyai.org/schemas/maxgroup/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MaxGroup">
+<meta property="og:description" content="MaxGroup, the MAXGEN 2.0 schema: one MaxGroup is one historical group (its own facts only; no member list).">
+<meta property="og:url" content="https://opengenealogyai.org/schemas/maxgroup/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/logo/maxgen-og-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/img/logo/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/assets/img/logo/maxgen-icon-dark.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/logo/favicon-180.png">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/logo/maxgen-icon-dark-512.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxGroup — MAXGEN schema v2.0", "description": "MAXGEN 2.0 -- one MaxGroup document is one historical group (an emigrant company, a regiment, a congregation, a household followed across documents) holding only the group's own facts, once, and no member list, because each membership is a claim on the person with group_id.", "url": "https://opengenealogyai.org/schemas/maxgroup/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v2/group.schema.json", "encodingFormat": "application/schema+json"}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MAXGEN", "item": "https://opengenealogyai.org/"}, {"@type": "ListItem", "position": 2, "name": "Schemas", "item": "https://opengenealogyai.org/schemas/"}, {"@type": "ListItem", "position": 3, "name": "MaxGroup", "item": "https://opengenealogyai.org/schemas/maxgroup/"}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img class="lockup" src="/assets/img/logo/maxgen-horizontal-dark.svg" alt="MAXGEN — Maxwell Genealogy Standard" width="180" height="68"><span class="brand-text"><small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc"><ul><li class="lvl2"><a href="#definition">Definition</a></li><li class="lvl2"><a href="#fields">Fields</a></li><li class="lvl2"><a href="#example">A made-up example</a></li><li class="lvl2"><a href="#what-changed">What changed from 1.13</a></li><li class="lvl2"><a href="#listen">Listen</a></li></ul></div></aside><div class="content"><div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v2.0 · new in 2.0</p>
+  <h1>MaxGroup</h1>
+  <p class="tagline">One MaxGroup is one historical group (its own facts only; no member list).</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v2/group.schema.json">Download MaxGroup (2.0)</a>
+     <a class="btn ghost" href="/versions/">All versions</a>
+     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v2/group.schema.json</code></p>
+  <p class="sha">SHA-256 <code>8dcdd51571717a6ae38eb9c6378ec0ae140423cd8999b548beee78045ba34657</code></p>
+</div><h2 id="definition">Definition</h2>
+<blockquote class="schema-desc"><p>MAXGEN 2.0 -- one MaxGroup document is one historical group (an emigrant company, a regiment, a congregation, a household followed across documents) holding only the group&#x27;s own facts, once, and no member list, because each membership is a claim on the person with group_id.</p></blockquote>
+<p class="muted">The schema's own description, word for word.</p>
+<h2 id="fields">Fields</h2>
+<p>The top-level fields of a MaxGroup document. Parts shared by every schema (the date block, the place block, the evidence link, the claim header and others) are defined once in the <a href="/schemas/#shared-building-blocks">shared building-blocks file</a>.</p>
+<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>group_id</code> <span class="req">required</span></td><td class="type">uuid</td><td>The group&#x27;s permanent id: a random UUID created once by the writer (an import_file, resolve_conflict or build_tree task, R-24); merges and splits are made only by analysis (R-28).</td></tr><tr><td><code>is_living_flag</code> <span class="req">required</span></td><td class="type">boolean</td><td>Living A for the group file itself: true when its period or its names (such as &#x27;the Mossbury household&#x27;) touch someone who may be alive; when unsure, true; never worked out from members; a floor that only rises; true req</td></tr><tr><td><code>redistribution_license</code> <span class="req">required</span></td><td class="type">licence</td><td>The licence under which this group document may be shared; must be tier2-private when is_living_flag is true.</td></tr><tr><td><code>group_kind</code> <span class="req">required</span></td><td class="type">enum</td><td>What kind of historical group this is (there is no kind for a research cluster of friends, associates and neighbours: those stay as MaxTask results); when no value fits, write other and give the words in group_kind_as_wr</td></tr><tr><td><code>group_kind_as_written</code> </td><td class="type">string</td><td>The source&#x27;s or program&#x27;s own words for the kind of group.</td></tr><tr><td><code>group_kind_uri</code> </td><td class="type">uri</td><td>The address of the kind in a published vocabulary of group types, when there is one.</td></tr><tr><td><code>name_assertions</code> <span class="req">required</span></td><td class="type">array of name_claim</td><td>The names the group was known by, each a claim with its own evidence; at least one is required.</td></tr><tr><td><code>fact_assertions</code> </td><td class="type">array of fact_claim</td><td>The group&#x27;s own dated facts (organized, departed, arrived ...), each stored once here with its own evidence and never copied onto members; a member&#x27;s page shows those inside the membership period at read time.</td></tr><tr><td><code>parent_group_assertions</code> </td><td class="type">array of parent_group_claim</td><td>Larger groups this group belonged to during a period (a company inside a regiment), each a claim with its own evidence.</td></tr><tr><td><code>observed_in</code> </td><td class="type">array of observed_in_item</td><td>The documents that describe the group, including ones that name none of its members.</td></tr><tr><td><code>media_refs</code> </td><td class="type">array of media_ref</td><td>Photographs and other files of the group, pointed at by fingerprint on the record that holds each file (each file is described once, on the record that captured it).</td></tr></tbody></table></div>
+<h2 id="example">A made-up example</h2>
+<p>Every example on this site is invented: no real person, family or place. This one is <code>emigrant_company_no_members.json</code> from the standard's test files, copied as it is.</p>
+<pre class="json"><code>{
+  &quot;group_id&quot;: &quot;c2a6c59b-89f6-53e8-8b25-2775c40a9504&quot;,
+  &quot;schema_version&quot;: &quot;2.0&quot;,
+  &quot;is_living_flag&quot;: false,
+  &quot;redistribution_license&quot;: &quot;CC0&quot;,
+  &quot;group_kind&quot;: &quot;emigrant_company&quot;,
+  &quot;name_assertions&quot;: [
+    {
+      &quot;name_as_written&quot;: &quot;Wrenshire Emigrant Company&quot;,
+      &quot;name_type&quot;: &quot;as_recorded&quot;,
+      &quot;confidence&quot;: 0.9,
+      &quot;task_id&quot;: &quot;06250dae-c716-5aaf-b0a6-2cd43fbedb65&quot;,
+      &quot;evidence&quot;: {
+        &quot;basis&quot;: &quot;document&quot;,
+        &quot;source_record_id&quot;: &quot;19cda55a-513f-5558-a050-a093a7ae899d&quot;,
+        &quot;mention_id&quot;: &quot;1&quot;,
+        &quot;record_event_ref&quot;: &quot;e1&quot;,
+        &quot;quote&quot;: &quot;Wrenshire Emigrant Company&quot;,
+        &quot;kind&quot;: &quot;direct&quot;,
+        &quot;about&quot;: &quot;other_mention&quot;,
+        &quot;note&quot;: &quot;the company&#x27;s name is written on each passenger&#x27;s line&quot;
+      }
+    }
+  ],
+  &quot;fact_assertions&quot;: [
+    {
+      &quot;fact_type&quot;: &quot;departed&quot;,
+      &quot;date&quot;: {
+        &quot;value&quot;: {
+          &quot;year&quot;: 1853,
+          &quot;month&quot;: 5,
+          &quot;day&quot;: 10
+        },
+        &quot;as_written&quot;: &quot;10 May 1853&quot;
+      },
+      &quot;place&quot;: {
+        &quot;place_as_written&quot;: &quot;Port Wren&quot;
+      },
+      &quot;occurrence_id&quot;: &quot;d60f3769-33f4-5d95-a3e8-5c1805ff074c&quot;,
+      &quot;confidence&quot;: 0.9,
+      &quot;task_id&quot;: &quot;06250dae-c716-5aaf-b0a6-2cd43fbedb65&quot;,
+      &quot;evidence&quot;: {
+        &quot;basis&quot;: &quot;document&quot;,
+        &quot;source_record_id&quot;: &quot;7f41791d-0307-5469-91ae-7db589ef4f5c&quot;,
+        &quot;mention_id&quot;: &quot;m1&quot;,
+        &quot;record_event_ref&quot;: &quot;e1&quot;,
+        &quot;quote&quot;: &quot;sailed from Port Wren on 10 May 1853&quot;,
+        &quot;kind&quot;: &quot;direct&quot;,
+        &quot;about&quot;: &quot;other_mention&quot;,
+        &quot;note&quot;: &quot;the sailing is on the line that names the captain&quot;,
+        &quot;region_id&quot;: &quot;8c2b92ab-1ff5-5b08-b24c-9cc7408f20bb&quot;
+      }
+    }
+  ],
+  &quot;observed_in&quot;: [
+    {
+      &quot;record_id&quot;: &quot;19cda55a-513f-5558-a050-a093a7ae899d&quot;,
+      &quot;record_event_ref&quot;: &quot;e1&quot;
+    },
+    {
+      &quot;record_id&quot;: &quot;7f41791d-0307-5469-91ae-7db589ef4f5c&quot;,
+      &quot;record_event_ref&quot;: &quot;e1&quot;,
+      &quot;note&quot;: &quot;the journal names only the captain&quot;
+    }
+  ],
+  &quot;created_by_task_id&quot;: &quot;06250dae-c716-5aaf-b0a6-2cd43fbedb65&quot;,
+  &quot;extensions&quot;: {
+    &quot;fixture&quot;: &quot;made up&quot;
+  }
+}
+</code></pre>
+<h2 id="what-changed">What changed from 1.13</h2>
+<p>One historical group — an emigrant company, a regiment, a congregation, a household that
+continued across documents — with its kind, its own names and dated facts, the larger groups it
+belonged to, and the documents that describe it, once. <strong>No member list:</strong> a
+membership is a claim on the person. FAN clusters (the friends, associates and neighbours
+studied around one person) stay as MaxTask results. Made only by import and analysis tasks.</p>
+<p><a href="/changelog/#v20-2026-10-16">The whole v2.0 changelog entry</a></p>
+<h2 id="listen">Listen</h2>
+<p>There is no episode for MaxGroup yet: it is new in MAXGEN 2.0. The <a href="/podcasts/#ep0">overview episode</a> explains the ideas it builds on.</p><p class="backlink"><a href="/schemas/">← All eleven schemas</a></p></div></div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v2.0</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

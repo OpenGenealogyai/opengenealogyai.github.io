@@ -1,37 +1,36 @@
 ---
 title: Versions
 toc: true
-description: MAXGEN versioning policy, the stability promise, and every released version of the seven schemas with permanent download links.
+description: MAXGEN versioning policy, the 2.x additive-only promise, and every released version of the schema files with permanent download links.
 ---
 <p class="eyebrow">Releases · current v<!--CURRENT--></p>
 # Versions and the stability promise
 
 ## How versions work
 
-**One number for all seven schemas.** When any schema changes, the whole standard moves to the next number and every file is stamped with it, even the ones that did not change. You adopt "MAXGEN v<!--CURRENT-->" as a set. This is how HL7 FHIR (the healthcare data standard) and GEDCOM release, and it makes it impossible for two files to disagree about which version they belong to.
+**One version number for all twelve files.** The eleven record schemas and the shared building-blocks file are released together as one MAXGEN version, so you adopt "MAXGEN <!--CURRENT-->" as a set and never have to wonder which file goes with which. Every document carries `schema_version`, and the 2.x schemas accept any `"2.<n>"` stamp (`"2.0"`, `"2.1"` and so on; not `"2.01"`, not `"1.13"`).
 
-**Semantic versioning.** The number has the industry-standard meaning:
+## The 2.x promise
 
-| Change | Bump | Example |
-|---|---|---|
-| Wording, descriptions, a regex fix. No field changes. | patch: 1.13.0 → 1.13.1 | Clarifying that `output_text` may hold a JSON string |
-| Additive: a new optional field, a new enum value, a loosened constraint | minor: 1.13 → 1.14 | Adding `parent_source_id` to MaxSource |
-| Anything that could make an existing valid record invalid | major: v1 → v2 | Making a field required, renaming or removing a field |
+> **Within 2.x, every change is additive:** a new optional property, a new value in a list, a new shared definition in `maxgen-defs.schema.json` (a `$defs` entry), a new record schema file, or a loosened limit. **Never:** removing or renaming a property, making an optional property required, narrowing a pattern, range or list, or changing what a value means. A file valid under 2.0 stays valid under every 2.x.
 
-## The stability promise
+- **Files keep the stamp they were written with.** There is no re-stamping of old files at each release.
+- **Unknown values fall back safely.** A reader that meets a list value it does not know reads a vocabulary word as `other` and shows the words as written; a state that software manages fails closed (an unknown licence is read as `tier2-private`).
+- **A major version** (`v2` → `v3`) means breaking changes and a new `$id` address space.
 
-> Within a major version, **fields are never renamed or removed**. A field can be marked deprecated with a note, but it stays valid. Every record that validated against v1.3 validates against every later v1.x.
+## What 2.0 changed
 
-A major version gets a new address space (`/schemas/maxgen/v2/`), a written migration guide, and the full [review process](/governance/) including the longer comment period. There is no forced migration: a tool that understands v2 must still read v1 records without failing silently.
+MAXGEN 2.0 is the first major version. It reshaped the seven 1.x schemas, added four new ones (MaxRelationship, MaxPlace, MaxGroup and MaxEvent) and a shared building-blocks file, and moved family links out of MaxPerson into MaxRelationship, where each link is stored once. **2.0 does not read 1.x files, and there is no migration from 1.x.** The 1.x files are not deleted: they stay at their permanent addresses, unchanged. The [changelog](/changelog/#v20-2026-10-16) lists what changed in every schema and what breaks.
 
 ## Permanent addresses
 
-- `/schemas/maxgen/v1/<name>.schema.json` always points at the **latest v1.x**. This is the `$id` inside every schema file.
-- `/schemas/maxgen/v1.NN/<name>.schema.json` is a **frozen copy** of that release and never changes.
-- `/schemas/maxgen/index.json` lists every version for machines.
+- `/schemas/maxgen/v2/<file>` holds the **current 2.x files**. This is the `$id` inside every 2.0 file.
+- `/schemas/maxgen/v2.0/<file>` is a **frozen copy** of the 2.0 release.
+- `/schemas/maxgen/v1/<name>.schema.json` and `/schemas/maxgen/v1.NN/<name>.schema.json` hold the **archived 1.x releases**, unchanged.
+- `/schemas/maxgen/index.json` lists every version, with each 2.0 file's SHA-256, for machines.
 
 <!--VERSIONS-->
 
-## Release ritual
+## Changelog
 
-Every release, in this order: bump the `schema_version` constant in all seven files, re-run every fixture through the validators, write the changelog entry, tag the release in git, copy the files to `/v1/` and `/v1.NN/` on this site, update the version badge, and regenerate any podcast episode whose schema changed.
+Every release, what changed in each schema and why, is on the [changelog page](/changelog/).

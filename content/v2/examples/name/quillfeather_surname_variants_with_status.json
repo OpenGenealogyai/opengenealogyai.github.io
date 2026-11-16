@@ -1,0 +1,77 @@
+{
+  "name_id": "32382ac8-1785-5e92-80a9-ff8e6bb9ad07",
+  "schema_version": "2.0",
+  "canonical_form": "Quillfeather",
+  "name_type": "surname",
+  "redistribution_license": "CC0",
+  "canonical_script": "latin",
+  "language_of_origin": "en",
+  "etymology": "made up: 'a feather for a quill', an occupational byname for a scribe",
+  "variants": [
+    {
+      "variant_id": "a59e46d3-9aa1-52ff-ba1e-dfd1fbc94515",
+      "task_id": "234e98b3-972e-5af3-9071-e16b75c85474",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "8ee0b474-d41b-58eb-846a-9c707ff328cb",
+        "mention_id": "m1",
+        "quote": "Thaddeus Quillfeather",
+        "kind": "direct"
+      },
+      "confidence": 0.4,
+      "variant_text": "Quilfether",
+      "variant_type": "spelling_variant",
+      "language": "en",
+      "script": "latin",
+      "period_start": 1700,
+      "period_end": 1800,
+      "frequency": "rare"
+    },
+    {
+      "variant_id": "ff446c8b-5e7a-5901-aea1-554d99dcf01f",
+      "task_id": "81eff968-0e6a-51ba-9b5e-ec68e3e51fd2",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "a55282fa-e898-5089-88ec-e4fad4a18078",
+        "mention_id": "30",
+        "quote": "Quillfeather, Thaddeus",
+        "kind": "direct"
+      },
+      "confidence": 0.9,
+      "variant_text": "Quillfeather",
+      "variant_type": "other",
+      "variant_type_as_written": "the usual form",
+      "frequency": "dominant",
+      "status": "proposed",
+      "asserted_at": "2026-10-16T12:00:00Z"
+    }
+  ],
+  "phonetic_keys": {
+    "soundex": {
+      "value": "Q414",
+      "algorithm_version": "american soundex"
+    }
+  },
+  "cognates": [
+    {
+      "cognate_id": "e355716f-5a85-59fd-932d-5c27c9b221de",
+      "task_id": "234e98b3-972e-5af3-9071-e16b75c85474",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "8ee0b474-d41b-58eb-846a-9c707ff328cb",
+        "mention_id": "m1",
+        "quote": "Thaddeus Quillfeather",
+        "kind": "indirect"
+      },
+      "confidence": 0.3,
+      "related_canonical_form": "Pennafeder",
+      "relationship_type": "cross_language_cognate",
+      "direction": "parallel_cognate",
+      "notes": "made up"
+    }
+  ],
+  "created_by_task_id": "487a3cb3-5656-5915-94ff-dcde58cbcbd9",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

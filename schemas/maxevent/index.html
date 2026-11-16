@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaxEvent — MAXGEN · OpenGenealogyAI</title>
+<meta name="description" content="MaxEvent, the MAXGEN 2.0 schema: one MaxEvent is the identity of one occasion (thin).">
+<link rel="canonical" href="https://opengenealogyai.org/schemas/maxevent/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAXGEN · OpenGenealogyAI">
+<meta property="og:title" content="MaxEvent">
+<meta property="og:description" content="MaxEvent, the MAXGEN 2.0 schema: one MaxEvent is the identity of one occasion (thin).">
+<meta property="og:url" content="https://opengenealogyai.org/schemas/maxevent/">
+<meta property="og:image" content="https://opengenealogyai.org/assets/img/logo/maxgen-og-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/img/logo/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/assets/img/logo/maxgen-icon-dark.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/logo/favicon-180.png">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="alternate" type="application/rss+xml" title="MAXGEN Podcast" href="/podcasts/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://opengenealogyai.org/#org", "name": "OpenGenealogyAI", "url": "https://opengenealogyai.org/", "logo": "https://opengenealogyai.org/assets/img/logo/maxgen-icon-dark-512.png", "sameAs": ["https://github.com/OpenGenealogyai"], "description": "Steward of MAXGEN, the open, public-domain genealogy data standard."}, {"@type": "TechArticle", "headline": "MaxEvent — MAXGEN schema v2.0", "description": "MAXGEN 2.0 -- the identity of one occasion (one baptism, one wedding, one voyage), kept thin: its permanent occurrence id, its ids in other programs, notes, pointers to the preferred versions and same-occasion merges. It never holds a participant list, the dates each document gives, copies of evidence, scores or its owner: who took part is worked out from role claims and mentions, and the owner is computed when read. Only the helper (one for every document event entry), importers and analysis tasks write it (R-24).", "url": "https://opengenealogyai.org/schemas/maxevent/", "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": "https://opengenealogyai.org/#org"}, "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": "https://opengenealogyai.org/#standard"}, "encoding": {"@type": "MediaObject", "contentUrl": "https://opengenealogyai.org/schemas/maxgen/v2/event.schema.json", "encodingFormat": "application/schema+json"}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "MAXGEN", "item": "https://opengenealogyai.org/"}, {"@type": "ListItem", "position": 2, "name": "Schemas", "item": "https://opengenealogyai.org/schemas/"}, {"@type": "ListItem", "position": 3, "name": "MaxEvent", "item": "https://opengenealogyai.org/schemas/maxevent/"}]}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img class="lockup" src="/assets/img/logo/maxgen-horizontal-dark.svg" alt="MAXGEN — Maxwell Genealogy Standard" width="180" height="68"><span class="brand-text"><small>by OpenGenealogyAI</small></span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav"><a href="/standard/">The Standard</a><a href="/schemas/" class="active">Schemas</a><a href="/faq/">FAQ</a><a href="/podcasts/">Podcasts</a><a href="/versions/">Versions</a><a href="/governance/">Governance</a><a href="/contribute/">Contribute</a><a class="gh" href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc"><ul><li class="lvl2"><a href="#definition">Definition</a></li><li class="lvl2"><a href="#fields">Fields</a></li><li class="lvl2"><a href="#example">A made-up example</a></li><li class="lvl2"><a href="#what-changed">What changed from 1.13</a></li><li class="lvl2"><a href="#listen">Listen</a></li></ul></div></aside><div class="content"><div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v2.0 · new in 2.0</p>
+  <h1>MaxEvent</h1>
+  <p class="tagline">One MaxEvent is the identity of one occasion (thin).</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v2/event.schema.json">Download MaxEvent (2.0)</a>
+     <a class="btn ghost" href="/versions/">All versions</a>
+     <code class="canon">https://opengenealogyai.org/schemas/maxgen/v2/event.schema.json</code></p>
+  <p class="sha">SHA-256 <code>1b69ee119e49ec2ecfaa10010017e93afec2fd79a6ac0e96f88e44c126cd2966</code></p>
+</div><h2 id="definition">Definition</h2>
+<blockquote class="schema-desc"><p>MAXGEN 2.0 -- the identity of one occasion (one baptism, one wedding, one voyage), kept thin: its permanent occurrence id, its ids in other programs, notes, pointers to the preferred versions and same-occasion merges. It never holds a participant list, the dates each document gives, copies of evidence, scores or its owner: who took part is worked out from role claims and mentions, and the owner is computed when read. Only the helper (one for every document event entry), importers and analysis tasks write it (R-24).</p></blockquote>
+<p class="muted">The schema's own description, word for word.</p>
+<h2 id="fields">Fields</h2>
+<p>The top-level fields of a MaxEvent document. Parts shared by every schema (the date block, the place block, the evidence link, the claim header and others) are defined once in the <a href="/schemas/#shared-building-blocks">shared building-blocks file</a>.</p>
+<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>occurrence_id</code> <span class="req">required</span></td><td class="type">uuid</td><td>This occasion&#x27;s permanent id: a random UUID created once, by the helper when a record with event entries is stored or by the importer or analysis task that brings an outside event, and carried by every claim about the oc</td></tr><tr><td><code>event_type</code> <span class="req">required</span></td><td class="type">event_type</td><td>What kind of occasion this is; there is exactly one type per occurrence, so a licence and its ceremony never share an id.</td></tr><tr><td><code>event_type_as_written</code> </td><td class="type">string</td><td>The document&#x27;s or the other program&#x27;s own words for the type, kept when event_type is other or when the words say more.</td></tr><tr><td><code>type_uri</code> </td><td class="type">uri</td><td>A published vocabulary&#x27;s address for the event type, when one exists.</td></tr><tr><td><code>origin</code> <span class="req">required</span></td><td class="type">origin</td><td>Where this occurrence came from: one document event entry, an outside program&#x27;s event brought by an import, or an analysis.</td></tr><tr><td><code>preferred</code> </td><td class="type">preferred</td><td>Pointers only to the claims that hold the preferred date and place and to the preferred order of versions; changed only under a resolve_conflict or build_tree task (R-24).</td></tr><tr><td><code>conclusion_assertions</code> </td><td class="type">array of conclusion_claim</td><td>A reasoned conclusion that no single document states (a mine explosion dated between two reports), allowed only on an occurrence that an analysis created (origin.kind analysis) and changed only under a resolve_conflict o</td></tr><tr><td><code>related</code> </td><td class="type">array of related_occurrence</td><td>Links to other occasions that an analysis concluded (a licence or banns for a wedding, part of a larger occasion, twins born together); changed only under a resolve_conflict or build_tree task.</td></tr><tr><td><code>description_as_written</code> </td><td class="type">string</td><td>A description of the occasion exactly as a document or another program gives it (a GEDCOM 7 or Gramps event description).</td></tr><tr><td><code>attributes</code> </td><td class="type">array of attribute</td><td>Facts about the occasion itself that another program kept as named attributes, word for word.</td></tr><tr><td><code>media_refs</code> </td><td class="type">array of media_ref</td><td>Pictures or recordings of the occasion, pointing at saved copies that are described once on the records that captured them.</td></tr><tr><td><code>is_private</code> </td><td class="type">boolean</td><td>True hides this occurrence from anything shareable; it only rises.</td></tr><tr><td><code>is_living_flag</code> <span class="req">required</span></td><td class="type">boolean</td><td>Living A floor, required with no default: true when any participant may be alive; unsure means true, the helper raises it and never lowers it, and the live answer is always computed at read time.</td></tr><tr><td><code>redistribution_license</code> <span class="req">required</span></td><td class="type">licence</td><td>Licence of this occurrence, raised by the helper and never lowered; a true is_living_flag requires tier2-private.</td></tr></tbody></table></div>
+<h2 id="example">A made-up example</h2>
+<p>Every example on this site is invented: no real person, family or place. This one is <code>marriage_shared_by_three_documents.json</code> from the standard's test files, copied as it is.</p>
+<pre class="json"><code>{
+  &quot;occurrence_id&quot;: &quot;d2631fcc-f683-56e1-bad4-590bf9a3d42d&quot;,
+  &quot;schema_version&quot;: &quot;2.0&quot;,
+  &quot;event_type&quot;: &quot;marriage&quot;,
+  &quot;origin&quot;: {
+    &quot;kind&quot;: &quot;document_entry&quot;,
+    &quot;record_id&quot;: &quot;da6ac270-29df-56f6-b577-cd764d5b1e2c&quot;,
+    &quot;record_event_ref&quot;: &quot;e1&quot;
+  },
+  &quot;is_living_flag&quot;: false,
+  &quot;redistribution_license&quot;: &quot;CC0&quot;,
+  &quot;preferred&quot;: {
+    &quot;date_assertion_id&quot;: &quot;770b0a00-e2cc-58ec-9b18-bf5f6b06fc97&quot;,
+    &quot;order&quot;: [
+      &quot;770b0a00-e2cc-58ec-9b18-bf5f6b06fc97&quot;,
+      &quot;671ebcba-c400-52f8-ab02-9ca52f60aab4&quot;,
+      &quot;aeffecbc-3d5e-5b6a-b953-415869b10cf9&quot;
+    ],
+    &quot;set_by_task_id&quot;: &quot;95284398-1483-57e3-98d3-af09efff15f5&quot;
+  },
+  &quot;merge_history&quot;: [
+    {
+      &quot;merged_id&quot;: &quot;185ca4ab-f08a-5983-8dff-4c25a3222303&quot;,
+      &quot;task_id&quot;: &quot;95284398-1483-57e3-98d3-af09efff15f5&quot;,
+      &quot;merged_at&quot;: &quot;2026-10-16T12:00:00Z&quot;,
+      &quot;method&quot;: &quot;same_occasion&quot;
+    },
+    {
+      &quot;merged_id&quot;: &quot;46b53474-91e1-5fad-b4a7-a28aeec234cf&quot;,
+      &quot;task_id&quot;: &quot;95284398-1483-57e3-98d3-af09efff15f5&quot;,
+      &quot;merged_at&quot;: &quot;2026-10-16T12:00:00Z&quot;,
+      &quot;method&quot;: &quot;same_occasion&quot;
+    }
+  ],
+  &quot;created_by_task_id&quot;: &quot;24408968-a56b-5a6c-a6f5-3a322540e24a&quot;,
+  &quot;extensions&quot;: {
+    &quot;fixture&quot;: &quot;made up&quot;
+  }
+}
+</code></pre>
+<h2 id="what-changed">What changed from 1.13</h2>
+<p>The identity of one occasion, thin: an occurrence id, its event type, where it came from
+(<code>origin</code>: a record's event entry, an import, or an analysis), outside ids, notes, pointers to
+the preferred date and place claims, links to related occasions, and same-occasion merges; an
+occasion made by analysis may also carry a reasoned conclusion that no single document states,
+citing an accepted proof. Made by the kit for every event entry on a record, and by importers
+and analysis tasks. It holds no participant list and no copies of the dates documents give: who
+took part is worked out from role claims.</p>
+<p><a href="/changelog/#v20-2026-10-16">The whole v2.0 changelog entry</a></p>
+<h2 id="listen">Listen</h2>
+<p>There is no episode for MaxEvent yet: it is new in MAXGEN 2.0. The <a href="/podcasts/#ep0">overview episode</a> explains the ideas it builds on.</p><p class="backlink"><a href="/schemas/">← All eleven schemas</a></p></div></div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v2.0</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
+    <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,70 @@
+{
+  "group_id": "c2a6c59b-89f6-53e8-8b25-2775c40a9504",
+  "schema_version": "2.0",
+  "is_living_flag": false,
+  "redistribution_license": "CC0",
+  "group_kind": "emigrant_company",
+  "name_assertions": [
+    {
+      "name_as_written": "Wrenshire Emigrant Company",
+      "name_type": "as_recorded",
+      "confidence": 0.9,
+      "task_id": "06250dae-c716-5aaf-b0a6-2cd43fbedb65",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "19cda55a-513f-5558-a050-a093a7ae899d",
+        "mention_id": "1",
+        "record_event_ref": "e1",
+        "quote": "Wrenshire Emigrant Company",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the company's name is written on each passenger's line"
+      }
+    }
+  ],
+  "fact_assertions": [
+    {
+      "fact_type": "departed",
+      "date": {
+        "value": {
+          "year": 1853,
+          "month": 5,
+          "day": 10
+        },
+        "as_written": "10 May 1853"
+      },
+      "place": {
+        "place_as_written": "Port Wren"
+      },
+      "occurrence_id": "d60f3769-33f4-5d95-a3e8-5c1805ff074c",
+      "confidence": 0.9,
+      "task_id": "06250dae-c716-5aaf-b0a6-2cd43fbedb65",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "7f41791d-0307-5469-91ae-7db589ef4f5c",
+        "mention_id": "m1",
+        "record_event_ref": "e1",
+        "quote": "sailed from Port Wren on 10 May 1853",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the sailing is on the line that names the captain",
+        "region_id": "8c2b92ab-1ff5-5b08-b24c-9cc7408f20bb"
+      }
+    }
+  ],
+  "observed_in": [
+    {
+      "record_id": "19cda55a-513f-5558-a050-a093a7ae899d",
+      "record_event_ref": "e1"
+    },
+    {
+      "record_id": "7f41791d-0307-5469-91ae-7db589ef4f5c",
+      "record_event_ref": "e1",
+      "note": "the journal names only the captain"
+    }
+  ],
+  "created_by_task_id": "06250dae-c716-5aaf-b0a6-2cd43fbedb65",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

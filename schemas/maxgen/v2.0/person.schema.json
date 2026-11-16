@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opengenealogyai.org/schemas/maxgen/v2/person.schema.json",
+  "title": "MaxPerson",
+  "description": "MAXGEN 2.0 -- One MaxPerson is one person as a researched conclusion, every fact about them a claim citing one piece of evidence, holding no family links (parents, children and partners live in MaxRelationship).",
+  "type": "object",
+  "allOf": [
+    {"$ref": "maxgen-defs.schema.json#/$defs/common_fields"},
+    {"$ref": "maxgen-defs.schema.json#/$defs/lifecycle_fields"},
+    {"if": {"properties": {"is_living": {"const": true}}, "required": ["is_living"]},
+     "then": {"properties": {"redistribution_license": {"const": "tier2-private"}}}},
+    {"if": {"properties": {"person_kind": {"const": "placeholder"}}, "required": ["person_kind"]},
+     "then": {"required": ["placeholder_label"]},
+     "else": {"required": ["name_assertions"], "properties": {"name_assertions": {"minItems": 1}}}}
+  ],
+  "required": ["person_id", "is_living", "redistribution_license"],
+  "properties": {
+    "person_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "This person's permanent random id, created once by the writer and never recomputed or reused."},
+    "person_kind": {"enum": ["documented", "placeholder"], "default": "documented", "description": "Whether this is a documented person or a placeholder made only so something (a parent link, a DNA hypothesis, a death) can attach to them; never created under an import task (R-23)."},
+    "placeholder_label": {"type": "string", "minLength": 1, "maxLength": 500, "description": "Plain words saying who a placeholder stands for, such as \"unknown father of Mabel's three daughters\"; required when person_kind is placeholder."},
+    "is_living": {"type": "boolean", "description": "Living A: whether this person may be alive, with no default (unsure means true); true requires tier2-private, it is a floor that only rises, and privacy is always worked out again when read."},
+    "redistribution_license": {"$ref": "maxgen-defs.schema.json#/$defs/licence", "description": "Whether this person's document may be shared, and under what licence; must be tier2-private while is_living is true."},
+    "outside_ids": false,
+    "name_assertions": {"type": "array", "items": {"$ref": "#/$defs/name_claim"}, "description": "Name claims, each citing its evidence; at least one is required unless person_kind is placeholder."},
+    "gender_assertions": {"type": "array", "items": {"$ref": "#/$defs/gender_claim"}, "description": "Gender claims, each keeping the document's own words."},
+    "birth_assertions": {"type": "array", "items": {"$ref": "#/$defs/vital_claim"}, "description": "Claims about this person's own birth, always with role principal (another person's part at a birth goes in event_assertions)."},
+    "death_assertions": {"type": "array", "items": {"$ref": "#/$defs/death_claim"}, "description": "Claims about this person's own death, always with role principal (another person's part at a death goes in event_assertions)."},
+    "event_assertions": {"type": "array", "items": {"$ref": "#/$defs/event_claim"}, "description": "Other events in this person's life and their roles at other people's events; a couple event with role principal, bride, groom, spouse or partner is refused here because it is a family fact written with link (R-22)."},
+    "attribute_assertions": {"type": "array", "items": {"$ref": "#/$defs/attribute_claim"}, "description": "Lasting facts such as occupation, residence or religion, each citing its evidence."},
+    "non_event_assertions": {"type": "array", "items": {"$ref": "#/$defs/non_event_claim"}, "description": "Claims that something did not happen, such as no marriage by a stated date (GEDCOM 7 NO)."},
+    "membership_assertions": {"type": "array", "items": {"$ref": "#/$defs/membership_claim"}, "description": "Membership of a historical group, each citing this person's own line on a roster or similar record (MaxGroup keeps no member list)."},
+    "photo_assertions": {"type": "array", "items": {"$ref": "#/$defs/photo_claim"}, "description": "Claims that a face or figure on a photograph record is this person."},
+    "external_id_assertions": {"type": "array", "items": {"$ref": "#/$defs/external_id_claim"}, "description": "Claims that this person is the same as a profile in another system; the only place an outside id for a person is recorded."},
+    "attached_sources": {"type": "array", "items": {"$ref": "#/$defs/attached_source"}, "description": "Records another program attached to this person without naming a fact; research pointers only, never evidence."},
+    "same_as_candidates": {"type": "array", "items": {"$ref": "#/$defs/same_as_candidate"}, "description": "People who may be the same as this one but are not merged (GEDCOM 7 ALIA); a merge still needs the merge_person path."}
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "name_part": {
+      "type": "object", "additionalProperties": false,
+      "description": "One part of a name exactly as written: a given name, a surname, a surname particle, a patronymic and so on.",
+      "required": ["part_type", "value_as_written"],
+      "properties": {
+        "part_type": {"enum": ["given", "call_name", "surname", "surname_prefix", "patronymic", "matronymic", "prefix", "suffix", "nickname", "title", "other"], "description": "What kind of name part this is; a patronymic part is never treated as a hereditary surname (MC-2.2)."},
+        "part_type_as_written": {"type": "string", "minLength": 1, "maxLength": 200, "description": "The source's or program's own word for this part; required when part_type is other."},
+        "value_as_written": {"type": "string", "minLength": 1, "maxLength": 500, "description": "The part exactly as written, particles included (they are stripped only for comparison, never in stored data)."},
+        "origin_as_imported": {"type": "string", "maxLength": 200, "description": "The surname origin another program gave, word for word (Gramps origin types such as Patronymic or Taken)."},
+        "connector_as_written": {"type": "string", "maxLength": 100, "description": "The word joining this surname to the next, such as y or e in a double surname."},
+        "is_primary": {"type": "boolean", "description": "True for the surname used for sorting when the name has several."}
+      },
+      "allOf": [
+        {"if": {"properties": {"part_type": {"const": "other"}}, "required": ["part_type"]},
+         "then": {"required": ["part_type_as_written"]}}
+      ]
+    },
+    "name_translation": {
+      "type": "object", "additionalProperties": false,
+      "description": "The name written in another script or language.",
+      "required": ["text"],
+      "properties": {
+        "text": {"type": "string", "minLength": 1, "maxLength": 500, "description": "The name in the other script or language."},
+        "lang": {"$ref": "maxgen-defs.schema.json#/$defs/lang", "description": "The language (and script) of this form."},
+        "scheme_as_written": {"type": "string", "maxLength": 200, "description": "The transliteration scheme used, in plain words."}
+      }
+    },
+    "name_claim": {
+      "type": "object",
+      "description": "One name as one piece of evidence gives it.",
+      "allOf": [
+        {"$ref": "maxgen-defs.schema.json#/$defs/claim_header"},
+        {"if": {"anyOf": [{"not": {"required": ["name_status"]}}, {"properties": {"name_status": {"const": "known"}}, "required": ["name_status"]}]},
+         "then": {"properties": {"name_as_written": {"minLength": 1}}}},
+        {"if": {"properties": {"name_type": {"const": "other"}}, "required": ["name_type"]},
+         "then": {"required": ["name_type_as_written"]}}
+      ],
+      "required": ["name_as_written", "evidence", "confidence"],
+      "properties": {
+        "name_as_written": {"type": "string", "minLength": 0, "maxLength": 500, "description": "The whole name exactly as the evidence gives it; at least one character unless name_status says the name is not a real name."},
+        "given_name": {"type": "string", "maxLength": 500, "description": "Shortcut for the given names in the common case; must agree with name_parts when both are present."},
+        "surname": {"type": "string", "maxLength": 500, "description": "Shortcut for the surname in the common case; must agree with name_parts when both are present."},
+        "prefix": {"type": "string", "maxLength": 200, "description": "Words written before the name, such as Rev. or Dr."},
+        "suffix": {"type": "string", "maxLength": 200, "description": "Words written after the name, such as Jr. or III."},
+        "nickname": {"type": "string", "maxLength": 200, "description": "A nickname written with this name."},
+        "name_parts": {"type": "array", "items": {"$ref": "#/$defs/name_part"}, "description": "The name broken into its parts, for several surnames, particles, patronymics, call names and titles (MC-2)."},
+        "surname_basis": {"enum": ["birth", "married", "patronymic", "retained", "only_attested_form", "other"], "description": "Why this surname is the one shown (MC-2.1)."},
+        "surname_basis_as_written": {"type": "string", "maxLength": 200, "description": "The source's own words for the surname basis, used with other."},
+        "translations": {"type": "array", "items": {"$ref": "#/$defs/name_translation"}, "description": "The same name in other scripts or languages."},
+        "is_preferred": {"type": "boolean", "description": "Set by the writer: true for the name to show first."},
+        "name_type": {"enum": ["birth", "maiden", "married", "adopted", "alias", "nickname", "religious", "professional", "immigrant", "formal", "variant_spelling", "unknown", "other"], "description": "What kind of name this is."},
+        "name_type_as_written": {"type": "string", "minLength": 1, "maxLength": 200, "description": "The source's own word for the name type; required when name_type is other."},
+        "name_status": {"$ref": "maxgen-defs.schema.json#/$defs/name_status", "default": "known", "description": "Whether this is a real name or a stand-in such as Unknown, Infant or Mrs. John Smith (MC-1); a person whose only names are not known is never merged on name."},
+        "lang": {"$ref": "maxgen-defs.schema.json#/$defs/lang", "description": "The language of the name as written."},
+        "date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "When this name was used, as the evidence states it."}
+      },
+      "unevaluatedProperties": false
+    },
+    "gender_claim": {
+      "type": "object",
+      "description": "One statement of gender, in the evidence's own words.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["gender_as_written", "evidence", "confidence"],
+      "properties": {
+        "gender_as_written": {"type": "string", "minLength": 1, "maxLength": 200, "description": "The gender exactly as the evidence gives it, such as F, male or daughter."},
+        "evidence_type": {"enum": ["assigned_at_birth", "lived_as", "self_identified", "legal", "documentary", "other"], "description": "What kind of gender statement this is."},
+        "evidence_type_as_written": {"type": "string", "maxLength": 200, "description": "The source's own words for the kind of statement, used with other."},
+        "date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "The period the statement applies to."}
+      },
+      "unevaluatedProperties": false
+    },
+    "vital_claim": {
+      "type": "object",
+      "description": "One claim about this person's own birth; a birth date worked out from an age is derivation calculated and cites the entry with kind indirect.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["evidence", "confidence"],
+      "properties": {
+        "date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "The birth date as stated; its as_written words must occur in the evidence quote (R-12)."},
+        "place": {"$ref": "maxgen-defs.schema.json#/$defs/place_ref", "description": "Where the birth happened, as written."},
+        "role": {"$ref": "maxgen-defs.schema.json#/$defs/role", "const": "principal", "default": "principal", "description": "Always principal: this list holds only the person's own birth."},
+        "role_as_written": {"type": "string", "maxLength": 200, "description": "The document's own word for this person's part."},
+        "role_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "A published vocabulary term for the role."},
+        "role_as_imported": {"type": "string", "maxLength": 200, "description": "Another program's word for the role, word for word."},
+        "age_as_written": {"type": "string", "maxLength": 100, "description": "An age given with the event, exactly as written."},
+        "occurrence_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The occasion this claim is about; for basis document it equals the cited same-occasion entry's occurrence (the helper fills it) and is absent when the entry is used indirectly, and for other bases it may name an import or analysis occurrence only under an import_file, resolve_conflict or build_tree task."}
+      },
+      "unevaluatedProperties": false
+    },
+    "death_claim": {
+      "type": "object",
+      "description": "One claim about this person's own death; a burial, cremation, funeral, probate or will entry is cited with kind indirect.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["evidence", "confidence"],
+      "properties": {
+        "date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "The death date as stated; its as_written words must occur in the evidence quote (R-12)."},
+        "place": {"$ref": "maxgen-defs.schema.json#/$defs/place_ref", "description": "Where the death happened, as written."},
+        "role": {"$ref": "maxgen-defs.schema.json#/$defs/role", "const": "principal", "default": "principal", "description": "Always principal: this list holds only the person's own death."},
+        "role_as_written": {"type": "string", "maxLength": 200, "description": "The document's own word for this person's part."},
+        "role_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "A published vocabulary term for the role."},
+        "role_as_imported": {"type": "string", "maxLength": 200, "description": "Another program's word for the role, word for word."},
+        "age_as_written": {"type": "string", "maxLength": 100, "description": "The age at death exactly as written."},
+        "cause_as_written": {"type": "string", "maxLength": 2000, "description": "The cause of death exactly as written."},
+        "occurrence_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The occasion this claim is about; for basis document it equals the cited same-occasion entry's occurrence (the helper fills it) and is absent when the entry is used indirectly, and for other bases it may name an import or analysis occurrence only under an import_file, resolve_conflict or build_tree task."}
+      },
+      "unevaluatedProperties": false
+    },
+    "event_claim": {
+      "type": "object",
+      "description": "One event in this person's life, or this person's role at someone else's event (a witness, a godparent, an informant).",
+      "allOf": [
+        {"$ref": "maxgen-defs.schema.json#/$defs/claim_header"},
+        {"if": {"properties": {"event_type": {"const": "other"}}, "required": ["event_type"]},
+         "then": {"required": ["event_type_as_written"]}}
+      ],
+      "required": ["event_type", "evidence", "confidence"],
+      "properties": {
+        "event_type": {"$ref": "maxgen-defs.schema.json#/$defs/event_type", "description": "What kind of event this is; the religious-only lds_* types never support a birth, death or family claim and never count for the living test."},
+        "event_type_as_written": {"type": "string", "minLength": 1, "maxLength": 200, "description": "The source's own word for the event; required when event_type is other."},
+        "date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "When the event happened, as stated."},
+        "place": {"$ref": "maxgen-defs.schema.json#/$defs/place_ref", "description": "Where the event happened, as written."},
+        "role": {"$ref": "maxgen-defs.schema.json#/$defs/role", "description": "This person's part at the event."},
+        "role_as_written": {"type": "string", "maxLength": 200, "description": "The document's own word for this person's part."},
+        "role_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "A published vocabulary term for the role."},
+        "role_as_imported": {"type": "string", "maxLength": 200, "description": "Another program's word for the role, word for word."},
+        "age_as_written": {"type": "string", "maxLength": 100, "description": "An age given with the event, exactly as written."},
+        "group_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "readOnly": true, "description": "The MaxGroup this event belongs to, set only by the helper's resolve command (kept from input only under an import_file task)."},
+        "group_as_written": {"type": "string", "maxLength": 500, "description": "The group named with the event, exactly as written."},
+        "description_as_written": {"type": "string", "maxLength": 4000, "description": "The event's description in the document's own words."},
+        "value_as_written": {"type": "string", "maxLength": 2000, "description": "A value given with the event, exactly as written."},
+        "agency_as_written": {"type": "string", "maxLength": 1000, "description": "The authority or organisation responsible, exactly as written (GEDCOM 7 AGNC)."},
+        "religion_as_written": {"type": "string", "maxLength": 500, "description": "The religion named with the event, exactly as written (GEDCOM 7 RELI)."},
+        "cause_as_written": {"type": "string", "maxLength": 2000, "description": "The cause given for the event, exactly as written (GEDCOM 7 CAUS)."},
+        "ordinance_status_as_imported": {"type": "string", "maxLength": 200, "description": "For an lds_* event, the other program's ordinance status word for word (GEDCOM 7 STAT)."},
+        "temple_as_imported": {"type": "string", "maxLength": 200, "description": "For an lds_* event, the other program's temple word for word (GEDCOM 7 TEMP)."},
+        "occurrence_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The occasion this claim is about; for basis document it equals the cited same-occasion entry's occurrence (the helper fills it) and is absent when the entry is used indirectly, and for other bases it may name an import or analysis occurrence only under an import_file, resolve_conflict or build_tree task."}
+      },
+      "unevaluatedProperties": false
+    },
+    "attribute_claim": {
+      "type": "object",
+      "description": "One lasting fact about this person, such as an occupation or a residence.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["attribute_type", "value_as_written", "evidence", "confidence"],
+      "properties": {
+        "attribute_type": {"enum": ["occupation", "residence", "religion", "nationality", "ethnicity", "title", "physical_description", "id_number", "education", "property", "military_rank", "caste", "other"], "description": "What kind of lasting fact this is."},
+        "attribute_type_as_written": {"type": "string", "maxLength": 200, "description": "The source's own word for the fact, used with other."},
+        "value_as_written": {"type": "string", "minLength": 1, "maxLength": 2000, "description": "The fact exactly as written, such as Miller or Tumblebrook."},
+        "date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "The period the fact applies to, as stated."},
+        "place": {"$ref": "maxgen-defs.schema.json#/$defs/place_ref", "description": "The place the fact applies to, as written."},
+        "occurrence_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The occasion this claim is about; for basis document it equals the cited same-occasion entry's occurrence (the helper fills it) and is absent when the entry is used indirectly, and for other bases it may name an import or analysis occurrence only under an import_file, resolve_conflict or build_tree task."}
+      },
+      "unevaluatedProperties": false
+    },
+    "non_event_claim": {
+      "type": "object",
+      "description": "A claim that an event did not happen, such as no marriage by 24 March 1880; an undated one is shown as no date given and never counts for the living test or for date bounds (MC-3.4).",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["event_type", "evidence", "confidence"],
+      "properties": {
+        "event_type": {"$ref": "maxgen-defs.schema.json#/$defs/event_type", "description": "The kind of event that did not happen."},
+        "event_type_as_written": {"type": "string", "maxLength": 200, "description": "The source's own word for the event."},
+        "date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "The period in which it did not happen; optional, because a source such as she never married gives none and a date is never invented."},
+        "place": {"$ref": "maxgen-defs.schema.json#/$defs/place_ref", "description": "The place the statement applies to, as written."}
+      },
+      "unevaluatedProperties": false
+    },
+    "membership_claim": {
+      "type": "object",
+      "description": "One claim that this person belonged to a historical group, citing this person's own line on the roster or record.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["group_as_written", "evidence", "confidence"],
+      "properties": {
+        "group_as_written": {"type": "string", "minLength": 1, "maxLength": 500, "description": "The group exactly as the evidence names it."},
+        "group_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "readOnly": true, "description": "The MaxGroup this membership is in, set only by the helper's resolve command (kept from input only under an import_file task)."},
+        "role": {"$ref": "maxgen-defs.schema.json#/$defs/role", "description": "This person's part in the group."},
+        "role_as_written": {"type": "string", "maxLength": 200, "description": "The document's own word for this person's part."},
+        "role_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "A published vocabulary term for the role."},
+        "role_as_imported": {"type": "string", "maxLength": 200, "description": "Another program's word for the role, word for word."},
+        "date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "The membership period, as stated; the group's own dated facts inside it are shown on the person page when read, never copied here."},
+        "place": {"$ref": "maxgen-defs.schema.json#/$defs/place_ref", "description": "The place the membership applies to, as written."},
+        "occurrence_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The occasion this claim is about; for basis document it equals the cited same-occasion entry's occurrence (the helper fills it) and is absent when the entry is used indirectly, and for other bases it may name an import or analysis occurrence only under an import_file, resolve_conflict or build_tree task."}
+      },
+      "unevaluatedProperties": false
+    },
+    "photo_claim": {
+      "type": "object",
+      "description": "One claim that a face or figure on a photograph is this person; the photograph is described once on its own record and the evidence may be another document, such as a letter naming the sitter.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"},
+                {"anyOf": [{"required": ["sha256"]}, {"required": ["location_uri"]}]}],
+      "required": ["photo_record_id", "evidence", "confidence"],
+      "properties": {
+        "photo_record_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The MaxRecord that holds the photograph's saved copy."},
+        "sha256": {"$ref": "maxgen-defs.schema.json#/$defs/sha256", "description": "The fingerprint of the saved copy on that record."},
+        "location_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "While the copy is still pending (an imported file not yet on this computer): its first location on that record; the helper swaps in sha256 when the copy is fingerprinted."},
+        "region_ids": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/uuid"}, "description": "The marked areas (faces) on that copy that show this person."},
+        "is_primary": {"type": "boolean", "description": "True for the photograph to show first for this person."},
+        "subject_role_as_written": {"type": "string", "maxLength": 200, "description": "How the photograph or the evidence describes this person's place in the picture, as written."}
+      },
+      "unevaluatedProperties": false
+    },
+    "external_id_claim": {
+      "type": "object",
+      "description": "One claim that this person is the same as a profile in another system, citing a saved record of the profile page (basis document) or the tree it came with (basis imported).",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["system", "external_id", "evidence", "confidence"],
+      "properties": {
+        "system": {"$ref": "maxgen-defs.schema.json#/$defs/system", "description": "The other system, in lower case (familysearch, wikitree, wikidata ...)."},
+        "external_id": {"type": "string", "minLength": 1, "maxLength": 500, "description": "The other system's id for the profile; never a MAXGEN identity."},
+        "url": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "The profile's web address, when it has one."},
+        "match_method": {"enum": ["exact_id_from_source", "probabilistic_match", "dna_confirmed", "hub_crosswalk", "manual", "other"], "description": "How the match to the profile was made."},
+        "match_method_as_written": {"type": "string", "maxLength": 200, "description": "Plain words for the match method, used with other."},
+        "match_signals": {"type": "object", "additionalProperties": {"type": "string", "maxLength": 2000}, "description": "What agreed between this person and the profile, in words, never scores."},
+        "attribution": {"$ref": "maxgen-defs.schema.json#/$defs/attribution", "description": "Credit for whoever made or manages the profile; a credit never sets a living flag."}
+      },
+      "unevaluatedProperties": false
+    },
+    "attached_source": {
+      "type": "object", "additionalProperties": false,
+      "description": "A record another program attached to this person without naming a fact; a research pointer, never evidence.",
+      "required": ["record_id"],
+      "properties": {
+        "record_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The MaxRecord that was attached."},
+        "fact_type_as_imported": {"type": "string", "maxLength": 200, "description": "The fact the other program filed the attachment under, word for word, if any."},
+        "note": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "A plain note about the attachment."},
+        "outside_ids": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/outside_id"}, "description": "The other program's ids for the attachment."}
+      }
+    },
+    "same_as_candidate": {
+      "type": "object", "additionalProperties": false,
+      "description": "Another MaxPerson who may be the same person as this one, not merged.",
+      "required": ["person_id", "task_id"],
+      "properties": {
+        "person_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The other MaxPerson."},
+        "task_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The task that noted the possible match."},
+        "note": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "Why the two may be one person."},
+        "imported": {"type": "boolean", "description": "True when the possible match came from an imported tree (GEDCOM 7 ALIA)."}
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "source_id": "2a140cc7-1211-5c72-8071-ccd81e1ddcc7",
+  "schema_version": "2.0",
+  "name": "Erewhon census of 1940 (made up)",
+  "source_type": "census_collection",
+  "redistribution_license": "CC0",
+  "is_living_flag": false,
+  "source_url": "https://records.example.org/sample/census-1940",
+  "holdings": [
+    {
+      "repository_name": "Erewhon National Archive (made up)",
+      "holds_original": true,
+      "call_number": "CEN-1940",
+      "medium_as_written": "bound enumeration books"
+    },
+    {
+      "repository_name": "Example Records Online (made up publisher)",
+      "holds_original": false,
+      "medium_as_written": "digital images"
+    }
+  ],
+  "coverage": {
+    "places": [
+      {
+        "place": {
+          "place_as_written": "Tumblebrook, Wrenshire, Erewhon"
+        },
+        "span": {
+          "value": {
+            "year": 1940
+          },
+          "as_written": "1940",
+          "derivation": "interpreted"
+        },
+        "search_as": "Tumblebrook district 4"
+      },
+      {
+        "place": {
+          "place_as_written": "Larkspur hamlet, Wrenshire, Erewhon"
+        },
+        "span": {
+          "value": {
+            "year": 1940
+          },
+          "as_written": "1940",
+          "derivation": "interpreted"
+        },
+        "search_as": "Tumblebrook district 4",
+        "note": "Larkspur hamlet is filed with the Tumblebrook district in 1940."
+      }
+    ],
+    "record_types": [
+      "census_household"
+    ],
+    "languages": [
+      "en"
+    ],
+    "span": {
+      "value": {
+        "year": 1940
+      },
+      "derivation": "interpreted"
+    }
+  },
+  "link_status": "active",
+  "last_verified_at": "2026-10-16T12:00:00Z",
+  "discovered_via": "manual",
+  "created_by_task_id": "a90fb929-e2f7-5bc9-9d68-16e1f280bf3a",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

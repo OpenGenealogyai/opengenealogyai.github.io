@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://opengenealogyai.org/</loc></url>
+  <url><loc>https://opengenealogyai.org/changelog/</loc></url>
   <url><loc>https://opengenealogyai.org/contribute/</loc></url>
   <url><loc>https://opengenealogyai.org/faq/</loc></url>
   <url><loc>https://opengenealogyai.org/governance/</loc></url>
-  <url><loc>https://opengenealogyai.org/index/</loc></url>
   <url><loc>https://opengenealogyai.org/license/</loc></url>
   <url><loc>https://opengenealogyai.org/podcasts/</loc></url>
   <url><loc>https://opengenealogyai.org/schemas/</loc></url>
   <url><loc>https://opengenealogyai.org/schemas/maxdna/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/maxevent/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/maxgroup/</loc></url>
   <url><loc>https://opengenealogyai.org/schemas/maxname/</loc></url>
   <url><loc>https://opengenealogyai.org/schemas/maxperson/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/maxplace/</loc></url>
   <url><loc>https://opengenealogyai.org/schemas/maxrecognition/</loc></url>
   <url><loc>https://opengenealogyai.org/schemas/maxrecord/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/maxrelationship/</loc></url>
   <url><loc>https://opengenealogyai.org/schemas/maxsource/</loc></url>
   <url><loc>https://opengenealogyai.org/schemas/maxtask/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/v1.13/maxdna/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/v1.13/maxname/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/v1.13/maxperson/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/v1.13/maxrecognition/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/v1.13/maxrecord/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/v1.13/maxsource/</loc></url>
+  <url><loc>https://opengenealogyai.org/schemas/v1.13/maxtask/</loc></url>
   <url><loc>https://opengenealogyai.org/standard/</loc></url>
   <url><loc>https://opengenealogyai.org/validator/</loc></url>
   <url><loc>https://opengenealogyai.org/versions/</loc></url>

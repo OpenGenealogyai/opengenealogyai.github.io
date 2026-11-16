@@ -1,0 +1,61 @@
+{
+  "recognition_id": "75d8a1f2-e917-5670-86e1-9b0072ede223",
+  "schema_version": "2.0",
+  "recognition_type": "htr",
+  "raw_record_id": "a2834eea-1964-515d-8652-ff333819531c",
+  "copy_sha256": "fbf7c8d29a52ddd03b3e453cb2dfe537a7b4961e8348a35c0718b614a098358f",
+  "region_id": "48a16fee-ae07-5c81-850b-e8994524cbff",
+  "output_text": "Bramblecott, Jesse | Head | M | 41 | Carter | Tumblebrook",
+  "processed_at": "2026-10-16T12:00:00Z",
+  "language": "en",
+  "confidence": 0.82,
+  "word_confidences": [
+    {
+      "word": "Bramblecott",
+      "char_offset": 0,
+      "confidence": 0.91,
+      "reading_type": "observed",
+      "bbox": {
+        "unit": "fraction",
+        "x": 0.05,
+        "y": 0.88,
+        "w": 0.18,
+        "h": 0.03,
+        "page": 1
+      }
+    },
+    {
+      "word": "Carter",
+      "char_offset": 39,
+      "confidence": 0.62,
+      "reading_type": "inferred_context",
+      "inference_notes": "the occupation column is smudged",
+      "alternatives": [
+        {
+          "text": "Carier",
+          "confidence": 0.2
+        }
+      ],
+      "bbox": {
+        "unit": "px",
+        "x": 1310,
+        "y": 2210,
+        "w": 160,
+        "h": 44
+      }
+    }
+  ],
+  "character_error_rate": 0.04,
+  "redistribution_license": "public-domain",
+  "is_living_flag": false,
+  "script_type": "latin_cursive",
+  "approx_century": 1900,
+  "searchable_variants": [
+    "Bramblecot",
+    "Bramblecott"
+  ],
+  "created_by_task_id": "873dd993-6a99-53c5-bbc8-25955efefaf9",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

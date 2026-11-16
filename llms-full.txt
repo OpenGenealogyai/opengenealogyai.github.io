@@ -1,11 +1,11 @@
-# MAXGEN — The Maxwell Genealogy Standard (v1.13) — full text of opengenealogyai.org
+# MAXGEN — The Maxwell Genealogy Standard (v2.0) — full text of opengenealogyai.org
 
 
 
 ---
 ## MAXGEN
 
-An open standard · public domain · current release v1.13
+An open standard · public domain · current release v2.0
 Genealogy data that is honest about what it doesn't know.
 MAXGEN is a free, open data standard for family history. Every fact carries its source and a confidence score. Conflicting evidence is kept, not deleted. Anyone can use it, build on it, or extend it. No permission required.
 
@@ -49,7 +49,7 @@ MAXGEN is short for the Maxwell Genealogy Standard, named for its author, Garlon
 ---
 ## The Standard
 
-The Maxwell Genealogy Standard · v1.13 · CC0
+The Maxwell Genealogy Standard · v2.0 · CC0
 # The Standard
 
 MAXGEN is a language for describing family-history evidence. It is not a product, not a database, and not a website. It is a set of seven schemas (written rule-sets for data records) that any program can read and write, so that research done in one place can be understood everywhere else. This page is the whole standard in plain English. The exact rules live in the [schema files](/schemas/).
@@ -149,7 +149,7 @@ A MaxPerson is a set of assertion arrays. Every field that says something about 
 ```json
 {
   "person_id": "b1000000-0006-4000-8000-000000000006",
-  "schema_version": "1.13",
+  "schema_version": "2.0",
   "is_living": false,
   "composite_confidence": 0.95,
   "name_assertions": [
@@ -211,30 +211,28 @@ MAXGEN is public domain, so anyone can use it, fork it, or extend it. What is st
 
 
 ---
-## The seven schemas
+## The MAXGEN schemas
 
-MAXGEN v1.13 · lockstep release
-# The seven schemas
+MAXGEN v2.0 · twelve files, one version
+# The schemas
 
-All seven files share one version number. When any of them changes, the whole standard moves to the next number, so you adopt "MAXGEN v1.13" as a set and never have to wonder which schema goes with which.
+MAXGEN 2.0 is one release: eleven record schemas plus one shared building-blocks file. Every file is JSON Schema Draft 2020-12. All twelve files share one version number, and within 2.x every change is additive: a file valid under 2.0 stays valid under every 2.x.
 
 
+
+## Shared building blocks
+
+`maxgen-defs.schema.json` is not a record type: no document is valid against it alone. It holds the parts every record schema uses: ids and small types, the date block, the place block, the evidence link (the part of every claim that says which evidence it rests on), the quote check, saved copies, regions and media pointers, roles and event types, the claim header, the common and lifecycle fields, and the task provenance block. [Download the shared file](/schemas/maxgen/v2/maxgen-defs.schema.json).
 
 ## Canonical addresses
 
-Every schema file declares its own permanent address in its `$id` field. Tools that validate records fetch the schema from there.
 
-| Schema | Latest v1 (always current) | File |
-|---|---|---|
-| MaxRecord | `/schemas/maxgen/v1/raw-record.schema.json` | [download](/schemas/maxgen/v1/raw-record.schema.json) |
-| MaxPerson | `/schemas/maxgen/v1/person.schema.json` | [download](/schemas/maxgen/v1/person.schema.json) |
-| MaxTask | `/schemas/maxgen/v1/task-queue.schema.json` | [download](/schemas/maxgen/v1/task-queue.schema.json) |
-| MaxDNA | `/schemas/maxgen/v1/dna.schema.json` | [download](/schemas/maxgen/v1/dna.schema.json) |
-| MaxSource | `/schemas/maxgen/v1/source.schema.json` | [download](/schemas/maxgen/v1/source.schema.json) |
-| MaxRecognition | `/schemas/maxgen/v1/recognition.schema.json` | [download](/schemas/maxgen/v1/recognition.schema.json) |
-| MaxName | `/schemas/maxgen/v1/name.schema.json` | [download](/schemas/maxgen/v1/name.schema.json) |
 
-Frozen copies of every past release live under `/schemas/maxgen/v1.NN/` and are listed on the [versions page](/versions/). A machine-readable list is at [`/schemas/maxgen/index.json`](/schemas/maxgen/index.json).
+Every file declares its own address in its `$id`. A record schema points into the shared file by a relative address, so all twelve files sit side by side in one folder. Validators load all twelve files into one registry and never fetch anything over the network; the addresses do not need to be reachable for validation to work. The fingerprints are also in [SHA256SUMS.txt](/schemas/maxgen/v2/SHA256SUMS.txt), and a machine-readable list of every version is at [`/schemas/maxgen/index.json`](/schemas/maxgen/index.json).
+
+## MAXGEN 1.13 (archived) {#archived-113}
+
+The seven 1.13 schema files stay exactly as they were, at their permanent addresses under `/schemas/maxgen/v1/` and `/schemas/maxgen/v1.NN/`. MAXGEN 2.0 does not read 1.x files. The 1.13 pages are kept for reference: .
 
 ## Check a record
 
@@ -325,38 +323,37 @@ How do I follow changes?Every release is recorded in the changelog with the reas
 ---
 ## Versions
 
-Releases · current v1.13
+Releases · current v2.0
 # Versions and the stability promise
 
 ## How versions work
 
-**One number for all seven schemas.** When any schema changes, the whole standard moves to the next number and every file is stamped with it, even the ones that did not change. You adopt "MAXGEN v1.13" as a set. This is how HL7 FHIR (the healthcare data standard) and GEDCOM release, and it makes it impossible for two files to disagree about which version they belong to.
+**One version number for all twelve files.** The eleven record schemas and the shared building-blocks file are released together as one MAXGEN version, so you adopt "MAXGEN 2.0" as a set and never have to wonder which file goes with which. Every document carries `schema_version`, and the 2.x schemas accept any `"2."` stamp (`"2.0"`, `"2.1"` and so on; not `"2.01"`, not `"1.13"`).
 
-**Semantic versioning.** The number has the industry-standard meaning:
+## The 2.x promise
 
-| Change | Bump | Example |
-|---|---|---|
-| Wording, descriptions, a regex fix. No field changes. | patch: 1.13.0 → 1.13.1 | Clarifying that `output_text` may hold a JSON string |
-| Additive: a new optional field, a new enum value, a loosened constraint | minor: 1.13 → 1.14 | Adding `parent_source_id` to MaxSource |
-| Anything that could make an existing valid record invalid | major: v1 → v2 | Making a field required, renaming or removing a field |
+> **Within 2.x, every change is additive:** a new optional property, a new value in a list, a new shared definition in `maxgen-defs.schema.json` (a `$defs` entry), a new record schema file, or a loosened limit. **Never:** removing or renaming a property, making an optional property required, narrowing a pattern, range or list, or changing what a value means. A file valid under 2.0 stays valid under every 2.x.
 
-## The stability promise
+- **Files keep the stamp they were written with.** There is no re-stamping of old files at each release.
+- **Unknown values fall back safely.** A reader that meets a list value it does not know reads a vocabulary word as `other` and shows the words as written; a state that software manages fails closed (an unknown licence is read as `tier2-private`).
+- **A major version** (`v2` → `v3`) means breaking changes and a new `$id` address space.
 
-> Within a major version, **fields are never renamed or removed**. A field can be marked deprecated with a note, but it stays valid. Every record that validated against v1.3 validates against every later v1.x.
+## What 2.0 changed
 
-A major version gets a new address space (`/schemas/maxgen/v2/`), a written migration guide, and the full [review process](/governance/) including the longer comment period. There is no forced migration: a tool that understands v2 must still read v1 records without failing silently.
+MAXGEN 2.0 is the first major version. It reshaped the seven 1.x schemas, added four new ones (MaxRelationship, MaxPlace, MaxGroup and MaxEvent) and a shared building-blocks file, and moved family links out of MaxPerson into MaxRelationship, where each link is stored once. **2.0 does not read 1.x files, and there is no migration from 1.x.** The 1.x files are not deleted: they stay at their permanent addresses, unchanged. The [changelog](/changelog/#v20-2026-10-16) lists what changed in every schema and what breaks.
 
 ## Permanent addresses
 
-- `/schemas/maxgen/v1/.schema.json` always points at the **latest v1.x**. This is the `$id` inside every schema file.
-- `/schemas/maxgen/v1.NN/.schema.json` is a **frozen copy** of that release and never changes.
-- `/schemas/maxgen/index.json` lists every version for machines.
+- `/schemas/maxgen/v2/` holds the **current 2.x files**. This is the `$id` inside every 2.0 file.
+- `/schemas/maxgen/v2.0/` is a **frozen copy** of the 2.0 release.
+- `/schemas/maxgen/v1/.schema.json` and `/schemas/maxgen/v1.NN/.schema.json` hold the **archived 1.x releases**, unchanged.
+- `/schemas/maxgen/index.json` lists every version, with each 2.0 file's SHA-256, for machines.
 
 
 
-## Release ritual
+## Changelog
 
-Every release, in this order: bump the `schema_version` constant in all seven files, re-run every fixture through the validators, write the changelog entry, tag the release in git, copy the files to `/v1/` and `/v1.NN/` on this site, update the version badge, and regenerate any podcast episode whose schema changed.
+Every release, what changed in each schema and why, is on the [changelog page](/changelog/).
 
 
 ---
@@ -496,7 +493,7 @@ The validators, fixtures and tooling in the schema repository are released under
 
 ## How to cite
 
-> Maxwell, G. *MAXGEN: The Maxwell Genealogy Standard*, version 1.13. OpenGenealogyAI. https://opengenealogyai.org/ — CC0 1.0.
+> Maxwell, G. *MAXGEN: The Maxwell Genealogy Standard*, version 2.0. OpenGenealogyAI. https://opengenealogyai.org/ — CC0 1.0.
 
 
 ---
@@ -505,338 +502,1402 @@ The validators, fixtures and tooling in the schema repository are released under
 Listen · eight episodes · about 20 minutes each
 # The MAXGEN podcast
 
-Each schema gets one conversation. Start with the overview if you are new, or jump to the schema you care about.
+Each of the seven original schemas gets one conversation. Start with the overview if you are new, or jump to the schema you care about.
 
 Subscribe in any podcast app with the feed address **`https://opengenealogyai.org/podcasts/feed.xml`**.
 
-These episodes were produced with an AI narration tool from written scripts by the standard's author, and describe MAXGEN v1.11. Where a later release changed a detail, the schema pages on this site are authoritative.
+These episodes were produced with an AI narration tool from written scripts by the standard's author, and describe MAXGEN v1.11. MAXGEN 2.0 changed a great deal since, so each episode links to what changed. Where an episode and a schema page disagree, the schema page is authoritative. The four schemas new in 2.0 (MaxRelationship, MaxPlace, MaxGroup and MaxEvent) have no episode yet.
 
 
 ---
-## MaxRecord
+## MaxRecord (MAXGEN 2.0 schema)
 
-## The clerk who could not spell
+Page: https://opengenealogyai.org/schemas/maxrecord/
+File: https://opengenealogyai.org/schemas/maxgen/v2/raw-record.schema.json  SHA-256 14b1cc31cdfda239d90d0e6e7b49dcbf27a6c3b28581c1d9ccf8ae1bdac27760
+One MaxRecord is one document, copied word for word.
 
-In 1743 a parish clerk in Dumfriesshire wrote a baptism into his register and spelled the father's surname "Makeswell". The family's name was Maxwell. He was not wrong in any way that matters: he wrote what he heard, in the spelling of his day. Three centuries later a search engine that does not know Makeswell is Maxwell will skip the entry, and a researcher will lose a branch of her family because of a spelling choice made by a man dead for 250 years.
+Definition: MAXGEN 2.0 -- One MaxRecord is one original document (or one copy of it), copied word for word with every person it names and every event it records, so that one original equals one record.
 
-MaxRecord exists to keep that entry exactly as written. Not corrected. Not normalised. Not interpreted.
+### Fields
 
-## What it is
+- record_id (uuid, required): This record's permanent random id, created once by the writer and never recomputed or reused.
+- record_type (enum, required): What kind of document this is; census_household holds a whole household, gazetteer_entry is an authored gazetteer or authority page, and dna_match_list is always tier2-private and living.
+- record_type_as_written (string): The document's or program's own words for its type, used with other.
+- redistribution_license (licence, required): Whether this record may be shared, and under what licence; must be tier2-private while is_living_flag is true.
+- is_living_flag (boolean, required): Living A: whether anyone this record names may be alive (unsure means true); true requires tier2-private, it is a floor that only rises, and privacy is always worked out again when read.
+- source_classification (source_classification, required): Whether the document is an original, a copy or an authored work, and how first-hand its information is overall.
+- transcription_parts (array of transcription_part): The document's text word for word, in labelled parts; a line that starts with [label] and one space carries that line label.
+- transcription_scope (enum): How much of the document was transcribed; only complete_entry or complete_list can carry evidence of absence; required when transcription_parts is present.
+- transcription_sha256 (sha256): Helper-owned fingerprint of transcription_parts in canonical form, used to tell when quote checks are stale.
+- extraction_confidence (confidence): How faithfully the transcription follows the document, from 0 to 1; required when transcription_parts is present.
+- persons_mentioned (array of mention): Every person the document names, one mention each, as written.
+- events_documented (array of event_entry): The events this document records, one entry each (one per child for twins); the helper gives each entry its own occurrence.
+- record_date (date): The date the entry or document was written, not the date of the event it records.
+- record_place (place_ref): Where the document was made, as written.
+- record_status (enum): Whether this is the first issue of the document or an amended, delayed or reissued one; lineage facts citing an amended, delayed or reissued record are flagged for review (R-18).
+- record_status_as_written (string): The document's own words for its status, used with other.
+- copied_from (array of copy_step): The step back toward the original that this copy was made from; required with at least one step when the source is derivative, and the full chain is found by following record ids, never copied here.
+- part_of_source_id (uuid): The MaxSource (collection, book, film) this record belongs to; containment, kept apart from copying.
+- repository_as_written (string): The archive, library or family holding the document, as written.
+- collection_as_written (string): The collection the document sits in, as written.
+- locator (locator): Where the document sits in its collection: volume, page, line and so on.
+- original_key (original_key): Helper-built stable name of the original document, used to refuse duplicates and to judge independence; never written by hand.
+- source_url (uri): The web address where the document was read; optional, and never invented.
+- citation_as_written (string): A footnote or citation string exactly as another program or publication gave it.
+- citation_template (citation_template): A citation template another program used for this document, with its field values.
+- saved_copies (array of saved_copy): The files this record captured, each described here once and keyed by fingerprint; frozen once stored apart from their descriptive fields.
+- media_refs (array of media_ref): Files described on another record that this record also uses.
+- attribution (attribution): Credit for the human who photographed, transcribed or compiled this record; a credit never sets a living flag.
+- rights_uri (uri): A web address stating the rights in this document.
+- sensitive_data_redacted (boolean): True when sensitive details (identity numbers, medical details) were left out of the transcription.
+- redaction_notes (string): What was left out and why.
+- archive_ref (string): A local path where this record is kept; private, never exported.
 
-MaxRecord is the **evidence layer**. One MaxRecord is one document: a baptism entry, a census page, a gravestone, a ship manifest, a newspaper notice, a will. It stores what is on the document, who is mentioned, when and where it was made, where the copy came from, and who transcribed it with what confidence.
+### Example (made up; marriage_register_1880_obadiah_patience.json)
 
-What it never does is say what the document *means*. The record says "Makeswell". Whether Makeswell is Maxwell is an interpretation, and interpretations live in [MaxPerson](/schemas/maxperson/). Keeping the two apart is what lets a future researcher, or a better AI model, look at the original evidence again.
+```json
+{
+  "record_id": "71642fb1-7db2-5581-8a08-cb4df77ea03e",
+  "schema_version": "2.0",
+  "record_type": "marriage_register",
+  "redistribution_license": "public-domain",
+  "is_living_flag": false,
+  "source_classification": {
+    "source": "original",
+    "information": "primary"
+  },
+  "transcription_parts": [
+    {
+      "part_id": "p1",
+      "lang": "en",
+      "text": "[4] 1 May 1880 | Obadiah Mossbury, bachelor | Patience Wren, spinster"
+    }
+  ],
+  "transcription_scope": "complete_entry",
+  "extraction_confidence": 0.95,
+  "persons_mentioned": [
+    {
+      "mention_id": "m1",
+      "name_as_written": "Obadiah Mossbury",
+      "role_as_written": "groom",
+      "role": "groom",
+      "in_event_refs": [
+        "e1"
+      ],
+      "lines": [
+        "4"
+      ],
+      "is_living": false
+    },
+    {
+      "mention_id": "m2",
+      "name_as_written": "Patience Wren",
+      "role_as_written": "bride",
+      "role": "bride",
+      "in_event_refs": [
+        "e1"
+      ],
+      "lines": [
+        "4"
+      ],
+      "is_living": false
+    }
+  ],
+  "events_documented": [
+    {
+      "ref": "e1",
+      "event_type": "marriage",
+      "is_primary": true,
+      "date": {
+        "value": {
+          "year": 1880,
+          "month": 5,
+          "day": 1
+        },
+        "as_written": "1 May 1880"
+      },
+      "place": {
+        "place_as_written": "St Wren's, Tumblebrook"
+      },
+      "information": "primary"
+    }
+  ],
+  "part_of_source_id": "75df6185-5f2f-5652-afb4-fb6349ea015f",
+  "locator": {
+    "as_written": "Tumblebrook marriages, entry 4",
+    "register": "marriages",
+    "entry": "4"
+  },
+  "created_by_task_id": "f29d3707-1833-510d-ae04-a2304e60a471",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
 
-## How it is used
+### What changed from 1.13
 
-1. A document image is transcribed; the who-read-it-and-how details go in a [MaxRecognition](/schemas/maxrecognition/) record.
-2. A MaxRecord is created from that transcription: the type of document, every person named (`persons_mentioned[]`, with their roles: subject, spouse, witness, officiant…), the date as a range, the place as written, the source URL, the licence.
-3. Every claim later made in a MaxPerson cites this record's `record_id`. If the document turns out to be a forgery, the record is retracted with a note. It keeps its ID and its history.
+One original, one record, holding the whole entry. `transcription` becomes
+`transcription_parts` with permanent line labels, `transcription_scope` (complete entry,
+complete list, partial) and a kit-computed fingerprint. Added: `persons_mentioned` with a
+permanent `mention_id`, the page's own role words and `is_living` for every person;
+`events_documented`, the events the document records, each with `information` judged per event
+(each gets an occasion id); `source_classification` as a required core field (it was under
+`extensions`); `copied_from` (the copying chain, required for a derivative); `part_of_source_id`
+and `locator`; a kit-built `original_key` that refuses a second copy of the same original;
+`record_status` (amended, delayed, reissued); `saved_copies` and `media_refs`;
+`citation_as_written` and `citation_template`. `source_url` becomes optional, but "where it is"
+is required (an address, a saved copy, or a repository or source with a locator; never an
+invented URL). `record_date` is the date the entry was written. `census_row` is renamed
+`census_household`; new types include `birth_register`, `death_register`, `tree_import`,
+`gazetteer_entry` and `dna_match_list`. Removed: `transcription`, `image_url`, `locations`,
+`repository`, `collection` (now `_as_written` fields), `language`, `alternate_names`,
+`digital_object_id`, `extracted_by`, `extracted_at`.
 
-## Things worth knowing
+### Listen
 
-- **Dates are ranges.** `year_min` / `year_max` with optional month and day. "Spring 1847" is honest as `1847–1847` with no month. A precise date that the document does not contain is a lie.
-- **Places are kept as written**, with optional normalised fields (country code, state, county, town) alongside.
-- **Everyone on the page is kept**, not just the "principal". Witnesses and neighbours are the social network of the document.
-- **Licence is mandatory.** `redistribution_license` is one of CC0, CC-BY, CC-BY-SA, public-domain, or `tier2-private` (never redistribute). If `is_living_flag` is true the record is private no matter what.
-- **`extensions{}`** holds source-specific fields (a groom's regiment, a cemetery plot, an archive's own reference) without forking the schema.
-
-## Record types
-
-
-
-## Fields
-
-
-
-## Example
-
-A marriage certificate, as a MaxRecord. This is one of the fixtures the schema is tested against.
-
-
-
-## Listen
+Episode 1, MaxRecord — Source documents as written (25:40): https://opengenealogyai.org/podcasts/audio/MAXGEN-01-maxrecord.mp3 — Evidence versus interpretation, and why the clerk who wrote 'Makeswell' must never be corrected. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
 
 
 ---
-## MaxPerson
+## MaxPerson (MAXGEN 2.0 schema)
 
-## You cannot ask the dead who they are
+Page: https://opengenealogyai.org/schemas/maxperson/
+File: https://opengenealogyai.org/schemas/maxgen/v2/person.schema.json  SHA-256 280f09fbee28e3048dd443ff8dee5ec4d12449b2eada4dd4470df2945b582ac6
+One MaxPerson is one person, as a researched conclusion (holds no family links).
 
-Genealogy reconstructs people from fragments: names written by clerks who may have misspelled them, ages self-reported to a census taker, dates in calendars that no longer match ours. Most file formats can hold only one answer per fact, so the uncertainty has to be resolved before it can be saved: one John Maxwell, one father, and the doubt lives in a notebook instead of the data.
+Definition: MAXGEN 2.0 -- One MaxPerson is one person as a researched conclusion, every fact about them a claim citing one piece of evidence, holding no family links (parents, children and partners live in MaxRelationship).
 
-MaxPerson keeps the uncertainty in the data, where software and researchers can work with it.
+### Fields
 
-## What it is
+- person_id (uuid, required): This person's permanent random id, created once by the writer and never recomputed or reused.
+- person_kind (enum): Whether this is a documented person or a placeholder made only so something (a parent link, a DNA hypothesis, a death) can attach to them; never created under an import task (R-23).
+- placeholder_label (string): Plain words saying who a placeholder stands for, such as "unknown father of Mabel's three daughters"; required when person_kind is placeholder.
+- is_living (boolean, required): Living A: whether this person may be alive, with no default (unsure means true); true requires tier2-private, it is a floor that only rises, and privacy is always worked out again when read.
+- redistribution_license (licence, required): Whether this person's document may be shared, and under what licence; must be tier2-private while is_living is true.
+- outside_ids: refused by name (a document that contains it is not valid)
+- name_assertions (array of name_claim): Name claims, each citing its evidence; at least one is required unless person_kind is placeholder.
+- gender_assertions (array of gender_claim): Gender claims, each keeping the document's own words.
+- birth_assertions (array of vital_claim): Claims about this person's own birth, always with role principal (another person's part at a birth goes in event_assertions).
+- death_assertions (array of death_claim): Claims about this person's own death, always with role principal (another person's part at a death goes in event_assertions).
+- event_assertions (array of event_claim): Other events in this person's life and their roles at other people's events; a couple event with role principal, bride, groom, spouse or partner is refused here because it is a family fact written with link (R-22).
+- attribute_assertions (array of attribute_claim): Lasting facts such as occupation, residence or religion, each citing its evidence.
+- non_event_assertions (array of non_event_claim): Claims that something did not happen, such as no marriage by a stated date (GEDCOM 7 NO).
+- membership_assertions (array of membership_claim): Membership of a historical group, each citing this person's own line on a roster or similar record (MaxGroup keeps no member list).
+- photo_assertions (array of photo_claim): Claims that a face or figure on a photograph record is this person.
+- external_id_assertions (array of external_id_claim): Claims that this person is the same as a profile in another system; the only place an outside id for a person is recorded.
+- attached_sources (array of attached_source): Records another program attached to this person without naming a fact; research pointers only, never evidence.
+- same_as_candidates (array of same_as_candidate): People who may be the same as this one but are not merged (GEDCOM 7 ALIA); a merge still needs the merge_person path.
 
-A MaxPerson is a **probable identity**: a bundle of assertions, each saying *this source claims this, with this confidence, recorded by this agent on this date*. There are no bare facts in a MaxPerson. There are only assertions with evidence behind them.
+### Example (made up; birth_calculated_from_census_age.json)
 
-- `name_assertions[]`: every name this person was called, including the misspellings, each with its source.
-- `birth_assertions[]` and `death_assertions[]`: date ranges and places, one per source.
-- `parent_assertions[]` and `child_assertions[]`: **several candidates are normal.** A probable father at 0.75 and a possible father at 0.35 both stay in the record. The tree shows the likelier one; nothing is erased.
-- `spouse_assertions[]`: marriages with type, dates, place and how they ended. Kept in both spouses' records.
-- `event_assertions[]`: everything between the bookends: immigration, residence, military service, probate, burial. Event types map to GEDCOM tags.
-- `external_id_assertions[]`: scored links to the same person on FamilySearch, WikiTree, Find a Grave and others. Scored, not merged, because those databases contain duplicates too.
-- `dna_evidence[]`: DNA matches that touch this person as a candidate common ancestor, feeding the overall confidence.
+```json
+{
+  "person_id": "2a946e38-5769-5fdc-b888-e67cc4b40342",
+  "schema_version": "2.0",
+  "is_living": false,
+  "redistribution_license": "CC0",
+  "name_assertions": [
+    {
+      "name_as_written": "Mossbury, Amos",
+      "given_name": "Amos",
+      "surname": "Mossbury",
+      "confidence": 0.9,
+      "task_id": "f1f1f427-edc8-59ac-b068-c44d0daf5f82",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "325d904c-1f07-52ff-85d2-856cb65a60cd",
+        "mention_id": "11",
+        "record_event_ref": "e1",
+        "quote": "Mossbury, Amos",
+        "kind": "direct"
+      }
+    }
+  ],
+  "birth_assertions": [
+    {
+      "date": {
+        "modifier": "about",
+        "value": {
+          "year": 1896
+        },
+        "derivation": "calculated",
+        "derivation_note": "age 44 on the 1940 census day"
+      },
+      "age_as_written": "44",
+      "confidence": 0.6,
+      "task_id": "f1f1f427-edc8-59ac-b068-c44d0daf5f82",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "325d904c-1f07-52ff-85d2-856cb65a60cd",
+        "mention_id": "11",
+        "record_event_ref": "e1",
+        "quote": "Mossbury, Amos | Head | M | 44",
+        "kind": "indirect"
+      }
+    }
+  ],
+  "attribute_assertions": [
+    {
+      "attribute_type": "occupation",
+      "value_as_written": "Miller",
+      "occurrence_id": "8a37321b-3688-589b-8d1a-1a596a352edb",
+      "confidence": 0.85,
+      "task_id": "f1f1f427-edc8-59ac-b068-c44d0daf5f82",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "325d904c-1f07-52ff-85d2-856cb65a60cd",
+        "mention_id": "11",
+        "record_event_ref": "e1",
+        "quote": "Miller",
+        "kind": "direct"
+      }
+    }
+  ],
+  "created_by_task_id": "f1f1f427-edc8-59ac-b068-c44d0daf5f82",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
 
-## Composite confidence
+### What changed from 1.13
 
-`composite_confidence` is one number, 0 to 1, for how sure we are about the identity as a whole. It is computed from all the assertions, weighted by source quality, using a "noisy-OR" combination (two independent sources agreeing raise confidence more than either alone, but not as if they were certain). Because every assertion cites a `source_record_id`, the engine can notice when two assertions really come from the same underlying document and avoid double-counting.
+**Holds no family links.** Removed: `parent_assertions`, `child_assertions`,
+`spouse_assertions` (to MaxRelationship); `composite_confidence` (a stored score);
+`external_ids` (a mirror); `dna_evidence` (DNA is cited through the evidence link);
+`place_registry` (to MaxPlace); `source_record_ids` (an index); `occupation_assertions` (now
+`attribute_assertions` with `attribute_type: occupation`); `asserted_by`, `asserted_at`,
+`last_updated_at`, `judge_approved`, `judge_approved_at` (task provenance, kit timestamps and
+the database's review stage); `merge_status` (now `lifecycle`); the flat date keys and
+`country_code`/`state_province` (now the date and place blocks). Changed: every claim gains the
+claim header and an evidence link; photo claims point at a photograph record. Added:
+`person_kind` and `placeholder_label`, attribute, non-event and group-membership claims,
+`name_parts` and `name_status`, `attached_sources`, `same_as_candidates`. `is_living` and
+`redistribution_license` become required, with no default; `name_assertions` is required for a
+documented person.
 
-## The merge model
+### Listen
 
-When evidence shows two MaxPerson records are the same individual, one absorbs the other. `merge_history[]` records the confidence, method, signals, who merged and when. The absorbed record stays, marked `merge_status: merged_away`. If later evidence shows they were different people after all, the merge is reversed on the same quality of evidence that made it.
-
-## Privacy
-
-`is_living: true` locks the record. Public endpoints return "not found". The record still exists internally and can be researched, but it is never exposed. Linked DNA records inherit the same lock. This is a design requirement of the standard, not a policy any implementation can switch off.
-
-## Fields
-
-
-
-## Example
-
-Mary Todd Lincoln as a MaxPerson: two names (birth and married), an exact birth and death, one marriage, every claim citing the same marriage record.
-
-
-
-## Listen
-
-
----
-## MaxTask
-
-## The work is irreducibly distributed
-
-The UK National Archives holds eleven million documents. The US National Archives holds thirteen billion pages. No organisation, model, or volunteer community can process all of it. Genealogical research will always be done by millions of people and machines in parallel, over decades. MaxTask is the standard way to describe one piece of that work.
-
-## What it is
-
-A task is a request: "transcribe this image", "decide whether the Johann Müller in record X is the John Miller in record Y", "search the Württemberg emigration lists for Müllers who left between 1840 and 1860", "resolve these two contradictory birth years". A task can go to an AI agent, a volunteer, or a specialist organisation. It can carry a cost cap, a deadline, dependencies on other tasks, and a review step before its result is accepted.
-
-## What makes it different
-
-- **Acceptance criteria** (`acceptance_criteria[]`): objective, checkable conditions that define "done" before work starts.
-- **Evidence required** (`evidence_required[]`): the anti-hallucination rule. A task that needs a birth record must return a link to the birth record. A search must return the exact query and what it found. An AI cannot pass by producing plausible text.
-- **A structured result**, not a text blob: what was tested, what was done, what was found, what changed, what to do next. Each step carries a **verdict**:
-
-| Verdict | Colour | Meaning |
-|---|---|---|
-| `key_finding` | green | Confirmed. |
-| `usable` | blue | A useful lead. |
-| `inconclusive` | amber | Mixed. |
-| `ruled_out` | red | Definitively disproved. A disproof is information, not a dead end. |
-| `dead_end` | grey | Searched, found nothing. |
-| `infra` | grey | Infrastructure work. |
-
-- **An independent review** (`review{}`): the reviewer must not be the contributor. Rejection reasons include `fabricated_or_hallucinated` and `privacy_violation`, which build a quality signal over time.
-- **A privacy gate** (`contributor_eligibility`): defaults to `first_party_only`. Any task about a living person can never be sent to outside volunteers or third-party AI services. This rule is part of the standard.
-
-## What is deliberately not in it
-
-Payment. An open standard must be neutral on business models. Who gets paid, how much, and how lives in `extensions{}`, so the standard describes the work and the quality gate while each implementation decides the economics.
-
-## Task types
-
-
-
-## Fields
-
-
-
-## Example
-
-A conflict-resolution task escalated to a stronger model because two candidate mothers were within 0.05 of each other.
-
-
-
-## Listen
-
-
----
-## MaxDNA
-
-## Evidence that belongs to your relatives too
-
-More than fifty million people have taken a consumer DNA test. A 47-centimorgan match (a centimorgan is the unit used to measure how much DNA two people share) does not prove a relationship on its own, but combined with a documentary trail to the same ancestor it raises confidence sharply. Genetic data is also information about every biological relative you have, including people who never consented. MaxDNA is designed to capture the genealogical value while making a leak structurally impossible.
-
-## What it stores, and what it cannot
-
-MaxDNA stores **match metadata**: shared centimorgans, longest segment, segment count, optional chromosome segments for triangulation, haplogroups (deep ancestral lineages on the direct paternal or maternal line), ancestry composition, and kit metadata.
-
-It cannot store a genome. `raw_genotype_stored` is a constant `false` that cannot be set otherwise. There is no field for a raw file.
-
-## The privacy architecture
-
-- **Always `tier2-private`.** The licence field has exactly one allowed value. A MaxDNA record can never appear in a public dataset, API response, or embedding, even for people long dead, because a living tester's data describes their ancestors too.
-- **Hashed kit IDs.** `kit_id_hash` holds an HMAC-SHA-256 hash (a one-way scramble that uses a secret key, so it cannot be reversed by guessing) of the kit number. Matches store `match_kit_hash` the same way. You can triangulate without ever seeing your cousin's kit number.
-- **Consent is a required field.** Values include explicit opt-in, guardian consent, public-dataset redistribution allowed, deceased before 2000, pending, and withdrawn. `withdrawn` starts a 30-day purge; after that the record is deleted outright, which is the one place MAXGEN deletes anything.
-
-## Methodology fields most tools forget
-
-- `cm_map_version`: different recombination maps (HapMap, deCODE and others) give centimorgan values that differ by up to 15% for the same segment. Recording which map was used makes matches comparable.
-- `phasing_status`: whether a shared segment is on the paternal or maternal chromosome, both, unphased, or unknown. Essential for serious triangulation.
-- `endogamy_flag` and `endogamy_population`: communities that married within themselves for generations (Ashkenazi, Acadian, Mennonite, island populations) break the standard relationship estimates. The flag tells downstream tools to recalibrate.
-
-## How it connects to the rest
-
-`person_id` links the test to the [MaxPerson](/schemas/maxperson/) who took it. Confirmed common-ancestor candidates on a match carry a confidence and an inference method (manual, tree intersection, triangulation, shared surname and geography). Those flow into MaxPerson's `dna_evidence[]`, where they strengthen documentary relationship claims through the same noisy-OR combination used everywhere else.
-
-## Fields
-
-
-
-## Example
-
-Because MaxDNA records are private by definition, this site does not publish a real one. The [validator](/validator/) offers a synthetic minimal record you can inspect and check.
-
-## Listen
+Episode 2, MaxPerson — The person who might be your ancestor (22:46): https://opengenealogyai.org/podcasts/audio/MAXGEN-02-maxperson-v2.mp3 — Assertions not facts, probabilistic parents, composite confidence, and the merge model. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
 
 
 ---
-## MaxSource
+## MaxRelationship (MAXGEN 2.0 schema)
 
-## The navigator's problem
+Page: https://opengenealogyai.org/schemas/maxrelationship/
+File: https://opengenealogyai.org/schemas/maxgen/v2/relationship.schema.json  SHA-256 3fe0a82b950eb6fa5b501258cf50c9b41894f7f41039051a16170cc5c5af5d5d
+One MaxRelationship is one family link, stored once: a `family`, a `parent_child` pair or an `association`.
 
-A researcher needs the church records of a Lutheran family in Württemberg in the 1840s. If she knows German genealogy, she knows the answer: Archion and Matricula for the parish books, the state archive and Ancestry for emigration lists, the FamilySearch Research Wiki for which parishes cover which years. If she does not know, finding that out takes hours of catalogues, link directories, forum posts and emails.
+Definition: MAXGEN 2.0 -- one family link stored once: a family (a union, household or parent set with its child memberships), one parent and child pair with its lineage facts, or a standing association between two people. Agents never write these files by hand: the helper's link command finds or creates them, and only import_file, resolve_conflict and build_tree tasks may add one directly (R-24). MaxPerson keeps no copy of any link and there is no two-sided lock.
 
-MaxSource makes that knowledge machine-readable.
+### Fields
 
-## What it is
+- relationship_id (uuid, required): This link's permanent id: a random UUID created once by the helper's link command (or by the importer or analysis task that adds it), never computed from the people's ids and never reused.
+- kind (enum, required): Which of the three kinds of link this document is (family, parent_child or association); each kind forbids the other kinds' fields, and a document of an unknown kind is refused at write and skipped with a warning at read
+- is_living_flag (boolean, required): Living A floor, required with no default: true when a person this link names may be alive (a family: either partner only, since each child is judged on its own membership; a parent_child record: the parent or the child; 
+- redistribution_license (licence, required): Licence of this link, set by the helper to the strictest of the people it names and the records its claims cite (a family: the partners and the records its family facts cite) and raised later but never lowered; a true is
+- media_refs (array of media_ref): Photographs of the couple or the family, pointing at saved copies that are described once on the records that captured them.
+- partners (array of partner): Family only: zero to two live partner items, unordered, each either a person or an absent partner whom a document mentions without naming; absent and person items both count toward the two, retracted items stay stored an
+- union_type (enum): Family only: the importing program's (or the writer's) word for the kind of union, kept as given, unknown when nothing says; never shown when the family has live family facts, which are the only evidence of a union; shar
+- union_type_as_written (string): Family only: the documents' or the other program's own words for the union, kept when union_type is other or when the words say more.
+- union_type_uri (uri): Family only: a published vocabulary's address for the union type, when one exists.
+- fact_assertions (array of family_fact_claim): Family only: facts about the couple or household (marriage, banns, licence, divorce, a census showing them as husband and wife ...), each one claim citing one piece of evidence and held by the partner set.
+- non_event_assertions (array of non_event_claim): Family only: things the evidence says did not happen to this couple (GEDCOM 7 NO), each one claim with the same shape as MaxPerson's; an undated one never counts toward the living test or date bounds.
+- children (array of membership): Family only: each child's place in this parent set; a child may hold two memberships in one family only when their set kinds differ, because there is one live membership per child, family and set kind (R-20).
+- parent_id (uuid): Parent_child only: the parent person, resolved through merge redirects when read; there is exactly one live parent_child record per parent and child pair (R-20).
+- child_id (uuid): Parent_child only: the child person, resolved through merge redirects when read; it must differ from parent_id (R-06).
+- parent_role (enum): Parent_child only: the parent's role as the documents show it, unknown until a document says; a later father-versus-mother conflict is refused by the helper for an analysis task to settle.
+- parent_role_as_written (string): Parent_child only: the parent's own words on the record, such as Head or father, never the child's words.
+- lineage_assertions (array of lineage_claim): Parent_child only: at least one lineage fact saying what kind of parent this person is to this child, each judged on its own evidence; one man who is both birth father and adoptive father has one record holding two facts
+- association_type (enum): Association only: the kind of standing tie, with this direction: godparent -- party1 is the godparent; enslaved_by -- party1 is the enslaved person and party2 the enslaver; ancestor_descendant -- party1 is the ancestor; 
+- association_type_as_written (string): Association only: the document's or the other program's own words for the tie, kept when association_type is other or when the words say more.
+- association_type_uri (uri): Association only: a published vocabulary's address for the association type, when one exists.
+- generations (integer): Association only, and only with association_type ancestor_descendant: how many generations separate party1 (the ancestor) from party2, when known.
+- party1 (party): Association only: the first party; for a directed type it is the godparent, the enslaved person, the ancestor or the employer.
+- party2 (party): Association only: the second party; for a directed type it is the godchild, the enslaver, the descendant or the employee.
+- association_assertions (array of association_claim): Association only: at least one claim that the tie existed, began or ended, each citing one piece of evidence.
 
-MaxSource is **not** a database of records. It is a database of **where records live**. One MaxSource record describes one source: its name and URL, what kind of thing it is, what it covers, how to get in, and how we came to know about it.
+### Example (made up; parent_child_candidate_father_a.json)
 
-- **`source_type`**: directory index, research wiki, record catalogue, record database, archive, DNA database, library, newspaper archive, forum, blog, society, other. The type decides how a system interacts with the source.
-- **`coverage{}`**: places (with country, state, county, town), record types, a time period as `year_min` / `year_max`, languages, and ethnic or religious groups. It answers queries like "everything covering Bavaria, death records, 1840 to 1870".
-- **`access{}`**: free web, paid subscription, API, bulk download, scrape-only, or on-site only; whether a login is needed; the API base URL; whether robots.txt allows crawling; and crawl notes that hold the etiquette robots.txt does not ("batch 50 items per call, five seconds between requests").
-- **`embedding_text`**: a natural-language description built for a vector database (a search index that matches meaning rather than exact words), so "Lutheran records in Württemberg in the 1840s" finds Archion even though no keyword matched.
-- **`provenance{}`**: which seed source found this, its status (active, dead link, superseded, unverified), who asserted it and when it was last verified. Dead links are marked, not deleted.
-- **`parent_source_id`** and **`coverage.record_count_estimate`**: sub-collections link to their parent, and an estimated record count is the primary ranking signal between a national index and a single parish page.
+```json
+{
+  "relationship_id": "c967855d-e512-5c3c-8084-aa1c3439e312",
+  "schema_version": "2.0",
+  "kind": "parent_child",
+  "is_living_flag": false,
+  "redistribution_license": "CC0",
+  "parent_id": "fed1f33a-d9b4-51f2-9d73-d97aee90c2b4",
+  "child_id": "65feecf1-edc0-53b0-8a07-facdedecc81b",
+  "parent_role": "father",
+  "parent_role_as_written": "reputed father",
+  "lineage_assertions": [
+    {
+      "assertion_id": "7d437c4d-f926-5e5d-907f-d8240e0c8b20",
+      "fact_type": "birth_parent",
+      "parent_mention_id": "m3",
+      "child_mention_id": "m1",
+      "confidence": 0.6,
+      "task_id": "321dd029-e1b0-5335-814f-37fd6711f5bb",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "cbbbabf3-db47-51a4-8001-88c4e784c88a",
+        "mention_id": "m1",
+        "record_event_ref": "e1",
+        "quote": "Pip, base son of Dorcas Bramblecott, singlewoman; reputed father Ned Mossbury",
+        "kind": "direct"
+      }
+    }
+  ],
+  "created_by_task_id": "321dd029-e1b0-5335-814f-37fd6711f5bb",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
 
-## The copyright question
+### What changed from 1.13
 
-Some source catalogues are other people's curated work. MaxSource handles this with the licence field: an entry derived from a third-party directory is marked `tier2-private` and used internally for routing only. Openly licensed entries can be published. The standard makes the decision explicit and auditable; the operator makes the decision.
+Every family link, stored once. Three kinds: **`family`** (0 to 2 partners — a person, or an
+"absent" partner the document mentions without naming — family facts such as marriage, banns,
+divorce or a census together, and child memberships, each with a `set_kind`: `birth`,
+`adoptive`, `step_household`, `foster`, `guardianship`, `sealing`, `alternative_hypothesis`,
+`other`, a `child_order` and a kit-computed `is_preferred`); **`parent_child`** (one per parent
+and child, with lineage facts such as `birth_parent`, `adoptive_parent`, `step_parent`, each
+with a dimension: genetic, gestational, legal, social, religious, household, unknown, other); and
+**`association`** (godparent, enslaved by, ancestor-descendant, employer, neighbour, friend,
+multiple birth, other). No two-sided lock: MaxPerson keeps no copy of any link. A child can belong to
+several parent sets, so an adopted person can trace both their birth and their adoptive
+lineage. Agents never write these files: the kit's `link` command finds or makes them. Replaces
+1.13's `parent_assertions`, `child_assertions`, `spouse_assertions`, `relationship_type` on
+parents and the `ecclesiastical` type.
 
-## Source types
+### Listen
 
-
-
-## Fields
-
-
-
-## Example
-
-A FamilySearch Research Wiki article catalogued as a public MaxSource.
-
-
-
-## Listen
+No episode yet: MaxRelationship is new in MAXGEN 2.0.
 
 
 ---
-## MaxRecognition
+## MaxTask (MAXGEN 2.0 schema)
 
-## The handwriting problem
+Page: https://opengenealogyai.org/schemas/maxtask/
+File: https://opengenealogyai.org/schemas/maxgen/v2/task-queue.schema.json  SHA-256 f636aebfa334a37021ec4b5f1ebc9b41ab61c4cdfc0cde5200fb112686005b6c
+One MaxTask is one piece of work: research, an import, a review or a proof.
 
-German Kurrent script was the everyday handwriting of German-speaking Europe from the 1500s to the mid-1900s. Its "e" looks nothing like an e; its "n" looks like a "u"; the word for mother looks like "Mnttev". The church registers that matter most for German-American research are written in it, by the million. Kurrent is one of many: Secretary Hand, Court Hand, Hebrew and Greek scribal hands, Arabic nastaliq, Cyrillic ustav.
+Definition: MAXGEN 2.0 -- One MaxTask is the permanent record of one piece of work done in a database (research, an import, a review or a proof), never pruned while anything points at it.
 
-MaxRecognition records what happens when a machine or a trained human reads such a page, so that the reading is citable, checkable and improvable.
+### Fields
 
-## One schema for print and handwriting
+- task_id (uuid, required): This task's own id: a random UUID created once by the writer and never reused.
+- created_by_task_id: refused by name (a document that contains it is not valid)
+- task_type (enum, required): What kind of work this is; a task of type other permits none of the gated actions of rules R-24, R-28 and R-31.
+- task_type_as_written (string): The kind of work in the writer's own words, given when task_type is other.
+- status (enum, required): Where the work stands, changed only through the helper's task command (pending, processing, then done, failed or escalated; on_hold pauses it; a task made by mistake or retracted is cancelled, never deleted).
+- priority (integer): How urgent the task is, from 1 (lowest) to 10 (highest).
+- payload (object): The task's input, an open object whose documented kinds are interview, person_request, person_page_session, fan_survey (person_id), run (run_id, on a judge_review task), find_original (record_id), import_file (format: ge
+- result (result): What the work found and decided, in a closed, readable shape.
+- provenance (provenance): Helper-owned and written once: who did the work of this task, filled when the task is first claimed (moved to processing) or created already done.
+- created_by (string): The agent id of the session that wrote this task: optional in input, filled by the helper from the writing session, required in stored form, and a different value is refused (R-14).
+- started_at (timestamp): Helper-owned: when the task was first moved to processing.
+- completed_at (timestamp): Helper-owned: when the task reached done, failed or cancelled.
+- is_living_flag (boolean, required): Living A floor: true when the task names or concerns someone who may be alive (unsure means true); it only rises, and while it is true the task must be first_party_only.
+- contributor_eligibility (enum): Who may be given this task: first_party_only (the person's own kit and agents, the default, failing closed) or any_contributor; it must be first_party_only whenever is_living_flag is true.
+- assigned_to (string): The agent id now working on this task; absent while it is pending.
+- cost_usd (number): What the work actually cost, in US dollars.
+- cost_cap_usd (number): The most this task may cost, in US dollars; the agent stops and escalates before going over it.
+- retry_count (integer): How many times the task has been retried after a failure.
+- max_retries (integer): How many retries are allowed before the task is left failed.
+- error_message (string): What went wrong, when the task failed or was escalated.
+- escalation_reason (string): Why the task was escalated for a further decision.
+- queue_file_path (string): The task's path in a file-based queue on this computer; private, never exported.
+- depends_on (array of uuid): Tasks that must be done before this one can start.
+- parent_task_id (uuid): The task that made this task (on MaxTask this replaces created_by_task_id, which tasks may not carry).
+- acceptance_criteria (array of string): Plain, checkable conditions that a complete result must meet.
+- min_confidence (confidence): The lowest result confidence that can be accepted.
+- evidence_required (array of string): What the worker must hand back as proof of the work (addresses, exact queries, records saved).
+- deadline (timestamp): When the work should be finished.
 
-OCR (reading printed text) and HTR (reading handwriting) share more than 90% of their fields, so there is one schema with a `recognition_type` switch. Handwriting records add `script_type` and `approx_century` for routing to the right specialist; print records add `font_type` and `scan_dpi`.
+### Example (made up; extract_record_with_steps.json)
 
-## Who did the reading
+```json
+{
+  "task_id": "79f310ff-0478-5af4-abc5-f6316de4cffb",
+  "schema_version": "2.0",
+  "task_type": "extract_record",
+  "status": "done",
+  "payload": {
+    "kind": "extract",
+    "person_id": "0aacaa81-8ca0-5df6-8ff8-2a9f7067d76f"
+  },
+  "result": {
+    "hypothesis_tested": "Mabel was baptised at Tumblebrook in 1924.",
+    "what_we_did_and_result": "Searched two collections; found the baptism entry; one site needed a login.",
+    "steps": [
+      {
+        "step_no": 1,
+        "action": "search",
+        "source": "Tumblebrook parish registers (made-up online images)",
+        "source_id": "75df6185-5f2f-5652-afb4-fb6349ea015f",
+        "source_url": "https://records.example.org/sample/tumblebrook-baptisms",
+        "query": "Thistlewood baptisms 1920-1930",
+        "coverage": {
+          "span": {
+            "modifier": "from_to",
+            "value": {
+              "year": 1920
+            },
+            "value2": {
+              "year": 1930
+            },
+            "derivation": "interpreted"
+          },
+          "place": {
+            "place_as_written": "Tumblebrook"
+          },
+          "record_types": [
+            "parish_register"
+          ]
+        },
+        "found": "one entry: Mabel, baptised 16 March 1924",
+        "record_id": "d990b9d1-f418-573b-83e7-21792a44085d",
+        "person_id": "0aacaa81-8ca0-5df6-8ff8-2a9f7067d76f",
+        "verdict": "key_finding",
+        "confidence": 0.95,
+        "at": "2026-10-16T12:00:00Z"
+      },
+      {
+        "step_no": 2,
+        "action": "search",
+        "source": "Erewhon civil birth index (made up)",
+        "source_url": "https://index.example.org/births",
+        "query": "Thistlewood births 1924",
+        "found": "The site asked for a login. Not searched; agents never handle passwords.",
+        "verdict": "inaccessible",
+        "at": "2026-10-16T12:00:00Z"
+      }
+    ],
+    "verdict": "usable",
+    "verdict_reason": "the baptism entry was found and transcribed",
+    "confidence": 0.9
+  },
+  "is_living_flag": false,
+  "contributor_eligibility": "first_party_only",
+  "provenance": {
+    "agent_id": "db:99a01bf5-fdde-51dc-af11-eef027d87f5b/Genealogist",
+    "agent_kind": "ai",
+    "role": "Genealogist",
+    "party": "db:99a01bf5-fdde-51dc-af11-eef027d87f5b",
+    "run_id": "r1",
+    "display_name": "Genealogist",
+    "model": {
+      "provider": "example",
+      "name": "fixture-model",
+      "attested_by": "self_reported"
+    },
+    "claimed_at": "2026-10-16T12:00:00Z",
+    "channel": "cli"
+  },
+  "created_by": "db:99a01bf5-fdde-51dc-af11-eef027d87f5b/Genealogist",
+  "started_at": "2026-10-16T12:00:00Z",
+  "completed_at": "2026-10-16T12:30:00Z",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
 
-`contributor{}` has a `contributor_type` of `human` or `ai`, and fields that follow from it.
+### What changed from 1.13
 
-- **Humans** carry credentials, specialty scripts, languages and regions, `records_transcribed` (a reputation signal that accumulates), and training notes. A Kurrent reading by someone with fifteen thousand records and a Kurrent certification carries more weight than the same reading by a newcomer.
-- **AI models** carry model name, version, provider and type, the **exact prompt** used (a prompt that says "transcribe exactly, do not correct" is a different method from "extract the key facts"), and fine-tuning details. Storing the prompt makes the transcription reproducible.
+Removed: `contributor` (now `provenance`, written once by the kit), the top-level `review`
+(reviews are now separate `judge_review` tasks, never overwritten), a required `created_at`
+(now kit-owned). Added: `provenance`, `is_living_flag` (required), statuses `on_hold` and
+`cancelled`, task types `find_original` and `import_file`, the verdict `inaccessible` (could
+not search; never a dead end), and a closed `result` holding the search steps (the only search
+log), a proof write-up (the single authority for "proven"), occurrence verdicts, reviews, run
+decisions and FAN-club associates (the friends, associates and neighbours studied around one
+person). A proof's parent-set changes can set a set's kind, make it the main set, add a
+parent's existing link to it, or retract it.
 
-## Word-level confidence and labelled guesses
+### Listen
 
-`word_confidences[]` gives each word a score, a position, alternatives, and a **`reading_type`**:
-
-| `reading_type` | Meaning |
-|---|---|
-| `observed` | Read directly from the image. |
-| `inferred_context` | Filled in from surrounding entries. |
-| `inferred_pattern` | Filled in from a known naming convention. |
-| `partial_read` | Some characters legible, the rest inferred. |
-
-Traditional practice says "leave it blank if you cannot read it". MaxRecognition says: if you can make a reasonable inference, make it, **label it**, explain it in `inference_notes`, and give it a lower score. "Five other entries on this page read Maxwell; only 'Ma' is legible here; letterform height at position 3 fits 'xw' not 'rk'; inference Maxwell, 0.78." That is how a trained genealogist reasons, captured in a form a reviewer or a future model can audit.
-
-## Consensus and searchability
-
-- **`consensus_group_id`** links independent readings of the same image. `is_independent` says whether each run was blind to the others. Agreement raises confidence; disagreement flags the word for human review. The schema stores the evidence; the matching engine does the arithmetic.
-- **`searchable_variants[]`** lists every spelling under which this record should be findable when a word is uncertain between, say, "Maxwell" and "Maxweil". [MaxName](/schemas/maxname/) handles the general fact that names vary across history; this field handles one hard reading in one document.
-- **`character_error_rate`** and **`word_error_rate`** record quality against ground truth when it exists, so over time the system learns which models and which people read which scripts best.
-
-## Fields
-
-
-
-## Example
-
-A human Kurrent specialist's reading of a Bavarian baptism, with one uncertain word and its alternative.
-
-
-
-## Listen
+Episode 3, MaxTask — Distributing the work (24:29): https://opengenealogyai.org/podcasts/audio/MAXGEN-03-maxtask.mp3 — Task types, the verdict vocabulary, acceptance criteria, and the anti-hallucination rule. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
 
 
 ---
-## MaxName
+## MaxSource (MAXGEN 2.0 schema)
 
-## Why Maxwell and Makeswell are the same family
+Page: https://opengenealogyai.org/schemas/maxsource/
+File: https://opengenealogyai.org/schemas/maxgen/v2/source.schema.json  SHA-256 c20053e226e30f3c83fc33a0899b60969deb54195e860ab4dd3823c4281ef1ac
+One MaxSource is one work, collection or repository.
 
-Search a Scottish record set for "Maxwell" and you will not find Makeswell, Maccuswell, M'Axwell, McAxwell or Maxwel, though every one of them is the same name written by a different clerk in a different decade. The problem is bigger than spelling. Ó Briain became O'Brien when colonial administrators wrote it down. Müller became Miller on the far side of the Atlantic. Yochanan became Iohannes became Jean became John became Ivan.
+Definition: MAXGEN 2.0 -- One MaxSource is one work, collection or repository that documents come from or are held by (a book, a periodical, a census collection, a microfilm publication, a family Bible, an archive, a library or a website), with what it covers and how to search it.
 
-No open standard captured this before. We checked GEDCOM X, WeRelate, Behind the Name, JRC-Names, the Library of Congress name authority, VIAF, schema.org, HistNorm and Popolo. None records typed, directed, sourced name relationships across languages, scripts, places and centuries. MaxName fills that gap.
+### Fields
 
-## What it is
+- source_id (uuid, required): This source's own id: a random UUID created once by the writer and never reused.
+- name (string, required): The source's name in plain words, such as a made-up 'Tumblebrook parish registers, 1801-1900'.
+- source_type (enum, required): What kind of source this is.
+- source_type_as_written (string): The kind of source in the writer's or the other program's own words, given when source_type is other.
+- redistribution_license (licence, required): Whether this source entry may be shared (unclear means ask, never guess); a tier2-private entry never appears in any open dataset, share, export, public embedding or commit.
+- is_living_flag (boolean, required): Living A floor: true when this source entry names someone who may be alive, such as a privately held family Bible (unsure means true; credits never set it); true requires tier2-private.
+- source_url (uri): The source's own address, when it has one; optional (a book or a family Bible has none) and never invented.
+- parent_source_id (uuid): The larger MaxSource this one is part of, such as the collection that holds this series.
+- description (text): What this source holds and who it serves, in plain words.
+- embedding_text (text): Plain text built from the name, description and coverage, for search indexes.
+- bibliographic (bibliographic): How the work is cited: title, creators, publisher and edition.
+- holdings (array of holding): The repositories that hold this source, with call numbers.
+- coverage (coverage): What the source covers, including, for each place, which years it holds and the exact words to search with (routing lives only here).
+- access (access): How the source is reached, and the polite way to search it.
+- link_status (enum): Whether the source's address still works; a dead link is marked, never deleted.
+- last_verified_at (timestamp): When the address was last confirmed to work.
+- discovered_via (enum): How this source entry was first found.
+- discovered_via_as_written (string): How it was found, in the writer's own words, given when discovered_via is other.
+- external_ref (string): The link, category path or article title where this entry was found.
+- attribution (attribution): Credit to the human who compiled or contributed this entry (a credit never sets the living flag).
+- media_refs (array of media_ref): Files that show this source (a title page, a repository photograph), each described once on the record that captured it.
 
-One MaxName record is one **canonical form** (the modern reference spelling) plus everything known about how that name has been written and adapted.
+### Example (made up; census_collection_with_routing.json)
 
-- **`regional_canonical[]`**: the preferred form in other communities. "John" carries Seán, Eoin, Ioan, Johann. None is more real than another.
-- **`variants[]`**: every known form, each with its own UUID (so it can be cited or retracted on its own), the text exactly as it appears in records, a **type** (spelling variant, nickname, anglicisation, latinisation, abbreviation, scribal corruption, phonetic rendering, emigration adaptation, translation, patronymic form, legal substitution…), its **scope** (place, language, script, period), a **frequency** (rare, occasional, common, dominant), an **attestation source**, a confidence, and `disputed_by[]` for scholars who disagree.
-- **`cognates[]`**: links to other MaxName records across languages, with a relationship type (etymological root, cross-language cognate, derivative, contracted form) and a **direction**: Maxwell *derives from* Maccus; John and Ivan are *parallel cognates* of Iohannes. Every link cites its source.
-- **`phonetic_keys{}`**: pre-computed codes for fuzzy search under six algorithms (Soundex, NYSIIS, Metaphone, Double Metaphone, Daitch-Mokotoff, Beider-Morse), each with its algorithm version so a code computed in 2026 can be reconciled with one computed in 2040.
+```json
+{
+  "source_id": "2a140cc7-1211-5c72-8071-ccd81e1ddcc7",
+  "schema_version": "2.0",
+  "name": "Erewhon census of 1940 (made up)",
+  "source_type": "census_collection",
+  "redistribution_license": "CC0",
+  "is_living_flag": false,
+  "source_url": "https://records.example.org/sample/census-1940",
+  "holdings": [
+    {
+      "repository_name": "Erewhon National Archive (made up)",
+      "holds_original": true,
+      "call_number": "CEN-1940",
+      "medium_as_written": "bound enumeration books"
+    },
+    {
+      "repository_name": "Example Records Online (made up publisher)",
+      "holds_original": false,
+      "medium_as_written": "digital images"
+    }
+  ],
+  "coverage": {
+    "places": [
+      {
+        "place": {
+          "place_as_written": "Tumblebrook, Wrenshire, Erewhon"
+        },
+        "span": {
+          "value": {
+            "year": 1940
+          },
+          "as_written": "1940",
+          "derivation": "interpreted"
+        },
+        "search_as": "Tumblebrook district 4"
+      },
+      {
+        "place": {
+          "place_as_written": "Larkspur hamlet, Wrenshire, Erewhon"
+        },
+        "span": {
+          "value": {
+            "year": 1940
+          },
+          "as_written": "1940",
+          "derivation": "interpreted"
+        },
+        "search_as": "Tumblebrook district 4",
+        "note": "Larkspur hamlet is filed with the Tumblebrook district in 1940."
+      }
+    ],
+    "record_types": [
+      "census_household"
+    ],
+    "languages": [
+      "en"
+    ],
+    "span": {
+      "value": {
+        "year": 1940
+      },
+      "derivation": "interpreted"
+    }
+  },
+  "link_status": "active",
+  "last_verified_at": "2026-10-16T12:00:00Z",
+  "discovered_via": "manual",
+  "created_by_task_id": "a90fb929-e2f7-5bc9-9d68-16e1f280bf3a",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
 
-## Two-pass cognates (new in v1.13)
+### What changed from 1.13
 
-Cognate relationships are discovered while researching the first name, before a record for the second exists. A cognate may therefore be recorded **unresolved**, carrying only `related_canonical_form` ("John"), and later **resolved** by a linking pass that adds the `related_name_id`. Both states are valid; a cognate pointing at nothing is not.
+`source_url` becomes optional; the `provenance` block is dissolved (`status` → `link_status`,
+`asserted_by` → `created_by_task_id`, `asserted_at` → `created_at`); `coverage.time_period`
+becomes `coverage.span` (a date block, no year cap); places use the place block. Added:
+`bibliographic` (title, creators, publisher, edition), `holdings` (which repository holds the
+original), `is_living_flag` (required), a wider `source_type` list, `discovered_via`.
 
-## The Maxwell example
+### Listen
 
-Canonical form Maxwell, a surname of Old Norse origin: Maccus's pool, first attested about 1144. Variants: *Maccuswell* (Latin charters, 1144 to 1300, dominant), *Makeswell* (Scots parish registers, 1600 to 1750, occasional), *M'Axwell* (an abbreviation, 1700s to 1800s), *McAxwell* (Virginia colonial records, rare, with one scholar disputing whether it is corruption or anglicisation). Phonetic keys Soundex M240, Daitch-Mokotoff 645400. One cognate: *derives from* Maccus, citing Reaney's Dictionary of English Surnames. With that record, a search for Makeswell finds Maxwell, and a transcription of Maccuswell from a twelfth-century charter lands in the right family.
-
-## Variant types
-
-
-
-## Fields
+Episode 5, MaxSource — The routing brain (18:16): https://opengenealogyai.org/podcasts/audio/MAXGEN-05-maxsource.mp3 — Where records hide: coverage, access, provenance, and semantic search over sources. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
 
 
+---
+## MaxPlace (MAXGEN 2.0 schema)
 
-## Example
+Page: https://opengenealogyai.org/schemas/maxplace/
+File: https://opengenealogyai.org/schemas/maxgen/v2/place.schema.json  SHA-256 6940b499ea549f8314227906ae120f90fdc90e536e5824b5f34233a9c16fff4d
+One MaxPlace is one real place with its history.
 
-Seán, the Irish form of John, with an anglicisation, an older spelling, and an unresolved cognate link.
+Definition: MAXGEN 2.0 -- one MaxPlace document is one real place with its own history (its names, kinds, parent places and coordinates over time), each fact stored once as a claim with evidence so that many claims can point at it.
+
+### Fields
+
+- place_id (uuid, required): The place's permanent id: a random UUID created once by the writer (an import_file, resolve_conflict or build_tree task, R-24), never computed from a gazetteer or other outside id, and kept through renaming, re-typing an
+- redistribution_license (licence, required): The licence under which this place document may be shared; when it is unclear, ask and never guess (RULES 7).
+- name_assertions (array of name_claim, required): The names this place has had, at this level only (not the parent places), each a claim with its own evidence; at least one is required.
+- kind_assertions (array of kind_claim): What kind of place this was over time (a territory that became a state, a village that became a city), each a dated claim with its own evidence.
+- parent_place_assertions (array of parent_place_claim): The places this place lay inside over time, in one or more hierarchies (civil, church, judicial, census ...), each dated as closely as the evidence allows and each a claim with its own evidence; imported parents stay pro
+- coordinate_assertions (array of coordinate_claim): Where this place is on the earth, each with an uncertainty radius and its own evidence; several are allowed for places that moved.
+- related_place_assertions (array of related_place_claim): Links to other places this one was formed from, split from, merged into, succeeded or preceded, each a dated claim with its own evidence; a new county or a split is a new place, linked here.
+- cited_record_ids (array of uuid): Records (MaxRecord ids) that are about the place as a whole, such as a parish history or a gazetteer page; research pointers kept beside the claims, each of which must exist (Appendix C).
+- media_refs (array of media_ref): Maps and photographs of this place, pointed at by fingerprint on the record that holds each file (each file is described once, on the record that captured it).
+- is_private (boolean): True hides this place from anything shareable; it can only rise (the helper refuses lowering it), and a small place (street, address, building, farm, estate or of no stated kind) that a possibly living person's live clai
+
+### Example (made up; town_with_dated_kinds.json)
+
+```json
+{
+  "place_id": "3a0f73f0-79e6-5b11-a922-959737a98176",
+  "schema_version": "2.0",
+  "redistribution_license": "CC0",
+  "name_assertions": [
+    {
+      "name_as_written": "Tumblebrook",
+      "name_type": "official",
+      "is_preferred": true,
+      "confidence": 0.4,
+      "task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "6f18ce6f-6131-5e45-83fe-6bc30266f9bd",
+        "mention_id": "g2",
+        "quote": "TUMBLEBROOK",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the Tumblebrook entry is the line that also names the rector"
+      }
+    }
+  ],
+  "kind_assertions": [
+    {
+      "kind": "village",
+      "date": {
+        "modifier": "to",
+        "value": {
+          "year": 1902
+        },
+        "as_written": "until 1902"
+      },
+      "confidence": 0.4,
+      "task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "6f18ce6f-6131-5e45-83fe-6bc30266f9bd",
+        "mention_id": "g2",
+        "quote": "a village until 1902",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the Tumblebrook entry is the line that also names the rector"
+      }
+    },
+    {
+      "kind": "town",
+      "date": {
+        "modifier": "from",
+        "value": {
+          "year": 1902
+        },
+        "as_written": "from 1902"
+      },
+      "confidence": 0.4,
+      "task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "6f18ce6f-6131-5e45-83fe-6bc30266f9bd",
+        "mention_id": "g2",
+        "quote": "a town from 1902",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the Tumblebrook entry is the line that also names the rector"
+      }
+    }
+  ],
+  "parent_place_assertions": [
+    {
+      "parent_place_id": "153a6f70-4f7f-5432-8fbf-9a0e0e20906c",
+      "hierarchy": "civil",
+      "confidence": 0.4,
+      "task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "6f18ce6f-6131-5e45-83fe-6bc30266f9bd",
+        "mention_id": "g1",
+        "quote": "County town: Tumblebrook",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the county entry is the line that also names the Lord Lieutenant"
+      }
+    }
+  ],
+  "coordinate_assertions": [
+    {
+      "latitude": -48.87,
+      "longitude": -123.39,
+      "uncertainty_m": 1500,
+      "confidence": 0.4,
+      "task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "6f18ce6f-6131-5e45-83fe-6bc30266f9bd",
+        "mention_id": "g1",
+        "quote": "48.87 S, 123.39 W",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the county entry is the line that also names the Lord Lieutenant"
+      }
+    }
+  ],
+  "created_by_task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
+
+### What changed from 1.13
+
+A slim place authority: one real place with its names, kinds, parent places (dated, with
+evidence) and coordinates (with their uncertainty when the evidence states one, never
+invented) over time, related places (formed from, split from, merged into, succeeded by,
+preceded by), gazetteer ids as outside ids, and undoable merges and `distinct_from`.
+Every place claim cites evidence (a gazetteer page is saved as a record first). Made only by
+import and analysis tasks.
+
+### Listen
+
+No episode yet: MaxPlace is new in MAXGEN 2.0.
 
 
+---
+## MaxGroup (MAXGEN 2.0 schema)
 
-## Listen
+Page: https://opengenealogyai.org/schemas/maxgroup/
+File: https://opengenealogyai.org/schemas/maxgen/v2/group.schema.json  SHA-256 8dcdd51571717a6ae38eb9c6378ec0ae140423cd8999b548beee78045ba34657
+One MaxGroup is one historical group (its own facts only; no member list).
+
+Definition: MAXGEN 2.0 -- one MaxGroup document is one historical group (an emigrant company, a regiment, a congregation, a household followed across documents) holding only the group's own facts, once, and no member list, because each membership is a claim on the person with group_id.
+
+### Fields
+
+- group_id (uuid, required): The group's permanent id: a random UUID created once by the writer (an import_file, resolve_conflict or build_tree task, R-24); merges and splits are made only by analysis (R-28).
+- is_living_flag (boolean, required): Living A for the group file itself: true when its period or its names (such as 'the Mossbury household') touch someone who may be alive; when unsure, true; never worked out from members; a floor that only rises; true req
+- redistribution_license (licence, required): The licence under which this group document may be shared; must be tier2-private when is_living_flag is true.
+- group_kind (enum, required): What kind of historical group this is (there is no kind for a research cluster of friends, associates and neighbours: those stay as MaxTask results); when no value fits, write other and give the words in group_kind_as_wr
+- group_kind_as_written (string): The source's or program's own words for the kind of group.
+- group_kind_uri (uri): The address of the kind in a published vocabulary of group types, when there is one.
+- name_assertions (array of name_claim, required): The names the group was known by, each a claim with its own evidence; at least one is required.
+- fact_assertions (array of fact_claim): The group's own dated facts (organized, departed, arrived ...), each stored once here with its own evidence and never copied onto members; a member's page shows those inside the membership period at read time.
+- parent_group_assertions (array of parent_group_claim): Larger groups this group belonged to during a period (a company inside a regiment), each a claim with its own evidence.
+- observed_in (array of observed_in_item): The documents that describe the group, including ones that name none of its members.
+- media_refs (array of media_ref): Photographs and other files of the group, pointed at by fingerprint on the record that holds each file (each file is described once, on the record that captured it).
+
+### Example (made up; emigrant_company_no_members.json)
+
+```json
+{
+  "group_id": "c2a6c59b-89f6-53e8-8b25-2775c40a9504",
+  "schema_version": "2.0",
+  "is_living_flag": false,
+  "redistribution_license": "CC0",
+  "group_kind": "emigrant_company",
+  "name_assertions": [
+    {
+      "name_as_written": "Wrenshire Emigrant Company",
+      "name_type": "as_recorded",
+      "confidence": 0.9,
+      "task_id": "06250dae-c716-5aaf-b0a6-2cd43fbedb65",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "19cda55a-513f-5558-a050-a093a7ae899d",
+        "mention_id": "1",
+        "record_event_ref": "e1",
+        "quote": "Wrenshire Emigrant Company",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the company's name is written on each passenger's line"
+      }
+    }
+  ],
+  "fact_assertions": [
+    {
+      "fact_type": "departed",
+      "date": {
+        "value": {
+          "year": 1853,
+          "month": 5,
+          "day": 10
+        },
+        "as_written": "10 May 1853"
+      },
+      "place": {
+        "place_as_written": "Port Wren"
+      },
+      "occurrence_id": "d60f3769-33f4-5d95-a3e8-5c1805ff074c",
+      "confidence": 0.9,
+      "task_id": "06250dae-c716-5aaf-b0a6-2cd43fbedb65",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "7f41791d-0307-5469-91ae-7db589ef4f5c",
+        "mention_id": "m1",
+        "record_event_ref": "e1",
+        "quote": "sailed from Port Wren on 10 May 1853",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the sailing is on the line that names the captain",
+        "region_id": "8c2b92ab-1ff5-5b08-b24c-9cc7408f20bb"
+      }
+    }
+  ],
+  "observed_in": [
+    {
+      "record_id": "19cda55a-513f-5558-a050-a093a7ae899d",
+      "record_event_ref": "e1"
+    },
+    {
+      "record_id": "7f41791d-0307-5469-91ae-7db589ef4f5c",
+      "record_event_ref": "e1",
+      "note": "the journal names only the captain"
+    }
+  ],
+  "created_by_task_id": "06250dae-c716-5aaf-b0a6-2cd43fbedb65",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
+
+### What changed from 1.13
+
+One historical group — an emigrant company, a regiment, a congregation, a household that
+continued across documents — with its kind, its own names and dated facts, the larger groups it
+belonged to, and the documents that describe it, once. **No member list:** a
+membership is a claim on the person. FAN clusters (the friends, associates and neighbours
+studied around one person) stay as MaxTask results. Made only by import and analysis tasks.
+
+### Listen
+
+No episode yet: MaxGroup is new in MAXGEN 2.0.
+
+
+---
+## MaxEvent (MAXGEN 2.0 schema)
+
+Page: https://opengenealogyai.org/schemas/maxevent/
+File: https://opengenealogyai.org/schemas/maxgen/v2/event.schema.json  SHA-256 1b69ee119e49ec2ecfaa10010017e93afec2fd79a6ac0e96f88e44c126cd2966
+One MaxEvent is the identity of one occasion (thin).
+
+Definition: MAXGEN 2.0 -- the identity of one occasion (one baptism, one wedding, one voyage), kept thin: its permanent occurrence id, its ids in other programs, notes, pointers to the preferred versions and same-occasion merges. It never holds a participant list, the dates each document gives, copies of evidence, scores or its owner: who took part is worked out from role claims and mentions, and the owner is computed when read. Only the helper (one for every document event entry), importers and analysis tasks write it (R-24).
+
+### Fields
+
+- occurrence_id (uuid, required): This occasion's permanent id: a random UUID created once, by the helper when a record with event entries is stored or by the importer or analysis task that brings an outside event, and carried by every claim about the oc
+- event_type (event_type, required): What kind of occasion this is; there is exactly one type per occurrence, so a licence and its ceremony never share an id.
+- event_type_as_written (string): The document's or the other program's own words for the type, kept when event_type is other or when the words say more.
+- type_uri (uri): A published vocabulary's address for the event type, when one exists.
+- origin (origin, required): Where this occurrence came from: one document event entry, an outside program's event brought by an import, or an analysis.
+- preferred (preferred): Pointers only to the claims that hold the preferred date and place and to the preferred order of versions; changed only under a resolve_conflict or build_tree task (R-24).
+- conclusion_assertions (array of conclusion_claim): A reasoned conclusion that no single document states (a mine explosion dated between two reports), allowed only on an occurrence that an analysis created (origin.kind analysis) and changed only under a resolve_conflict o
+- related (array of related_occurrence): Links to other occasions that an analysis concluded (a licence or banns for a wedding, part of a larger occasion, twins born together); changed only under a resolve_conflict or build_tree task.
+- description_as_written (string): A description of the occasion exactly as a document or another program gives it (a GEDCOM 7 or Gramps event description).
+- attributes (array of attribute): Facts about the occasion itself that another program kept as named attributes, word for word.
+- media_refs (array of media_ref): Pictures or recordings of the occasion, pointing at saved copies that are described once on the records that captured them.
+- is_private (boolean): True hides this occurrence from anything shareable; it only rises.
+- is_living_flag (boolean, required): Living A floor, required with no default: true when any participant may be alive; unsure means true, the helper raises it and never lowers it, and the live answer is always computed at read time.
+- redistribution_license (licence, required): Licence of this occurrence, raised by the helper and never lowered; a true is_living_flag requires tier2-private.
+
+### Example (made up; marriage_shared_by_three_documents.json)
+
+```json
+{
+  "occurrence_id": "d2631fcc-f683-56e1-bad4-590bf9a3d42d",
+  "schema_version": "2.0",
+  "event_type": "marriage",
+  "origin": {
+    "kind": "document_entry",
+    "record_id": "da6ac270-29df-56f6-b577-cd764d5b1e2c",
+    "record_event_ref": "e1"
+  },
+  "is_living_flag": false,
+  "redistribution_license": "CC0",
+  "preferred": {
+    "date_assertion_id": "770b0a00-e2cc-58ec-9b18-bf5f6b06fc97",
+    "order": [
+      "770b0a00-e2cc-58ec-9b18-bf5f6b06fc97",
+      "671ebcba-c400-52f8-ab02-9ca52f60aab4",
+      "aeffecbc-3d5e-5b6a-b953-415869b10cf9"
+    ],
+    "set_by_task_id": "95284398-1483-57e3-98d3-af09efff15f5"
+  },
+  "merge_history": [
+    {
+      "merged_id": "185ca4ab-f08a-5983-8dff-4c25a3222303",
+      "task_id": "95284398-1483-57e3-98d3-af09efff15f5",
+      "merged_at": "2026-10-16T12:00:00Z",
+      "method": "same_occasion"
+    },
+    {
+      "merged_id": "46b53474-91e1-5fad-b4a7-a28aeec234cf",
+      "task_id": "95284398-1483-57e3-98d3-af09efff15f5",
+      "merged_at": "2026-10-16T12:00:00Z",
+      "method": "same_occasion"
+    }
+  ],
+  "created_by_task_id": "24408968-a56b-5a6c-a6f5-3a322540e24a",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
+
+### What changed from 1.13
+
+The identity of one occasion, thin: an occurrence id, its event type, where it came from
+(`origin`: a record's event entry, an import, or an analysis), outside ids, notes, pointers to
+the preferred date and place claims, links to related occasions, and same-occasion merges; an
+occasion made by analysis may also carry a reasoned conclusion that no single document states,
+citing an accepted proof. Made by the kit for every event entry on a record, and by importers
+and analysis tasks. It holds no participant list and no copies of the dates documents give: who
+took part is worked out from role claims.
+
+### Listen
+
+No episode yet: MaxEvent is new in MAXGEN 2.0.
+
+
+---
+## MaxName (MAXGEN 2.0 schema)
+
+Page: https://opengenealogyai.org/schemas/maxname/
+File: https://opengenealogyai.org/schemas/maxgen/v2/name.schema.json  SHA-256 521b1b28cfba2a121e40a9bb71b08982aa3bacba0d39a62907088c40606bacb1
+One MaxName is knowledge about one name.
+
+Definition: MAXGEN 2.0 -- One MaxName is what is known about one name: its canonical form, its variants and cross-language cognates (each citing evidence and carrying the claim status ladder), and its phonetic keys.
+
+### Fields
+
+- name_id (uuid, required): This name record's own id: a random UUID created once by the writer and never reused.
+- canonical_form (string, required): The modern standard spelling used as the anchor for every variant (such as the made-up surname Quillfeather), not necessarily English.
+- canonical_script (script): The writing system of canonical_form.
+- canonical_script_as_written (string): The writing system in the writer's own words, given when canonical_script is other.
+- regional_canonical (array of object): Preferred forms of the name in other languages or regions, so no one language is the anchor.
+- name_type (enum, required): What kind of name this is: given, surname, patronymic, matronymic, occupational, topographic, clan, byname, religious, title or other.
+- name_type_as_written (string): The kind of name in the writer's own words, given when name_type is other.
+- gender (enum): The gender the name is associated with in its own culture (a cultural association, never a statement about any person).
+- gender_as_written (string): The association in the writer's own words, given when gender is other.
+- language_of_origin (string): The language the name ultimately comes from, as an ISO 639-3 code.
+- etymology (string): Where the name comes from and what it meant, written for a general reader.
+- see_also_urls (array of string): Addresses of reference works about the name.
+- variants (array of variant): Every known variant form; each is its own claim with evidence, retracted rather than deleted.
+- phonetic_keys (object): Phonetic codes of the canonical form for fuzzy search, each with the algorithm version that made it so indexes rebuilt later do not mismatch silently.
+- cognates (array of cognate): Related names in other languages; a first pass may name the target only by related_canonical_form and a later linking pass adds related_name_id.
+- redistribution_license (licence, required): Whether this name record may be shared (unclear means ask, never guess).
+
+### Example (made up; quillfeather_surname_variants_with_status.json)
+
+```json
+{
+  "name_id": "32382ac8-1785-5e92-80a9-ff8e6bb9ad07",
+  "schema_version": "2.0",
+  "canonical_form": "Quillfeather",
+  "name_type": "surname",
+  "redistribution_license": "CC0",
+  "canonical_script": "latin",
+  "language_of_origin": "en",
+  "etymology": "made up: 'a feather for a quill', an occupational byname for a scribe",
+  "variants": [
+    {
+      "variant_id": "a59e46d3-9aa1-52ff-ba1e-dfd1fbc94515",
+      "task_id": "234e98b3-972e-5af3-9071-e16b75c85474",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "8ee0b474-d41b-58eb-846a-9c707ff328cb",
+        "mention_id": "m1",
+        "quote": "Thaddeus Quillfeather",
+        "kind": "direct"
+      },
+      "confidence": 0.4,
+      "variant_text": "Quilfether",
+      "variant_type": "spelling_variant",
+      "language": "en",
+      "script": "latin",
+      "period_start": 1700,
+      "period_end": 1800,
+      "frequency": "rare"
+    },
+    {
+      "variant_id": "ff446c8b-5e7a-5901-aea1-554d99dcf01f",
+      "task_id": "81eff968-0e6a-51ba-9b5e-ec68e3e51fd2",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "a55282fa-e898-5089-88ec-e4fad4a18078",
+        "mention_id": "30",
+        "quote": "Quillfeather, Thaddeus",
+        "kind": "direct"
+      },
+      "confidence": 0.9,
+      "variant_text": "Quillfeather",
+      "variant_type": "other",
+      "variant_type_as_written": "the usual form",
+      "frequency": "dominant",
+      "status": "proposed",
+      "asserted_at": "2026-10-16T12:00:00Z"
+    }
+  ],
+  "phonetic_keys": {
+    "soundex": {
+      "value": "Q414",
+      "algorithm_version": "american soundex"
+    }
+  },
+  "cognates": [
+    {
+      "cognate_id": "e355716f-5a85-59fd-932d-5c27c9b221de",
+      "task_id": "234e98b3-972e-5af3-9071-e16b75c85474",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "8ee0b474-d41b-58eb-846a-9c707ff328cb",
+        "mention_id": "m1",
+        "quote": "Thaddeus Quillfeather",
+        "kind": "indirect"
+      },
+      "confidence": 0.3,
+      "related_canonical_form": "Pennafeder",
+      "relationship_type": "cross_language_cognate",
+      "direction": "parallel_cognate",
+      "notes": "made up"
+    }
+  ],
+  "created_by_task_id": "487a3cb3-5656-5915-94ff-dcde58cbcbd9",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
+
+### What changed from 1.13
+
+The 1.13 shape is kept. `contributor` is removed (the task's provenance replaces it). Every
+variant and cognate becomes a claim, with a kit-owned `assertion_id`, a status and a required
+evidence link and confidence. Lifecycle fields added; `redistribution_license` required.
+
+### Listen
+
+Episode 7, MaxName — Why Maxwell and Makeswell are the same family (23:31): https://opengenealogyai.org/podcasts/audio/MAXGEN-07-maxname.mp3 — Variants, cognates, phonetic keys, and the council design process behind the newest schema. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
+
+
+---
+## MaxRecognition (MAXGEN 2.0 schema)
+
+Page: https://opengenealogyai.org/schemas/maxrecognition/
+File: https://opengenealogyai.org/schemas/maxgen/v2/recognition.schema.json  SHA-256 26bf0db4ce155d833611be273af9ec8c8bde5e79895fa9171574a5e66d19c517
+One MaxRecognition is one machine reading of an image.
+
+Definition: MAXGEN 2.0 -- One MaxRecognition document is one machine reading (OCR of print or HTR of handwriting) of one image, kept with its per-word confidences so that readings of the same image can be compared; who or what made the reading is recorded on the task that produced it.
+
+### Fields
+
+- recognition_id (uuid, required): Random id of this reading, created once by its writer and never reused.
+- recognition_type (enum, required): What kind of text was read: ocr for printed or typed text, htr for handwritten text, other (with recognition_type_as_written) for anything else.
+- recognition_type_as_written (string): The reading program's own word for the kind of reading, written when recognition_type is other.
+- image_url (uri): Address of the image that was read, never invented; at least one of image_url and raw_record_id is required.
+- raw_record_id (uuid): The MaxRecord whose image this reading read; at least one of image_url and raw_record_id is required.
+- copy_sha256 (sha256): Fingerprint of the saved copy that was read (described on raw_record_id, or on the live record that holds that copy), the same copy that evidence links cite.
+- region_id (uuid): The marked region of that saved copy that was read, when only part of the image was read.
+- output_text (string, required): The full text this reading produced, as plain text or as a JSON-encoded string of structured lines or words.
+- processed_at (timestamp, required): When this reading was produced (UTC); renamed from the 1.x processing_date.
+- language (lang): Language of the document that was read, as a language code such as de, la or en.
+- confidence (confidence): Overall confidence the reader reported for the whole reading, 0 to 1, kept as reported and never computed by the kit.
+- word_confidences (array of word_confidence): One item per word read, with its confidence, how it was produced, other readings considered and where it sits on the image.
+- character_error_rate (number): Character error rate measured against a checked reference text, when one exists.
+- word_error_rate (number): Word error rate measured against a checked reference text, when one exists.
+- consensus_group_id (uuid): A grouping label shared by several readings of the same image so they can be compared; it names no MAXGEN document.
+- redistribution_license (licence, required): Licence of this reading's text; tier2-private when the image is rights-restricted or anyone named may be alive.
+- is_living_flag (boolean, required): Living A: true if anyone named in this reading may be alive, and true when unsure; a floor the kit only raises, and true requires tier2-private.
+- attribution (attribution): Credit for a human transcriber or the organization that made the reading; a credit never sets a living flag.
+- font_type (enum): Printed readings: the main kind of typeface on the page (other with font_type_as_written).
+- font_type_as_written (string): The reader's own words for the typeface, written when font_type is other.
+- scan_dpi (integer): Printed readings: the scan resolution of the image in dots per inch.
+- script_type (enum): Handwritten readings: the handwriting script family of the document (other with script_type_as_written).
+- script_type_as_written (string): The reader's own words for the script, written when script_type is other.
+- approx_century (integer): Handwritten readings: the rough age of the handwriting as the first year of its century (1800 means the 1800s).
+- searchable_variants (array of string): Every spelling this reading should be findable under, including uncertain readings and normalised forms.
+
+### Example (made up; htr_reading_with_region.json)
+
+```json
+{
+  "recognition_id": "75d8a1f2-e917-5670-86e1-9b0072ede223",
+  "schema_version": "2.0",
+  "recognition_type": "htr",
+  "raw_record_id": "a2834eea-1964-515d-8652-ff333819531c",
+  "copy_sha256": "fbf7c8d29a52ddd03b3e453cb2dfe537a7b4961e8348a35c0718b614a098358f",
+  "region_id": "48a16fee-ae07-5c81-850b-e8994524cbff",
+  "output_text": "Bramblecott, Jesse | Head | M | 41 | Carter | Tumblebrook",
+  "processed_at": "2026-10-16T12:00:00Z",
+  "language": "en",
+  "confidence": 0.82,
+  "word_confidences": [
+    {
+      "word": "Bramblecott",
+      "char_offset": 0,
+      "confidence": 0.91,
+      "reading_type": "observed",
+      "bbox": {
+        "unit": "fraction",
+        "x": 0.05,
+        "y": 0.88,
+        "w": 0.18,
+        "h": 0.03,
+        "page": 1
+      }
+    },
+    {
+      "word": "Carter",
+      "char_offset": 39,
+      "confidence": 0.62,
+      "reading_type": "inferred_context",
+      "inference_notes": "the occupation column is smudged",
+      "alternatives": [
+        {
+          "text": "Carier",
+          "confidence": 0.2
+        }
+      ],
+      "bbox": {
+        "unit": "px",
+        "x": 1310,
+        "y": 2210,
+        "w": 160,
+        "h": 44
+      }
+    }
+  ],
+  "character_error_rate": 0.04,
+  "redistribution_license": "public-domain",
+  "is_living_flag": false,
+  "script_type": "latin_cursive",
+  "approx_century": 1900,
+  "searchable_variants": [
+    "Bramblecot",
+    "Bramblecott"
+  ],
+  "created_by_task_id": "873dd993-6a99-53c5-bbc8-25955efefaf9",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
+
+### What changed from 1.13
+
+The 1.13 fields are kept. `is_living_flag` added (required); `contributor` removed;
+`image_url` and `raw_record_id` both optional but one required; `copy_sha256` and `region_id`
+added (the same copy and region evidence cites); `processing_date` renamed `processed_at`;
+`review_status`, `is_human_reviewed` and `is_independent` removed (reviews are tasks;
+independence is computed).
+
+### Listen
+
+Episode 6, MaxRecognition — Teaching machines to read (25:21): https://opengenealogyai.org/podcasts/audio/MAXGEN-06-maxrecognition.mp3 — OCR and handwriting provenance, word-level confidence, labelled inference, and consensus. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
+
+
+---
+## MaxDNA (MAXGEN 2.0 schema)
+
+Page: https://opengenealogyai.org/schemas/maxdna/
+File: https://opengenealogyai.org/schemas/maxgen/v2/dna.schema.json  SHA-256 dc96f9d4d08b8c484a8fb1ac5d8c7a6ae6ffb9e623817fc14b99d63567986bf7
+One MaxDNA is one person's DNA test and its matches (always private).
+
+Definition: MAXGEN 2.0 -- One MaxDNA document is one person's DNA test and its matches, always tier2-private, holding no raw genotype data and no raw kit number (only keyed fingerprints), with each match a claim that cites the saved match list.
+
+### Fields
+
+- dna_id (uuid, required): Random id of this DNA test document, created once by its writer and never reused.
+- person_id (uuid, required): The MaxPerson who took this test (the one top-level key MaxDNA shares with MaxPerson; the kind is decided by dna_id first).
+- test_type (enum, required): Type of DNA test: unknown when the source does not say (an imported DNA table may not), other with test_type_as_written.
+- test_type_as_written (string): The source's own words for the test type, written when test_type is other.
+- test_provider (enum): Company or platform that performed or hosts the original test (other with test_provider_as_written).
+- test_provider_as_written (string): The source's own name for the provider, written when test_provider is other.
+- test_date (date): When the test was taken, as a date block (a year alone is fine).
+- kit_id_status (enum): Whether the kit number's fingerprint is known: hashed (the default when left out) requires kit_id_hash; unknown when the source gave no kit number.
+- kit_id_hash (sha256): Keyed fingerprint (HMAC-SHA-256 keyed with the database's own secret kit_key, not a plain SHA-256) of the kit number, trimmed and upper-cased; the kit makes it with `maxgen_db.py kit-hash`; the raw kit number is never st
+- kit_source (string, required): Where this test's details came from, in plain words (for example user_self_report, opensnp_public or an imported tree file).
+- haplogroup_y (string): Y-DNA haplogroup (paternal line) as the provider reported it, for example R-M269.
+- haplogroup_mt (string): mtDNA haplogroup (maternal line) as the provider reported it, for example H1a1.
+- haplogroup_y_confidence (confidence): The provider's own confidence in the Y-DNA haplogroup, 0 to 1, kept as reported.
+- haplogroup_mt_confidence (confidence): The provider's own confidence in the mtDNA haplogroup, 0 to 1, kept as reported.
+- ancestry_composition (array of ancestry_component): Ethnicity or admixture estimates as the provider reported them; they add up to about 100 percent.
+- endogamy_flag (boolean): True if the test subject belongs to an endogamous population, where the usual shared-cM ranges are unreliable.
+- endogamy_population (string): The endogamous population, in plain words, when endogamy_flag is true.
+- matches (array of match): The matches reported for this test, each a claim citing the saved match list; a match between two tests in this database is stored once, on the test with the smaller dna_id (R-25).
+- kit_aliases (array of kit_alias): The same kit's ids at other services, as keyed fingerprints only (replaces the 1.x external_ids map).
+- is_living_flag (boolean, required): Living A: true if the test subject may be alive, and true when unsure; a floor the kit only raises.
+- redistribution_license (licence, required): Always tier2-private: genetic data touches relatives who never agreed to share it, so no other value is accepted.
+- raw_genotype_stored (const false, required): Always false: MAXGEN never stores raw genotype data (FASTQ, VCF or raw SNP files); that stays with the provider or the person.
+- external_raw_data_location (string): Plain words saying where the raw data is held (for example the person's own drive or the provider account); never a raw kit number, a genotype or an unhashed id.
+- consent_status (enum, required): Legal basis for keeping this DNA data: the first four values are consent; withdrawn, pending, unknown (an import that does not say) and any value the kit does not know are read as not consented, so the test is shown only
+- consented_at (timestamp): When consent was given.
+- consent_evidence_url (uri): Address of the signed consent record, kept somewhere private.
+- withdrawal_requested_at (timestamp): When the test subject asked for this DNA data to be withdrawn.
+- source_record_ids (array of uuid): MaxRecords that document this test (a saved provider page, a consent form, a lab report); replaces the 1.x source_records.
+
+### Example (made up; autosomal_with_match_ids.json)
+
+```json
+{
+  "dna_id": "57dbf476-5888-5045-a13a-c372f2e9b13c",
+  "schema_version": "2.0",
+  "person_id": "a2f6715d-677d-59ee-8a3a-7e02190eeaa1",
+  "test_type": "autosomal",
+  "test_provider": "other",
+  "test_provider_as_written": "Example DNA Co (made up)",
+  "test_date": {
+    "value": {
+      "year": 2026,
+      "month": 7
+    },
+    "as_written": "July 2026"
+  },
+  "kit_id_status": "hashed",
+  "kit_id_hash": "9c1e1141fc0ae16284b29436ba30605bc58955b31573208415032a4b0d5d415e",
+  "kit_source": "the person's own upload",
+  "is_living_flag": true,
+  "redistribution_license": "tier2-private",
+  "raw_genotype_stored": false,
+  "consent_status": "subject_explicit_opt_in",
+  "consented_at": "2026-10-16T12:00:00Z",
+  "matches": [
+    {
+      "match_id": "80852453-d847-594d-8108-32c258b9cb7d",
+      "match_kit_hash": "ea1d5beb86e2687b37c4e7a27967820cb808a48097a7c032eb31f64f3f449db5",
+      "match_display_name": "Whitlow, J.",
+      "is_living": true,
+      "shared_cm": 1744,
+      "longest_segment_cm": 112,
+      "segment_count": 38,
+      "match_source": "other",
+      "match_source_as_written": "Example DNA Co",
+      "predicted_relationships": [
+        {
+          "relationship": "half_sibling",
+          "probability_as_reported": 0.6,
+          "source_as_written": "Example DNA Co"
+        }
+      ],
+      "chromosome_segments": [
+        {
+          "chromosome": "7",
+          "start_cm": 12.5,
+          "end_cm": 124.5,
+          "build_version": "GRCh38"
+        }
+      ],
+      "common_ancestor_candidates": [
+        {
+          "person_id": "7943e9bb-171e-556d-bc9e-ae5438c17b11",
+          "inference_method": "tree_intersection"
+        }
+      ],
+      "confidence": 0.9,
+      "task_id": "c0daf871-47b4-5ba0-b433-ca99d0ca5c74",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "4a8c78ae-4fc4-5e3a-9e5d-e85304a6b303",
+        "mention_id": "m1",
+        "quote": "Whitlow, J. | 1,744 cM",
+        "kind": "direct"
+      }
+    },
+    {
+      "match_id": "da15d458-8eb9-5ecf-a6b4-72ad77fe5cf8",
+      "match_kit_hash": "499ef9ef2f848742fcac5d9e961e85de666b148bd5f30a89f86ecf4b5407ca20",
+      "is_living": true,
+      "shared_cm": 212,
+      "triangulated_with": [
+        "80852453-d847-594d-8108-32c258b9cb7d"
+      ],
+      "confidence": 0.9,
+      "task_id": "c0daf871-47b4-5ba0-b433-ca99d0ca5c74",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "4a8c78ae-4fc4-5e3a-9e5d-e85304a6b303",
+        "mention_id": "m2",
+        "quote": "Penhallow, S. | 212 cM",
+        "kind": "direct"
+      }
+    }
+  ],
+  "source_record_ids": [
+    "4a8c78ae-4fc4-5e3a-9e5d-e85304a6b303"
+  ],
+  "kit_aliases": [
+    {
+      "system": "gedmatch",
+      "id_hash": "acd86c98e75eed5b73b53e7600ba819ed7482b29687618786aa49ceacdef7f81"
+    }
+  ],
+  "created_by_task_id": "c0daf871-47b4-5ba0-b433-ca99d0ca5c74",
+  "extensions": {
+    "fixture": "made up"
+  }
+}
+```
+
+### What changed from 1.13
+
+The 1.13 fields are kept, always `tier2-private`. `asserted_by` and `asserted_at` removed; the
+top-level `notes` string replaced by the shared notes list; `kit_id_hash` optional with `kit_id_status`; `test_date` a
+date block; `external_ids` becomes `kit_aliases`; `source_records` becomes `source_record_ids`.
+Each match becomes a claim with a permanent `match_id`, its own `is_living`, and evidence citing
+the saved match list (a `dna_match_list` record, which the schema keeps living and
+`tier2-private`); predicted relationships keep the company's own words and probabilities. A
+match between two tests in one database is stored once. Kit numbers are never stored: their
+fingerprints are keyed with a secret only the person's own database holds.
+
+### Listen
+
+Episode 4, MaxDNA — Genetic evidence without giving up privacy (23:23): https://opengenealogyai.org/podcasts/audio/MAXGEN-04-maxdna.mp3 — Hashed kit IDs, consent, endogamy, phasing, and how DNA boosts documentary confidence. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
 
 
 ---
 ## Schema files (JSON Schema 2020-12)
 
-- https://opengenealogyai.org/schemas/maxgen/v1/raw-record.schema.json
-- https://opengenealogyai.org/schemas/maxgen/v1/person.schema.json
-- https://opengenealogyai.org/schemas/maxgen/v1/task-queue.schema.json
-- https://opengenealogyai.org/schemas/maxgen/v1/dna.schema.json
-- https://opengenealogyai.org/schemas/maxgen/v1/source.schema.json
-- https://opengenealogyai.org/schemas/maxgen/v1/recognition.schema.json
-- https://opengenealogyai.org/schemas/maxgen/v1/name.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/maxgen-defs.schema.json (shared building blocks)
+- https://opengenealogyai.org/schemas/maxgen/v2/raw-record.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/person.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/relationship.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/task-queue.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/source.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/place.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/group.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/event.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/name.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/recognition.schema.json
+- https://opengenealogyai.org/schemas/maxgen/v2/dna.schema.json
+- SHA-256: https://opengenealogyai.org/schemas/maxgen/v2/SHA256SUMS.txt
+- The archived MAXGEN 1.13 files stay at https://opengenealogyai.org/schemas/maxgen/v1/

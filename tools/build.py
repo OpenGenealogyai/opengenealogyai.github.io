@@ -12,6 +12,7 @@ Outputs: HTML files written next to their folders (index.html per section) so UR
   /standard/  /schemas/  /schemas/maxperson/  /faq/  /podcasts/  /versions/  /governance/ ...
 """
 from __future__ import annotations
+import hashlib
 import html
 import json
 import re
@@ -34,6 +35,28 @@ AUDIO_SRC = Path(r"E:\BuildGenealogy\podcast-scripts\audio")
 
 BASE_URL = "https://opengenealogyai.org"
 MEDIA_BASE = f"{BASE_URL}/podcasts/audio"   # MP3s ship inside the site repo (GitHub Pages); absolute so the RSS enclosures validate
+
+# MAXGEN 2.0 — every input is a pinned copy written by tools/sync_v2.py (never the schema repo itself)
+V2_DIR = SITE / "schemas" / "maxgen" / "v2"
+V2_PIN = CONTENT / "v2"
+V2_CHANGELOG = V2_PIN / "SCHEMA_CHANGELOG.md"
+V2_DEFS_FILE = "maxgen-defs.schema.json"
+# (page slug, title, schema file, example folder, podcast episode number or None)
+V2_KINDS = [
+    ("maxrecord", "MaxRecord", "raw-record.schema.json", "record", 1),
+    ("maxperson", "MaxPerson", "person.schema.json", "person", 2),
+    ("maxrelationship", "MaxRelationship", "relationship.schema.json", "relationship", None),
+    ("maxtask", "MaxTask", "task-queue.schema.json", "task", 3),
+    ("maxsource", "MaxSource", "source.schema.json", "source", 5),
+    ("maxplace", "MaxPlace", "place.schema.json", "place", None),
+    ("maxgroup", "MaxGroup", "group.schema.json", "group", None),
+    ("maxevent", "MaxEvent", "event.schema.json", "event", None),
+    ("maxname", "MaxName", "name.schema.json", "name", 7),
+    ("maxrecognition", "MaxRecognition", "recognition.schema.json", "recognition", 6),
+    ("maxdna", "MaxDNA", "dna.schema.json", "dna", 4),
+]
+GITHUB_REPO = "https://github.com/OpenGenealogyai/opengenealogyai/blob/main/"
+V2_ENTRY_ANCHOR = "/changelog/#v20-2026-10-16"
 
 NAV = [
     ("The Standard", "/standard/"),
@@ -132,7 +155,7 @@ def layout(title: str, body: str, active: str = "", description: str = "", extra
         f'<a href="{href}"{" class=\"active\"" if href == active else ""}>{label}</a>'
         for label, href in NAV
     )
-    desc = html.escape(description or "MAXGEN — the open, probabilistic genealogy data standard. Seven JSON schemas, CC0.")
+    desc = html.escape(description or "MAXGEN — the open, probabilistic genealogy data standard. Eleven JSON record schemas plus one shared building-blocks file, CC0.")
     full_title = html.escape(f"{title} — MAXGEN · OpenGenealogyAI")
     url = BASE_URL + path
     if toc:
@@ -194,7 +217,7 @@ def layout(title: str, body: str, active: str = "", description: str = "", extra
 
 def write(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
+    path.write_bytes(text.encode("utf-8"))   # LF everywhere, whatever the OS
 
 
 # ---------------------------------------------------------------- schema helpers
@@ -279,11 +302,14 @@ def mmss(sec: int) -> str:
     return f"{sec // 60}:{sec % 60:02d}"
 
 
-def player(ep) -> str:
+def player(ep, note: bool = True) -> str:
     n, stem, title, blurb, secs, size = ep
+    changed = (f'<p class="ep-note">This episode describes MAXGEN v1.11. '
+               f'<a href="{V2_ENTRY_ANCHOR}">What changed since: the v2.0 changelog entry</a>.</p>') if note else ""
     return f"""<div class="episode" id="ep{n}">
   <div class="ep-head"><span class="ep-num">Episode {n}</span><h3>{html.escape(title)}</h3><span class="ep-len">{mmss(secs)}</span></div>
   <p>{html.escape(blurb)}</p>
+  {changed}
   <audio controls preload="none" src="{MEDIA_BASE}/{stem}.mp3"></audio>
   <p class="ep-links"><a href="{MEDIA_BASE}/{stem}.mp3">Download MP3</a> ({size // 1_000_000} MB)</p>
 </div>"""
@@ -341,33 +367,154 @@ def build_podcasts() -> None:
     write(SITE / "podcasts" / "feed.xml", feed)
 
 
+# ---------------------------------------------------------------- MAXGEN 2.0 helpers
+def sha256_file(p: Path) -> str:
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+
+def v2_schema(file: str) -> dict:
+    return json.loads((V2_DIR / file).read_bytes())
+
+
+def fix_repo_links(text: str, base_dir: str) -> str:
+    """Relative links in the schema repo's Markdown point at files in that repo; send them to GitHub."""
+    import posixpath
+
+    def repl(m):
+        target = m.group(1)
+        return "](" + GITHUB_REPO + posixpath.normpath(posixpath.join(base_dir, target)) + ")"
+    return re.sub(r"\]\((?!https?://|/|#|mailto:)([^)\s]+)\)", repl, text)
+
+
+def readme_one_liners() -> dict:
+    """The 'One document is' column of schemas/README-v2.md, word for word."""
+    rows = {}
+    for line in (V2_PIN / "README-v2.md").read_text(encoding="utf-8").splitlines():
+        m = re.match(r"\|\s*`([a-z-]+\.schema\.json)`\s*\|\s*([^|]+?)\s*\|\s*(.+?)\s*\|\s*[^|]*\|\s*$", line)
+        if m:
+            rows[m.group(1)] = m.group(3)
+    return rows
+
+
+def tag_html(text: str) -> str:
+    """README wording with `code` spans shown as code."""
+    return re.sub(r"`([^`]+)`", lambda m: f"<code>{m.group(1)}</code>", html.escape(text))
+
+
+def changelog_v2_entry() -> str:
+    text = V2_CHANGELOG.read_text(encoding="utf-8")
+    a = text.index("\n## v2.0")
+    b = text.index("\n## ", a + 5)
+    return text[a + 1:b]
+
+
+def changelog_part(title: str) -> str:
+    """One schema's part of the v2.0 changelog entry, word for word (heading line dropped)."""
+    m = re.search(rf"^### {re.escape(title)} \(.*?$\n(.*?)(?=^### |\Z)", changelog_v2_entry(), flags=re.M | re.S)
+    return m.group(1).strip() if m else ""
+
+
+def ref_name(ref: str) -> str:
+    return ref.split("/")[-1]
+
+
+def type_of_v2(prop) -> str:
+    if isinstance(prop, bool):          # a boolean schema: true accepts anything
+        return "any" if prop else "never allowed"
+    if "$ref" in prop:
+        return ref_name(prop["$ref"])
+    t = prop.get("type")
+    if isinstance(t, list):
+        t = " | ".join(t)
+    if t == "array":
+        it = prop.get("items", {})
+        if "$ref" in it:
+            return f"array of {ref_name(it['$ref'])}"
+        return f"array of {it.get('type') or ('object' if 'properties' in it else 'any')}"
+    if "const" in prop:
+        return f"const {json.dumps(prop['const'])}"
+    if "enum" in prop:
+        return "enum"
+    if "oneOf" in prop or "anyOf" in prop:
+        return "one of several shapes"
+    return t or "object"
+
+
+def prop_desc_v2(prop, schema: dict) -> str:
+    if isinstance(prop, bool):
+        return ""
+    d = prop.get("description", "")
+    if not d:
+        ref = prop.get("$ref") or prop.get("items", {}).get("$ref", "")
+        if ref.startswith("#/$defs/"):
+            d = schema.get("$defs", {}).get(ref_name(ref), {}).get("description", "")
+        elif ref.startswith(V2_DEFS_FILE):
+            d = v2_schema(V2_DEFS_FILE).get("$defs", {}).get(ref_name(ref), {}).get("description", "")
+    return first_sentence(d)
+
+
+def fields_table_v2(schema: dict) -> str:
+    req = set(schema.get("required", []))
+    rows, refused = [], []
+    for name, prop in schema.get("properties", {}).items():
+        if prop is False:                # the schema names this field only to refuse it
+            refused.append(name)
+            continue
+        badge = '<span class="req">required</span>' if name in req else ""
+        rows.append(f"<tr><td><code>{html.escape(name)}</code> {badge}</td>"
+                    f"<td class=\"type\">{html.escape(type_of_v2(prop))}</td>"
+                    f"<td>{html.escape(prop_desc_v2(prop, schema))}</td></tr>")
+    note = ""
+    if refused:
+        note = ('<p class="muted">Refused by name: ' + ", ".join(f"<code>{html.escape(n)}</code>" for n in refused)
+                + ". A document that contains " + ("this field" if len(refused) == 1 else "any of these fields") + " is not valid.</p>")
+    return ('<div class="table-wrap"><table class="fields"><thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>'
+            f"<tbody>{''.join(rows)}</tbody></table></div>" + note)
+
+
+def v2_example(kind: str) -> Path:
+    return next((V2_PIN / "examples" / kind).glob("*.json"))
+
+
 # ---------------------------------------------------------------- versions
 def build_versions() -> None:
     meta, intro = front_matter((CONTENT / "versions.md").read_text(encoding="utf-8"))
     rows = []
     for v in INDEX["versions"]:
         ver = v["version"]
-        links = " · ".join(f'<a href="/schemas/maxgen/v{ver}/{s}.schema.json">{s}</a>' for s in v["schemas"])
-        tag = ' <span class="badge">current</span>' if ver == CURRENT else ""
-        rows.append(f"<tr><td><strong>v{ver}</strong>{tag}</td><td>{len(v['schemas'])}</td><td class=\"links\">{links}</td></tr>")
+        status = v.get("status") or ("current" if ver == CURRENT else "")
+        if v.get("files"):   # 2.x entries list their files with fingerprints
+            base = v.get("frozen_url", v["url"]).replace(BASE_URL, "")
+            links = " · ".join(f'<a href="{base}{f["file"]}">{f["file"].replace(".schema.json", "")}</a>' for f in v["files"])
+            count = f"{len(v['files']) - 1} + shared file"
+        else:
+            links = " · ".join(f'<a href="/schemas/maxgen/v{ver}/{s}.schema.json">{s}</a>' for s in v["schemas"])
+            count = str(len(v["schemas"]))
+        tag = {"current": ' <span class="badge">current</span>', "archived": ' <span class="badge archived">archived</span>'}.get(status, "")
+        rows.append(f"<tr><td><strong>v{ver}</strong>{tag}</td><td>{count}</td><td class=\"links\">{links}</td></tr>")
     table = ('<div class="table-wrap"><table><thead><tr><th>Version</th><th>Schemas</th><th>Files (permanent links)</th></tr></thead>'
              f"<tbody>{''.join(rows)}</tbody></table></div>")
-    changelog = CHANGELOG.read_text(encoding="utf-8")
-    if CHANGELOG.suffix == ".html":
-        changelog_html = changelog
-    else:
-        changelog = changelog.split("\n", 1)[1]  # drop the H1
-        # Relative links inside the changelog point at files in the schema repo's docs/ folder.
-        changelog = re.sub(r"\]\((?!https?://|/)([A-Za-z0-9_./-]+\.md)\)",
-                           r"](https://github.com/OpenGenealogyai/opengenealogyai/blob/main/docs/\1)", changelog)
-        changelog_html = md(changelog)
-    body = md(intro).replace("<!--CURRENT-->", CURRENT).replace("<!--VERSIONS-->", table) + "<h2 id=\"changelog\">Changelog</h2>" + changelog_html
+    body = md(intro).replace("<!--CURRENT-->", CURRENT).replace("<!--VERSIONS-->", table)
     write(SITE / "versions" / "index.html", layout("Versions", body, "/versions/", meta.get("description", ""), path="/versions/", ld=jsonld(ORG_JSONLD),
                                                    toc=toc_from_html(body)))
 
 
+def build_changelog() -> None:
+    """docs/SCHEMA_CHANGELOG.md from the schema repo, word for word (pinned copy)."""
+    text = V2_CHANGELOG.read_text(encoding="utf-8")
+    first, rest = text.split("\n", 1)
+    h1 = first.lstrip("# ").strip()
+    body = (f'<p class="eyebrow">Releases · current v{CURRENT}</p>\n<h1 id="changelog">{html.escape(h1)}</h1>\n'
+            + md(fix_repo_links(rest, "docs/")))
+    toc = toc_from_html(re.sub(r"<h3 .*?</h3>", "", body, flags=re.S))   # versions only, not every sub-heading
+    write(SITE / "changelog" / "index.html",
+          layout("Changelog", body, "/versions/", "Every MAXGEN release, what changed in each schema and why, newest first.",
+                 path="/changelog/", ld=jsonld(ORG_JSONLD), toc=toc))
+
+
 # ---------------------------------------------------------------- schemas
-def build_schemas() -> None:
+def build_schemas_v113() -> list:
+    """The seven 1.13 pages, kept at /schemas/v1.13/<slug>/ with an 'archived' banner."""
     pages = []
     for f in sorted((CONTENT / "schemas").glob("*.md")):
         meta, text = front_matter(f.read_text(encoding="utf-8"))
@@ -376,48 +523,117 @@ def build_schemas() -> None:
         schema = load_schema(name)
         ep = EPISODES[SCHEMA_EPISODE[name]]
         canonical = f"{BASE_URL}/schemas/maxgen/v1/{name}.schema.json"
-        head = f"""<div class="schema-head">
-  <p class="eyebrow">MAXGEN schema · v{CURRENT}</p>
-  <h1>{html.escape(meta['title'])}</h1>
+        head = f"""<p class="banner-archived"><strong>MAXGEN 1.13, archived — see <a href="/schemas/{slug}/">MAXGEN 2.0</a></strong></p>
+<div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v1.13 · archived</p>
+  <h1>{html.escape(meta['title'])} 1.13</h1>
   <p class="tagline">{html.escape(meta['tagline'])}</p>
-  <p class="dl"><a class="btn" href="/schemas/maxgen/v1/{name}.schema.json">Download {html.escape(meta['title'])} v{CURRENT}</a>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v1/{name}.schema.json">Download {html.escape(meta['title'])} v1.13</a>
      <a class="btn ghost" href="/versions/">All versions</a>
      <code class="canon">{canonical}</code></p>
 </div>"""
-        body_html = md(text)
+        body_html = md(text.replace("<!--CURRENT-->", "1.13"))
         body_html = body_html.replace("<!--FIELDS-->", fields_table(schema))
         body_html = re.sub(r"<!--ENUM:([a-z_]+)-->", lambda m: enum_block(schema, m.group(1)), body_html)
         body_html = body_html.replace("<!--EXAMPLE-->", example_json(meta.get("fixture", "")))
         body_html = body_html.replace("<!--PODCAST-->", player(ep))
-        page = head + body_html + '<p class="backlink"><a href="/schemas/">← All seven schemas</a></p>'
+        page = head + body_html + f'<p class="backlink"><a href="/schemas/{slug}/">← {html.escape(meta["title"])} in MAXGEN 2.0</a> · <a href="/schemas/#archived-113">All archived 1.13 pages</a></p>'
         ld = jsonld(ORG_JSONLD, {
-            "@type": "TechArticle", "headline": f"{meta['title']} — MAXGEN schema v{CURRENT}",
-            "description": meta.get("description", meta["tagline"]), "url": f"{BASE_URL}/schemas/{slug}/",
+            "@type": "TechArticle", "headline": f"{meta['title']} — MAXGEN schema v1.13 (archived)",
+            "description": meta.get("description", meta["tagline"]), "url": f"{BASE_URL}/schemas/v1.13/{slug}/",
             "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": f"{BASE_URL}/#org"},
-            "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": f"{BASE_URL}/#standard"},
+            "license": "https://creativecommons.org/publicdomain/zero/1.0/",
             "encoding": {"@type": "MediaObject", "contentUrl": canonical, "encodingFormat": "application/schema+json"},
         })
-        write(SITE / "schemas" / slug / "index.html",
-              layout(meta["title"], page, "/schemas/", meta.get("description", meta["tagline"]), path=f"/schemas/{slug}/", ld=ld,
-                     toc=toc_from_html(body_html)))
+        write(SITE / "schemas" / "v1.13" / slug / "index.html",
+              layout(f"{meta['title']} 1.13 (archived)", page, "/schemas/", meta.get("description", meta["tagline"]),
+                     path=f"/schemas/v1.13/{slug}/", ld=ld, toc=toc_from_html(body_html)))
         pages.append((slug, meta["title"], meta["tagline"], name))
+    return pages
 
-    # index of schemas
+
+def build_schemas_v2() -> list:
+    """One page per 2.0 record schema: its description word for word, raw file and SHA-256, the fields,
+    one made-up example as it is, and that schema's part of the v2.0 changelog entry."""
+    one = readme_one_liners()
+    pages = []
+    for slug, title, file, kind, ep_no in V2_KINDS:
+        schema = v2_schema(file)
+        sha = sha256_file(V2_DIR / file)
+        sid = schema["$id"]
+        is_new = ep_no is None
+        tagline = one.get(file, "")
+        ex = v2_example(kind)
+        changed = changelog_part(title)
+        head = f"""<div class="schema-head">
+  <p class="eyebrow">MAXGEN schema · v{CURRENT}{" · new in 2.0" if is_new else ""}</p>
+  <h1>{html.escape(title)}</h1>
+  <p class="tagline">One {html.escape(title)} is {tag_html(tagline)}.</p>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v2/{file}">Download {html.escape(title)} (2.0)</a>
+     <a class="btn ghost" href="/versions/">All versions</a>
+     <code class="canon">{sid}</code></p>
+  <p class="sha">SHA-256 <code>{sha}</code></p>
+</div>"""
+        listen = (player(EPISODES[ep_no]) if not is_new else
+                  f'<p>There is no episode for {html.escape(title)} yet: it is new in MAXGEN 2.0. '
+                  f'The <a href="/podcasts/#ep0">overview episode</a> explains the ideas it builds on.</p>')
+        body_html = f"""<h2 id="definition">Definition</h2>
+<blockquote class="schema-desc"><p>{html.escape(schema.get("description", ""))}</p></blockquote>
+<p class="muted">The schema's own description, word for word.</p>
+<h2 id="fields">Fields</h2>
+<p>The top-level fields of a {html.escape(title)} document. Parts shared by every schema (the date block, the place block, the evidence link, the claim header and others) are defined once in the <a href="/schemas/#shared-building-blocks">shared building-blocks file</a>.</p>
+{fields_table_v2(schema)}
+<h2 id="example">A made-up example</h2>
+<p>Every example on this site is invented: no real person, family or place. This one is <code>{html.escape(ex.name)}</code> from the standard's test files, copied as it is.</p>
+<pre class="json"><code>{html.escape(ex.read_text(encoding="utf-8"))}</code></pre>
+<h2 id="what-changed">What changed from 1.13</h2>
+{md(fix_repo_links(changed, "docs/"))}
+<p><a href="{V2_ENTRY_ANCHOR}">The whole v2.0 changelog entry</a></p>
+<h2 id="listen">Listen</h2>
+{listen}"""
+        back = '<p class="backlink"><a href="/schemas/">← All eleven schemas</a>'
+        if not is_new:
+            back += f' · <a href="/schemas/v1.13/{slug}/">The archived 1.13 page</a>'
+        back += "</p>"
+        page = head + body_html + back
+        ld = jsonld(ORG_JSONLD, {
+            "@type": "TechArticle", "headline": f"{title} — MAXGEN schema v{CURRENT}",
+            "description": schema.get("description", ""), "url": f"{BASE_URL}/schemas/{slug}/",
+            "author": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": f"{BASE_URL}/#org"},
+            "license": "https://creativecommons.org/publicdomain/zero/1.0/", "isPartOf": {"@id": f"{BASE_URL}/#standard"},
+            "encoding": {"@type": "MediaObject", "contentUrl": sid, "encodingFormat": "application/schema+json"},
+        })
+        write(SITE / "schemas" / slug / "index.html",
+              layout(title, page, "/schemas/", f"{title}, the MAXGEN 2.0 schema: one {title} is {tagline.replace('`', '')}.", path=f"/schemas/{slug}/", ld=ld,
+                     toc=toc_from_html(body_html)))
+        pages.append((slug, title, tagline, file))
+    return pages
+
+
+def build_schema_index(pages: list, archived: list) -> None:
     meta, text = front_matter((CONTENT / "schemas-index.md").read_text(encoding="utf-8"))
     cards = "".join(
-        f'<a class="card" href="/schemas/{slug}/"><h3>{html.escape(t)}</h3><p>{html.escape(tag)}</p><span class="file">{n}.schema.json</span></a>'
-        for slug, t, tag, n in pages
-    )
-    body = md(text).replace("<!--CARDS-->", f'<div class="cards">{cards}</div>').replace("<!--CURRENT-->", CURRENT)
+        f'<a class="card" href="/schemas/{slug}/"><h3>{html.escape(t)}</h3><p>One {html.escape(t)} is {tag_html(tag)}.</p><span class="file">{f}</span></a>'
+        for slug, t, tag, f in pages)
+    files = [V2_DEFS_FILE] + [f for _, _, _, f in pages]
+    titles = {V2_DEFS_FILE: "Shared building blocks"} | {f: t for _, t, _, f in pages}
+    rows = "".join(f'<tr><td>{html.escape(titles[f])}</td><td><a href="/schemas/maxgen/v2/{f}"><code>/schemas/maxgen/v2/{f}</code></a></td>'
+                   f'<td class="sha"><code>{sha256_file(V2_DIR / f)}</code></td></tr>' for f in files)
+    addresses = ('<div class="table-wrap"><table><thead><tr><th>Schema</th><th>Address (its <code>$id</code>)</th><th>SHA-256</th></tr></thead>'
+                 f"<tbody>{rows}</tbody></table></div>")
+    arch = " · ".join(f'<a href="/schemas/v1.13/{slug}/">{html.escape(t)}</a>' for slug, t, _, _ in archived)
+    body = (md(text).replace("<!--CARDS-->", f'<div class="cards">{cards}</div>').replace("<!--CURRENT-->", CURRENT)
+            .replace("<!--ADDRESSES-->", addresses).replace("<!--ARCHIVED-->", arch))
     standard_ld = {
         "@type": "Dataset", "@id": f"{BASE_URL}/#standard", "name": f"MAXGEN — The Maxwell Genealogy Standard v{CURRENT}",
-        "description": "Seven JSON Schema files (MaxRecord, MaxPerson, MaxTask, MaxDNA, MaxSource, MaxRecognition, MaxName) defining an open, probabilistic genealogy data standard.",
+        "description": "Eleven JSON Schema record files plus one shared building-blocks file (MaxRecord, MaxPerson, MaxRelationship, MaxTask, MaxSource, MaxPlace, MaxGroup, MaxEvent, MaxName, MaxRecognition, MaxDNA) defining an open, probabilistic genealogy data standard.",
         "url": f"{BASE_URL}/schemas/", "version": CURRENT, "license": "https://creativecommons.org/publicdomain/zero/1.0/",
         "creator": {"@type": "Person", "name": "Garlon Maxwell"}, "publisher": {"@id": f"{BASE_URL}/#org"}, "isAccessibleForFree": True,
-        "distribution": [{"@type": "DataDownload", "name": f"{t} schema", "contentUrl": f"{BASE_URL}/schemas/maxgen/v1/{n}.schema.json", "encodingFormat": "application/schema+json"} for _, t, _, n in pages],
+        "distribution": [{"@type": "DataDownload", "name": titles[f], "contentUrl": f"{BASE_URL}/schemas/maxgen/v2/{f}",
+                          "encodingFormat": "application/schema+json"} for f in files],
     }
-    write(SITE / "schemas" / "index.html", layout("The seven schemas", body, "/schemas/", meta.get("description", ""), path="/schemas/", ld=jsonld(ORG_JSONLD, standard_ld)))
-    return pages
+    write(SITE / "schemas" / "index.html", layout(meta.get("title", "The schemas"), body, "/schemas/", meta.get("description", ""),
+                                                 path="/schemas/", ld=jsonld(ORG_JSONLD, standard_ld)))
 
 
 def faq_ld(body_html: str) -> dict:
@@ -432,13 +648,13 @@ def faq_ld(body_html: str) -> dict:
 # ---------------------------------------------------------------- plain pages
 def build_pages() -> None:
     for f in sorted(CONTENT.glob("*.md")):
-        if f.stem in {"podcasts", "versions", "schemas-index", "changelog-v1"}:
+        if f.stem in {"podcasts", "versions", "schemas-index", "changelog-v1", "index"}:   # index.md is the home page (build_home)
             continue
         meta, text = front_matter(f.read_text(encoding="utf-8"))
         out = meta.get("out", f"{f.stem}/index.html")
         path = "/" + out.replace("index.html", "")
         body, toc = md_toc(text)
-        body = body.replace("<!--CURRENT-->", CURRENT)
+        body = body.replace("<!--CURRENT-->", CURRENT).replace("<!--KIT-->", kit_table())
         if meta.get("toc") != "true":
             toc = ""
         ld_objs = [ORG_JSONLD]
@@ -448,10 +664,24 @@ def build_pages() -> None:
                                  path=path, ld=jsonld(*ld_objs), toc=toc))
 
 
+def kit_table() -> str:
+    """Files of the agent kit with the SHA-256 and __version__ computed by tools/sync_v2.py from the served files."""
+    mf = SITE / "agents" / "manifest.json"
+    if not mf.exists():
+        return ""
+    m = json.loads(mf.read_text(encoding="utf-8"))
+    rows = "".join(f'<tr><td><a href="{s["path"]}"><code>{s["path"]}</code></a></td><td>{html.escape(s["version"])}</td>'
+                   f'<td class="sha"><code>{s["sha256"]}</code></td></tr>' for s in m["scripts"])
+    rows += "".join(f'<tr><td><a href="{d["path"]}"><code>{d["path"]}</code></a></td><td></td>'
+                    f'<td class="sha"><code>{d["sha256"]}</code></td></tr>' for d in m["documents"])
+    return ('<div class="table-wrap"><table><thead><tr><th>File</th><th><code>__version__</code></th><th>SHA-256</th></tr></thead>'
+            f"<tbody>{rows}</tbody></table></div>")
+
+
 def build_home(pages) -> None:
     meta, text = front_matter((CONTENT / "index.md").read_text(encoding="utf-8"))
     cards = "".join(
-        f'<a class="card" href="/schemas/{slug}/"><h3>{html.escape(t)}</h3><p>{html.escape(tag)}</p></a>'
+        f'<a class="card" href="/schemas/{slug}/"><h3>{html.escape(t)}</h3><p>One {html.escape(t)} is {tag_html(tag)}.</p></a>'
         for slug, t, tag, n in pages
     )
     body = md(text).replace("<!--CARDS-->", f'<div class="cards">{cards}</div>').replace("<!--CURRENT-->", CURRENT)
@@ -461,44 +691,88 @@ def build_home(pages) -> None:
                                       path="/", ld=jsonld(ORG_JSONLD, site_ld)))
 
 
+def agents_llms_sections() -> dict:
+    """The sections of the agent kit's llms.txt (docs/agents/llms.txt, pinned), keyed by heading, word for word."""
+    text = (V2_PIN / "agents-llms.txt").read_text(encoding="utf-8")
+    parts = re.split(r"^## ", text, flags=re.M)
+    out = {"_head": parts[0]}
+    for p in parts[1:]:
+        heading, _, rest = p.partition("\n")
+        out[heading.strip()] = "## " + heading.strip() + "\n" + rest.rstrip("\n")
+    return out
+
+
 def build_llms_txt(pages) -> None:
+    """MERGE (BuildGenealogy handoff): the kit's 'For AI agents — start here' section at the top, the 2.0 schema
+    line in place of the old schema lines, the kit's file list and tools; every section of the old file kept."""
+    kit = agents_llms_sections()
+    schema_line = next(l for l in kit["The standard"].splitlines() if l.startswith("- [Schemas]"))
+    starter = next((l for l in kit["The standard"].splitlines() if "STARTER_PROMPT" in l), "")
     lines = [
         "# MAXGEN — The Maxwell Genealogy Standard",
         "",
-        f"> MAXGEN is an open, public-domain (CC0) data standard for genealogy, stewarded by OpenGenealogyAI. Current release v{CURRENT}. "
-        "Seven JSON Schema files describe evidence (MaxRecord), probable identities (MaxPerson), research work (MaxTask), DNA evidence (MaxDNA), "
-        "where records live (MaxSource), transcription provenance (MaxRecognition) and name variants (MaxName). Every claim carries a source and a 0-1 confidence score; "
-        "conflicting evidence is kept, nothing is deleted, and records about living people are private by rule.",
+        f"> MAXGEN is an open, public-domain (CC0) data standard for genealogy, stewarded by OpenGenealogyAI. Current release v{CURRENT}: "
+        "eleven JSON Schema record files plus one shared building-blocks file. Every fact traces to a source document through an evidence link, "
+        "every claim carries a confidence score, every family link is stored once, and nothing is overwritten; records about living people are private by rule. "
+        "If you are an AI agent that a person has sent here to build their family tree, start at /agents/START.md and follow it exactly.",
         "",
         "MAXGEN is designed to work alongside existing genealogy sites, archives and the GEDCOM format, not to replace them.",
+        "",
+        kit["For AI agents — start here"],
+        "",
+        kit["The kit, file by file"],
+        "",
+        kit["Tools (download into the project folder)"],
         "",
         "## Read",
         f"- [The standard in plain English]({BASE_URL}/standard/)",
         f"- [FAQ]({BASE_URL}/faq/)",
-        f"- [Versioning policy and changelog]({BASE_URL}/versions/)",
+        f"- [Versioning policy]({BASE_URL}/versions/) and [changelog]({BASE_URL}/changelog/)",
         f"- [Governance]({BASE_URL}/governance/)",
         f"- [Licence (CC0)]({BASE_URL}/license/)",
-        "",
-        "## Schemas (canonical JSON Schema files)",
     ]
-    for slug, t, tag, n in pages:
-        lines.append(f"- [{t}]({BASE_URL}/schemas/{slug}/): {tag} — file: {BASE_URL}/schemas/maxgen/v1/{n}.schema.json")
-    lines += ["", f"- Machine-readable version index: {BASE_URL}/schemas/maxgen/index.json", "",
-              "## Listen", f"- [Podcast episodes]({BASE_URL}/podcasts/) — RSS: {BASE_URL}/podcasts/feed.xml", "",
+    if starter:
+        lines.append(starter)
+    lines += ["", "## Schemas (canonical JSON Schema files)", schema_line]
+    for slug, t, tag, f in pages:
+        lines.append(f"- [{t}]({BASE_URL}/schemas/{slug}/): one {t} is {tag} — file: {BASE_URL}/schemas/maxgen/v2/{f}")
+    lines += [f"- Shared building blocks (not a record type) — file: {BASE_URL}/schemas/maxgen/v2/{V2_DEFS_FILE}",
+              f"- SHA-256 of every file: {BASE_URL}/schemas/maxgen/v2/SHA256SUMS.txt",
+              f"- Machine-readable version index: {BASE_URL}/schemas/maxgen/index.json", "",
+              "## Listen", f"- [Podcast episodes]({BASE_URL}/podcasts/) — RSS: {BASE_URL}/podcasts/feed.xml "
+              "(the episodes describe MAXGEN v1.11; the schema pages and the changelog are authoritative)", "",
               "## Contribute", f"- [Ask a question or propose a change]({BASE_URL}/contribute/)", "- GitHub: https://github.com/OpenGenealogyai", ""]
+    for extra in ("What it needs", "Licence"):
+        if extra in kit:
+            lines += [kit[extra], ""]
     write(SITE / "llms.txt", "\n".join(lines))
 
 
+HIDDEN = ("/agents/", "/index/")   # not in the sitemap: the hidden beta kit page, and the old duplicate of the home page
+
+REDIRECT_HOME = f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>MAXGEN — OpenGenealogyAI</title>
+<link rel="canonical" href="{BASE_URL}/"><meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0; url=/"></head>
+<body><p>This page moved to <a href="/">the home page</a>.</p></body></html>
+"""
+
+
 def main() -> None:
-    pages = build_schemas()
+    pages = build_schemas_v2()
+    archived = build_schemas_v113()
+    build_schema_index(pages, archived)
     build_pages()
     build_home(pages)
     build_podcasts()
     build_versions()
+    build_changelog()
     build_llms_txt(pages)
+    write(SITE / "index" / "index.html", REDIRECT_HOME)   # /index/ was a duplicate of the home page until 2026-11-16
     # sitemap
     urls = sorted({"/" + str(p.relative_to(SITE)).replace("\\", "/").replace("index.html", "")
                    for p in SITE.rglob("index.html") if ".git" not in p.parts})
+    urls = [u for u in urls if not u.startswith(HIDDEN)]
     sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + \
          "".join(f"  <url><loc>{BASE_URL}{u}</loc></url>\n" for u in urls) + "</urlset>\n"
     write(SITE / "sitemap.xml", sm)
@@ -512,28 +786,55 @@ def main() -> None:
         robots += [f"User-agent: {bot}", "Allow: /", ""]
     robots += [f"Sitemap: {BASE_URL}/sitemap.xml", ""]
     write(SITE / "robots.txt", "\n".join(robots))
-    build_llms_full()
-    print(f"built {len(urls)} pages (MAXGEN v{CURRENT})")
+    build_llms_full(pages)
+    print(f"built {len(urls)} pages (MAXGEN v{CURRENT}); hidden: {', '.join(HIDDEN)}")
 
 
-def build_llms_full() -> None:
-    """One plain-text file with the whole site's prose, for AI systems that prefer a single fetch."""
+def plain(text: str) -> str:
+    text = text.replace("<!--CURRENT-->", CURRENT)
+    text = re.sub(r"<!--[A-Z:_a-z]+-->", "", text)
+    text = re.sub(r"<script.*?</script>", "", text, flags=re.S)
+    return re.sub(r"<[^>]+>", "", text).strip()
+
+
+def build_llms_full(pages) -> None:
+    """One plain-text file with the whole site's prose and every 2.0 schema's definition, fields, example and
+    podcast, for AI systems that prefer a single fetch."""
     order = ["index.md", "standard.md", "schemas-index.md", "faq.md", "versions.md", "governance.md", "contribute.md", "license.md", "podcasts.md"]
     parts = [f"# MAXGEN — The Maxwell Genealogy Standard (v{CURRENT}) — full text of opengenealogyai.org", ""]
-    files = [CONTENT / n for n in order] + sorted((CONTENT / "schemas").glob("*.md"))
-    for f in files:
-        if not f.exists():
-            continue
-        meta, text = front_matter(f.read_text(encoding="utf-8"))
-        text = text.replace("<!--CURRENT-->", CURRENT)
-        text = re.sub(r"<!--[A-Z:_a-z]+-->", "", text)
-        text = re.sub(r"<script.*?</script>", "", text, flags=re.S)
-        text = re.sub(r"<[^>]+>", "", text)
-        parts += [f"\n\n---\n## {meta.get('title', f.stem)}\n", text.strip()]
-    parts += ["\n\n---\n## Schema files (JSON Schema 2020-12)\n"]
-    for v in INDEX["versions"][:1]:
-        for s in v["schemas"]:
-            parts.append(f"- {BASE_URL}/schemas/maxgen/v1/{s}.schema.json")
+    for n in order:
+        f = CONTENT / n
+        if f.exists():
+            meta, text = front_matter(f.read_text(encoding="utf-8"))
+            parts += [f"\n\n---\n## {meta.get('title', f.stem)}\n", plain(text)]
+    one = readme_one_liners()
+    for slug, title, file, kind, ep_no in V2_KINDS:
+        schema = v2_schema(file)
+        req = set(schema.get("required", []))
+        parts += [f"\n\n---\n## {title} (MAXGEN {CURRENT} schema)\n",
+                  f"Page: {BASE_URL}/schemas/{slug}/",
+                  f"File: {schema['$id']}  SHA-256 {sha256_file(V2_DIR / file)}",
+                  f"One {title} is {one.get(file, '')}.", "",
+                  f"Definition: {schema.get('description', '')}", "", "### Fields", ""]
+        for name, prop in schema.get("properties", {}).items():
+            if prop is False:
+                parts.append(f"- {name}: refused by name (a document that contains it is not valid)")
+                continue
+            parts.append(f"- {name} ({type_of_v2(prop)}{', required' if name in req else ''}): {prop_desc_v2(prop, schema)}")
+        ex = v2_example(kind)
+        parts += ["", f"### Example (made up; {ex.name})", "", "```json", ex.read_text(encoding="utf-8").rstrip(), "```", "",
+                  "### What changed from 1.13", "", changelog_part(title), "", "### Listen", ""]
+        if ep_no is None:
+            parts.append(f"No episode yet: {title} is new in MAXGEN 2.0.")
+        else:
+            n, stem, t, blurb, secs, size = EPISODES[ep_no]
+            parts.append(f"Episode {n}, {t} ({mmss(secs)}): {MEDIA_BASE}/{stem}.mp3 — {blurb} "
+                         f"It describes MAXGEN v1.11; see {BASE_URL}{V2_ENTRY_ANCHOR} for what changed since.")
+    parts += ["\n\n---\n## Schema files (JSON Schema 2020-12)\n",
+              f"- {BASE_URL}/schemas/maxgen/v2/{V2_DEFS_FILE} (shared building blocks)"]
+    parts += [f"- {BASE_URL}/schemas/maxgen/v2/{f}" for _, _, f, _, _ in V2_KINDS]
+    parts += [f"- SHA-256: {BASE_URL}/schemas/maxgen/v2/SHA256SUMS.txt",
+              f"- The archived MAXGEN 1.13 files stay at {BASE_URL}/schemas/maxgen/v1/"]
     write(SITE / "llms-full.txt", "\n".join(parts) + "\n")
 
 

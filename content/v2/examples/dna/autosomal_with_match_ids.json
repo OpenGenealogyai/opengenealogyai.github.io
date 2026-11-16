@@ -1,0 +1,97 @@
+{
+  "dna_id": "57dbf476-5888-5045-a13a-c372f2e9b13c",
+  "schema_version": "2.0",
+  "person_id": "a2f6715d-677d-59ee-8a3a-7e02190eeaa1",
+  "test_type": "autosomal",
+  "test_provider": "other",
+  "test_provider_as_written": "Example DNA Co (made up)",
+  "test_date": {
+    "value": {
+      "year": 2026,
+      "month": 7
+    },
+    "as_written": "July 2026"
+  },
+  "kit_id_status": "hashed",
+  "kit_id_hash": "9c1e1141fc0ae16284b29436ba30605bc58955b31573208415032a4b0d5d415e",
+  "kit_source": "the person's own upload",
+  "is_living_flag": true,
+  "redistribution_license": "tier2-private",
+  "raw_genotype_stored": false,
+  "consent_status": "subject_explicit_opt_in",
+  "consented_at": "2026-10-16T12:00:00Z",
+  "matches": [
+    {
+      "match_id": "80852453-d847-594d-8108-32c258b9cb7d",
+      "match_kit_hash": "ea1d5beb86e2687b37c4e7a27967820cb808a48097a7c032eb31f64f3f449db5",
+      "match_display_name": "Whitlow, J.",
+      "is_living": true,
+      "shared_cm": 1744,
+      "longest_segment_cm": 112,
+      "segment_count": 38,
+      "match_source": "other",
+      "match_source_as_written": "Example DNA Co",
+      "predicted_relationships": [
+        {
+          "relationship": "half_sibling",
+          "probability_as_reported": 0.6,
+          "source_as_written": "Example DNA Co"
+        }
+      ],
+      "chromosome_segments": [
+        {
+          "chromosome": "7",
+          "start_cm": 12.5,
+          "end_cm": 124.5,
+          "build_version": "GRCh38"
+        }
+      ],
+      "common_ancestor_candidates": [
+        {
+          "person_id": "7943e9bb-171e-556d-bc9e-ae5438c17b11",
+          "inference_method": "tree_intersection"
+        }
+      ],
+      "confidence": 0.9,
+      "task_id": "c0daf871-47b4-5ba0-b433-ca99d0ca5c74",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "4a8c78ae-4fc4-5e3a-9e5d-e85304a6b303",
+        "mention_id": "m1",
+        "quote": "Whitlow, J. | 1,744 cM",
+        "kind": "direct"
+      }
+    },
+    {
+      "match_id": "da15d458-8eb9-5ecf-a6b4-72ad77fe5cf8",
+      "match_kit_hash": "499ef9ef2f848742fcac5d9e961e85de666b148bd5f30a89f86ecf4b5407ca20",
+      "is_living": true,
+      "shared_cm": 212,
+      "triangulated_with": [
+        "80852453-d847-594d-8108-32c258b9cb7d"
+      ],
+      "confidence": 0.9,
+      "task_id": "c0daf871-47b4-5ba0-b433-ca99d0ca5c74",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "4a8c78ae-4fc4-5e3a-9e5d-e85304a6b303",
+        "mention_id": "m2",
+        "quote": "Penhallow, S. | 212 cM",
+        "kind": "direct"
+      }
+    }
+  ],
+  "source_record_ids": [
+    "4a8c78ae-4fc4-5e3a-9e5d-e85304a6b303"
+  ],
+  "kit_aliases": [
+    {
+      "system": "gedmatch",
+      "id_hash": "acd86c98e75eed5b73b53e7600ba819ed7482b29687618786aa49ceacdef7f81"
+    }
+  ],
+  "created_by_task_id": "c0daf871-47b4-5ba0-b433-ca99d0ca5c74",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

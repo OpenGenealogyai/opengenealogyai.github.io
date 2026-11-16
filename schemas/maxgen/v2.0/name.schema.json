@@ -1,0 +1,383 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opengenealogyai.org/schemas/maxgen/v2/name.schema.json",
+  "title": "MaxName",
+  "description": "MAXGEN 2.0 -- One MaxName is what is known about one name: its canonical form, its variants and cross-language cognates (each citing evidence and carrying the claim status ladder), and its phonetic keys.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "maxgen-defs.schema.json#/$defs/common_fields"},
+    {"$ref": "maxgen-defs.schema.json#/$defs/lifecycle_fields"}
+  ],
+  "required": ["name_id", "canonical_form", "name_type", "redistribution_license"],
+  "properties": {
+    "name_id": {
+      "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+      "description": "This name record's own id: a random UUID created once by the writer and never reused."
+    },
+    "canonical_form": {
+      "type": "string",
+      "description": "The modern standard spelling used as the anchor for every variant (such as the made-up surname Quillfeather), not necessarily English."
+    },
+    "canonical_script": {"$ref": "#/$defs/script", "description": "The writing system of canonical_form."},
+    "canonical_script_as_written": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The writing system in the writer's own words, given when canonical_script is other."
+    },
+    "regional_canonical": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["form", "language"],
+        "properties": {
+          "form": {"type": "string", "description": "The preferred form in this language or region."},
+          "language": {"type": "string", "description": "The language this form is preferred in, as an ISO 639 code."},
+          "locale": {"type": "string", "description": "A narrower region, as an ISO 3166-2 code."},
+          "notes": {"type": "string", "description": "When and where this form is used, and any caveats."}
+        },
+        "description": "One preferred form in one language or region."
+      },
+      "description": "Preferred forms of the name in other languages or regions, so no one language is the anchor."
+    },
+    "name_type": {
+      "enum": [
+        "given", "surname", "patronymic", "matronymic", "occupational", "topographic", "clan", "byname", "religious",
+        "title", "other"
+      ],
+      "description": "What kind of name this is: given, surname, patronymic, matronymic, occupational, topographic, clan, byname, religious, title or other."
+    },
+    "name_type_as_written": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The kind of name in the writer's own words, given when name_type is other."
+    },
+    "gender": {
+      "enum": ["masculine", "feminine", "neutral", "variable", "other"],
+      "description": "The gender the name is associated with in its own culture (a cultural association, never a statement about any person)."
+    },
+    "gender_as_written": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The association in the writer's own words, given when gender is other."
+    },
+    "language_of_origin": {"type": "string", "description": "The language the name ultimately comes from, as an ISO 639-3 code."},
+    "etymology": {"type": "string", "description": "Where the name comes from and what it meant, written for a general reader."},
+    "see_also_urls": {
+      "type": "array",
+      "items": {"type": "string", "format": "uri"},
+      "description": "Addresses of reference works about the name."
+    },
+    "variants": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/variant"},
+      "description": "Every known variant form; each is its own claim with evidence, retracted rather than deleted."
+    },
+    "phonetic_keys": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "soundex": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "value": {"type": "string", "pattern": "^[A-Z][0-9]{3}$", "description": "The Soundex code."},
+            "algorithm_version": {"type": "string", "description": "Which Soundex variant produced the code."}
+          },
+          "description": "Soundex code of the canonical form."
+        },
+        "nysiis": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "value": {"type": "string", "description": "The NYSIIS code."},
+            "algorithm_version": {"type": "string", "description": "Which NYSIIS version produced the code."}
+          },
+          "description": "NYSIIS code of the canonical form."
+        },
+        "metaphone": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "value": {"type": "string", "description": "The Metaphone code."},
+            "algorithm_version": {"type": "string", "description": "Which Metaphone version produced the code."}
+          },
+          "description": "Metaphone code of the canonical form."
+        },
+        "double_metaphone": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "primary": {"type": "string", "description": "The primary code."},
+            "secondary": {"type": "string", "description": "The secondary code."},
+            "algorithm_version": {"type": "string", "description": "Which version produced the codes."}
+          },
+          "description": "Double Metaphone codes of the canonical form."
+        },
+        "daitch_mokotoff": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "values": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "The codes (this algorithm may give several)."
+            },
+            "algorithm_version": {"type": "string", "description": "Which version produced the codes."}
+          },
+          "description": "Daitch-Mokotoff Soundex codes of the canonical form."
+        },
+        "beider_morse": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "values": {"type": "array", "items": {"type": "string"}, "description": "The set of codes."},
+            "language_set": {
+              "type": "string",
+              "description": "The language set used (any, ashkenazi, sephardic, or a list of languages)."
+            },
+            "algorithm_version": {"type": "string", "description": "Which version produced the codes."}
+          },
+          "description": "Beider-Morse phonetic codes of the canonical form."
+        }
+      },
+      "description": "Phonetic codes of the canonical form for fuzzy search, each with the algorithm version that made it so indexes rebuilt later do not mismatch silently."
+    },
+    "cognates": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/cognate"},
+      "description": "Related names in other languages; a first pass may name the target only by related_canonical_form and a later linking pass adds related_name_id."
+    },
+    "redistribution_license": {
+      "$ref": "maxgen-defs.schema.json#/$defs/licence",
+      "description": "Whether this name record may be shared (unclear means ask, never guess)."
+    }
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "script": {
+      "enum": [
+        "latin", "cyrillic", "arabic", "hebrew", "greek", "han", "devanagari", "hangul", "georgian", "armenian",
+        "other"
+      ],
+      "description": "A writing system."
+    },
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variant_id", "variant_text", "variant_type", "evidence", "confidence"],
+      "properties": {
+        "variant_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "This variant's own permanent id, created once by the writer so the variant can be cited, disputed or retracted on its own."
+        },
+        "assertion_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "readOnly": true,
+          "description": "Helper-owned: this variant's claim id, created once when it is first stored and used by apply-proof and retract."
+        },
+        "asserted_at": {
+          "$ref": "maxgen-defs.schema.json#/$defs/timestamp",
+          "readOnly": true,
+          "description": "Helper-owned: when this variant was first stored."
+        },
+        "status": {
+          "$ref": "maxgen-defs.schema.json#/$defs/claim_status",
+          "readOnly": true,
+          "default": "proposed",
+          "description": "Helper-owned: where this variant stands on the claim status ladder (new ones are proposed; only the proof path changes it)."
+        },
+        "status_reason": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "readOnly": true,
+          "description": "Helper-owned: why the status last changed."
+        },
+        "status_task_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "readOnly": true,
+          "description": "Helper-owned: the task under which the status last changed."
+        },
+        "task_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The task that added this variant."},
+        "evidence": {
+          "$ref": "maxgen-defs.schema.json#/$defs/evidence",
+          "description": "The one piece of evidence for this variant: a record where it appears, or a saved page of a name dictionary (authored, so capped at 0.4)."
+        },
+        "confidence": {
+          "$ref": "maxgen-defs.schema.json#/$defs/confidence",
+          "description": "The writer's confidence in this variant on this evidence, from 0 to 1 (at most 0.4 when the evidence is not reliable)."
+        },
+        "variant_text": {
+          "type": "string",
+          "description": "The variant exactly as the records give it, keeping capitals, accents and spelling."
+        },
+        "variant_type": {
+          "enum": [
+            "spelling_variant", "nickname", "anglicization", "gaelicization", "latinization", "abbreviation",
+            "diminutive", "cognate", "scribal_corruption", "phonetic_rendering", "emigration_adaptation",
+            "translation", "patronymic_form", "other"
+          ],
+          "description": "How the variant relates to the canonical form: spelling_variant (same sound, other spelling), nickname, anglicization, gaelicization, latinization, abbreviation (such as Wm for William), diminutive, cognate, scribal_corruption (a clerk's error), phonetic_rendering (spelled by sound), emigration_adaptation, translation, patronymic_form or other."
+        },
+        "variant_type_as_written": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "The kind of variant in the writer's own words (or a published vocabulary's address), given when variant_type is other."
+        },
+        "locale": {
+          "type": "string",
+          "description": "The region where the variant was used, as an ISO 3166 or ISO 3166-2 code (the more specific the better)."
+        },
+        "language": {"type": "string", "description": "The language the variant appears in, as an ISO 639 code."},
+        "script": {
+          "$ref": "#/$defs/script",
+          "description": "The writing system of the variant, given when it differs from canonical_script."
+        },
+        "script_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The writing system in the writer's own words, given when script is other."
+        },
+        "transliteration_standard": {
+          "type": "string",
+          "description": "The transliteration standard used, when the variant was carried over from another script."
+        },
+        "period_start": {
+          "type": "integer",
+          "minimum": 500,
+          "maximum": 2100,
+          "description": "The earliest year the variant is attested, from a known example; left out when unknown."
+        },
+        "period_end": {
+          "type": "integer",
+          "minimum": 500,
+          "maximum": 2100,
+          "description": "The latest year the variant is known in use; left out when it is still used."
+        },
+        "frequency": {
+          "enum": ["rare", "occasional", "common", "dominant", "other"],
+          "description": "How common the variant is in records of its period and place: rare (under 5 percent), occasional (5 to 25), common (25 to 60), dominant (over 60) or other."
+        },
+        "frequency_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "How common it is, in the writer's own words, given when frequency is other."
+        },
+        "attestation_source": {
+          "type": "string",
+          "description": "Where the variant is documented, in words (the evidence link is the citation that counts)."
+        },
+        "notes": {"type": "string", "description": "Anything else about the variant: why it arose, who used it, caveats."},
+        "disputed_by": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/dispute"},
+          "description": "Sources that contest the variant; a disputed variant is kept and flagged, never deleted."
+        }
+      },
+      "description": "One variant form of the name, held as a claim: it cites evidence, carries the claim status ladder and is indexed so apply-proof and retract reach it."
+    },
+    "dispute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dispute_id", "disputing_source"],
+      "properties": {
+        "dispute_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "This dispute's own permanent id, created once by the writer."
+        },
+        "disputing_source": {"type": "string", "description": "The source that contests the variant."},
+        "dispute_notes": {"type": "string", "description": "What is contested and why."},
+        "task_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The task that recorded this dispute."}
+      },
+      "description": "One source that contests a variant."
+    },
+    "cognate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cognate_id", "relationship_type", "direction", "evidence", "confidence"],
+      "properties": {
+        "cognate_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "This cognate link's own permanent id, created once by the writer."
+        },
+        "assertion_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "readOnly": true,
+          "description": "Helper-owned: this cognate link's claim id, created once when it is first stored and used by apply-proof and retract."
+        },
+        "asserted_at": {
+          "$ref": "maxgen-defs.schema.json#/$defs/timestamp",
+          "readOnly": true,
+          "description": "Helper-owned: when this cognate link was first stored."
+        },
+        "status": {
+          "$ref": "maxgen-defs.schema.json#/$defs/claim_status",
+          "readOnly": true,
+          "default": "proposed",
+          "description": "Helper-owned: where this cognate link stands on the claim status ladder (new ones are proposed; only the proof path changes it)."
+        },
+        "status_reason": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "readOnly": true,
+          "description": "Helper-owned: why the status last changed."
+        },
+        "status_task_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "readOnly": true,
+          "description": "Helper-owned: the task under which the status last changed."
+        },
+        "task_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The task that added this cognate link."},
+        "evidence": {
+          "$ref": "maxgen-defs.schema.json#/$defs/evidence",
+          "description": "The one piece of evidence for this cognate link: a record where it appears, or a saved page of a name dictionary (authored, so capped at 0.4)."
+        },
+        "confidence": {
+          "$ref": "maxgen-defs.schema.json#/$defs/confidence",
+          "description": "The writer's confidence in this cognate link on this evidence, from 0 to 1 (at most 0.4 when the evidence is not reliable)."
+        },
+        "related_name_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The related MaxName, once it exists; a first-pass link may leave it out and a later linking pass fills it in."
+        },
+        "related_canonical_form": {
+          "type": "string",
+          "description": "The related name's canonical form (such as Johann for John): the only name of the target until related_name_id is filled in, and a readable copy after."
+        },
+        "relationship_type": {
+          "enum": ["etymological_root", "cross_language_cognate", "derivative", "contracted_form", "other"],
+          "description": "How the names are related: etymological_root (the related name is the historical ancestor), cross_language_cognate (parallel forms from one root), derivative (this name was formed from the related one), contracted_form or other."
+        },
+        "relationship_type_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "How they are related, in the writer's own words, given when relationship_type is other."
+        },
+        "direction": {
+          "enum": ["this_derives_from", "this_is_source_of", "parallel_cognate", "other"],
+          "description": "The direction seen from this record: this_derives_from, this_is_source_of, parallel_cognate (both from a shared root) or other."
+        },
+        "direction_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The direction in the writer's own words, given when direction is other."
+        },
+        "attestation_source": {
+          "type": "string",
+          "description": "Who says the names are related, in words (the evidence link is the citation that counts)."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Anything else about the link: its historical path, caveats, regional differences."
+        }
+      },
+      "allOf": [
+        {
+          "anyOf": [
+            {"required": ["related_name_id"]},
+            {"required": ["related_canonical_form"]}
+          ]
+        }
+      ],
+      "description": "One cognate link, held as a claim; it needs related_name_id or related_canonical_form (or both, once resolved)."
+    }
+  }
+}

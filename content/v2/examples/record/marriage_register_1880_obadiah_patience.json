@@ -1,0 +1,77 @@
+{
+  "record_id": "71642fb1-7db2-5581-8a08-cb4df77ea03e",
+  "schema_version": "2.0",
+  "record_type": "marriage_register",
+  "redistribution_license": "public-domain",
+  "is_living_flag": false,
+  "source_classification": {
+    "source": "original",
+    "information": "primary"
+  },
+  "transcription_parts": [
+    {
+      "part_id": "p1",
+      "lang": "en",
+      "text": "[4] 1 May 1880 | Obadiah Mossbury, bachelor | Patience Wren, spinster"
+    }
+  ],
+  "transcription_scope": "complete_entry",
+  "extraction_confidence": 0.95,
+  "persons_mentioned": [
+    {
+      "mention_id": "m1",
+      "name_as_written": "Obadiah Mossbury",
+      "role_as_written": "groom",
+      "role": "groom",
+      "in_event_refs": [
+        "e1"
+      ],
+      "lines": [
+        "4"
+      ],
+      "is_living": false
+    },
+    {
+      "mention_id": "m2",
+      "name_as_written": "Patience Wren",
+      "role_as_written": "bride",
+      "role": "bride",
+      "in_event_refs": [
+        "e1"
+      ],
+      "lines": [
+        "4"
+      ],
+      "is_living": false
+    }
+  ],
+  "events_documented": [
+    {
+      "ref": "e1",
+      "event_type": "marriage",
+      "is_primary": true,
+      "date": {
+        "value": {
+          "year": 1880,
+          "month": 5,
+          "day": 1
+        },
+        "as_written": "1 May 1880"
+      },
+      "place": {
+        "place_as_written": "St Wren's, Tumblebrook"
+      },
+      "information": "primary"
+    }
+  ],
+  "part_of_source_id": "75df6185-5f2f-5652-afb4-fb6349ea015f",
+  "locator": {
+    "as_written": "Tumblebrook marriages, entry 4",
+    "register": "marriages",
+    "entry": "4"
+  },
+  "created_by_task_id": "f29d3707-1833-510d-ae04-a2304e60a471",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

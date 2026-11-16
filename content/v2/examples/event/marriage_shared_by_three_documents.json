@@ -1,0 +1,39 @@
+{
+  "occurrence_id": "d2631fcc-f683-56e1-bad4-590bf9a3d42d",
+  "schema_version": "2.0",
+  "event_type": "marriage",
+  "origin": {
+    "kind": "document_entry",
+    "record_id": "da6ac270-29df-56f6-b577-cd764d5b1e2c",
+    "record_event_ref": "e1"
+  },
+  "is_living_flag": false,
+  "redistribution_license": "CC0",
+  "preferred": {
+    "date_assertion_id": "770b0a00-e2cc-58ec-9b18-bf5f6b06fc97",
+    "order": [
+      "770b0a00-e2cc-58ec-9b18-bf5f6b06fc97",
+      "671ebcba-c400-52f8-ab02-9ca52f60aab4",
+      "aeffecbc-3d5e-5b6a-b953-415869b10cf9"
+    ],
+    "set_by_task_id": "95284398-1483-57e3-98d3-af09efff15f5"
+  },
+  "merge_history": [
+    {
+      "merged_id": "185ca4ab-f08a-5983-8dff-4c25a3222303",
+      "task_id": "95284398-1483-57e3-98d3-af09efff15f5",
+      "merged_at": "2026-10-16T12:00:00Z",
+      "method": "same_occasion"
+    },
+    {
+      "merged_id": "46b53474-91e1-5fad-b4a7-a28aeec234cf",
+      "task_id": "95284398-1483-57e3-98d3-af09efff15f5",
+      "merged_at": "2026-10-16T12:00:00Z",
+      "method": "same_occasion"
+    }
+  ],
+  "created_by_task_id": "24408968-a56b-5a6c-a6f5-3a322540e24a",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

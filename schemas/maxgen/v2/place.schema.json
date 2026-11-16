@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opengenealogyai.org/schemas/maxgen/v2/place.schema.json",
+  "title": "MaxPlace",
+  "description": "MAXGEN 2.0 -- one MaxPlace document is one real place with its own history (its names, kinds, parent places and coordinates over time), each fact stored once as a claim with evidence so that many claims can point at it.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "maxgen-defs.schema.json#/$defs/common_fields"},
+    {"$ref": "maxgen-defs.schema.json#/$defs/lifecycle_fields"}
+  ],
+  "required": ["place_id", "redistribution_license", "name_assertions"],
+  "properties": {
+    "place_id": {
+      "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+      "description": "The place's permanent id: a random UUID created once by the writer (an import_file, resolve_conflict or build_tree task, R-24), never computed from a gazetteer or other outside id, and kept through renaming, re-typing and re-parenting."
+    },
+    "redistribution_license": {
+      "$ref": "maxgen-defs.schema.json#/$defs/licence",
+      "description": "The licence under which this place document may be shared; when it is unclear, ask and never guess (RULES 7)."
+    },
+    "name_assertions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/name_claim"},
+      "description": "The names this place has had, at this level only (not the parent places), each a claim with its own evidence; at least one is required."
+    },
+    "kind_assertions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/kind_claim"},
+      "description": "What kind of place this was over time (a territory that became a state, a village that became a city), each a dated claim with its own evidence."
+    },
+    "parent_place_assertions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/parent_place_claim"},
+      "description": "The places this place lay inside over time, in one or more hierarchies (civil, church, judicial, census ...), each dated as closely as the evidence allows and each a claim with its own evidence; imported parents stay proposed."
+    },
+    "coordinate_assertions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/coordinate_claim"},
+      "description": "Where this place is on the earth, each with an uncertainty radius and its own evidence; several are allowed for places that moved."
+    },
+    "related_place_assertions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/related_place_claim"},
+      "description": "Links to other places this one was formed from, split from, merged into, succeeded or preceded, each a dated claim with its own evidence; a new county or a split is a new place, linked here."
+    },
+    "cited_record_ids": {
+      "type": "array",
+      "items": {"$ref": "maxgen-defs.schema.json#/$defs/uuid"},
+      "description": "Records (MaxRecord ids) that are about the place as a whole, such as a parish history or a gazetteer page; research pointers kept beside the claims, each of which must exist (Appendix C)."
+    },
+    "media_refs": {
+      "type": "array",
+      "items": {"$ref": "maxgen-defs.schema.json#/$defs/media_ref"},
+      "description": "Maps and photographs of this place, pointed at by fingerprint on the record that holds each file (each file is described once, on the record that captured it)."
+    },
+    "is_private": {
+      "type": "boolean",
+      "description": "True hides this place from anything shareable; it can only rise (the helper refuses lowering it), and a small place (street, address, building, farm, estate or of no stated kind) that a possibly living person's live claim points at is private at read time whatever this says."
+    }
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "name_claim": {
+      "type": "object",
+      "description": "One name of this place, at this level only, from one piece of evidence; an imported full place string is kept word for word with name_type imported_full.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["name_as_written", "evidence", "confidence"],
+      "properties": {
+        "name_as_written": {
+          "type": "string", "minLength": 1, "maxLength": 1000,
+          "description": "The place's name exactly as the evidence gives it."
+        },
+        "lang": {
+          "$ref": "maxgen-defs.schema.json#/$defs/lang",
+          "description": "The language of the name (a BCP 47 tag such as en or de)."
+        },
+        "name_type": {
+          "enum": ["official", "vernacular", "historical", "exonym", "variant_spelling", "abbreviation", "transliteration", "as_recorded", "imported_full", "other"],
+          "description": "What kind of name this is; when no value fits, write other and give the words in name_type_as_written."
+        },
+        "name_type_as_written": {
+          "type": "string", "maxLength": 200,
+          "description": "The source's or program's own words for the kind of name."
+        },
+        "date": {
+          "$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "The period in which the place carried this name (a house renumbering becomes dated names)."
+        },
+        "is_preferred": {
+          "type": "boolean",
+          "description": "True for the name to show first for this place."
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "kind_claim": {
+      "type": "object",
+      "description": "What kind of place this was during one period, from one piece of evidence; kinds change over time.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["kind", "evidence", "confidence"],
+      "properties": {
+        "kind": {
+          "enum": ["country", "colony", "territory", "state_province", "region", "county", "district", "civil_parish",
+                   "ecclesiastical_parish", "diocese", "township", "precinct", "census_district", "municipality", "city",
+                   "town", "village", "hamlet", "locality", "farm", "estate", "plantation", "street", "address",
+                   "building", "church", "cemetery", "hospital", "institution", "military_post", "vessel", "water_body",
+                   "natural_feature", "other"],
+          "description": "The kind of place (a ship may be a place of kind vessel); when no value fits, write other and give the words in kind_as_written or a published type in kind_uri."
+        },
+        "kind_as_written": {
+          "type": "string", "maxLength": 200,
+          "description": "The source's or program's own words for the kind of place."
+        },
+        "kind_uri": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uri",
+          "description": "The address of the kind in a published vocabulary of place types, when there is one."
+        },
+        "date": {
+          "$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "The period in which the place was of this kind."
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "parent_place_claim": {
+      "type": "object",
+      "description": "One place this place lay inside, in one hierarchy, during one period, from one piece of evidence; whether a claim's written place names a jurisdiction that did not yet exist is worked out at read time from these.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["parent_place_id", "hierarchy", "evidence", "confidence"],
+      "properties": {
+        "parent_place_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The MaxPlace this place lay inside; it must exist and be active when written (followed through merge redirects, Appendix C)."
+        },
+        "hierarchy": {
+          "enum": ["civil", "church", "judicial", "census", "military", "de_facto", "geographic", "unstated", "other"],
+          "description": "Which hierarchy this parent belongs to (a parish may sit in one county for civil purposes and another diocese for church purposes); when no value fits, write other and give the words in hierarchy_as_written."
+        },
+        "hierarchy_as_written": {
+          "type": "string", "maxLength": 200,
+          "description": "The source's or program's own words for the hierarchy."
+        },
+        "date": {
+          "$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "The period in which this place lay inside the parent, to the day when the evidence gives it (a county change partway through a year)."
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "coordinate_claim": {
+      "type": "object",
+      "description": "One position of this place on the earth, with its uncertainty, from one piece of evidence; several are allowed for places that moved.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["latitude", "longitude", "evidence", "confidence"],
+      "properties": {
+        "latitude": {
+          "type": "number", "minimum": -90, "maximum": 90,
+          "description": "Latitude in decimal degrees, north positive."
+        },
+        "longitude": {
+          "type": "number", "minimum": -180, "maximum": 180,
+          "description": "Longitude in decimal degrees, east positive."
+        },
+        "uncertainty_m": {
+          "type": "number", "minimum": 0,
+          "description": "The radius in metres within which the place lies, as far as the evidence allows; left out when the evidence states none (never invented), and the page then says 'precision not stated'."
+        },
+        "uncertainty_as_written": {
+          "type": "string", "maxLength": 500,
+          "description": "What the evidence or the other program says about the precision, word for word (for example 'LatLongExact=0', or 'not stated')."
+        },
+        "date": {
+          "$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "The period in which the place stood at this position."
+        },
+        "outline_uri": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uri",
+          "description": "The address of an outline or boundary of the place (GEDCOM X spatialDescription), when there is one."
+        },
+        "method_as_written": {
+          "type": "string", "maxLength": 2000,
+          "description": "How the position was found, in the writer's or source's own words (read off a map, from a gazetteer, measured)."
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "related_place_claim": {
+      "type": "object",
+      "description": "One link from this place to another place it was formed from, split from, merged into, succeeded or preceded, from one piece of evidence.",
+      "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
+      "required": ["relation", "place_id", "evidence", "confidence"],
+      "properties": {
+        "relation": {
+          "enum": ["formed_from", "split_from", "merged_into", "succeeded_by", "preceded_by", "other"],
+          "description": "How this place is related to the other place; when no value fits, write other and give the words in relation_as_written."
+        },
+        "relation_as_written": {
+          "type": "string", "maxLength": 200,
+          "description": "The source's own words for the relation."
+        },
+        "place_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The other MaxPlace; it must exist and be active when written (followed through merge redirects, Appendix C)."
+        },
+        "date": {
+          "$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "When the relation took effect (the date a county was formed or a town absorbed)."
+        }
+      },
+      "unevaluatedProperties": false
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "place_id": "3a0f73f0-79e6-5b11-a922-959737a98176",
+  "schema_version": "2.0",
+  "redistribution_license": "CC0",
+  "name_assertions": [
+    {
+      "name_as_written": "Tumblebrook",
+      "name_type": "official",
+      "is_preferred": true,
+      "confidence": 0.4,
+      "task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "6f18ce6f-6131-5e45-83fe-6bc30266f9bd",
+        "mention_id": "g2",
+        "quote": "TUMBLEBROOK",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the Tumblebrook entry is the line that also names the rector"
+      }
+    }
+  ],
+  "kind_assertions": [
+    {
+      "kind": "village",
+      "date": {
+        "modifier": "to",
+        "value": {
+          "year": 1902
+        },
+        "as_written": "until 1902"
+      },
+      "confidence": 0.4,
+      "task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "6f18ce6f-6131-5e45-83fe-6bc30266f9bd",
+        "mention_id": "g2",
+        "quote": "a village until 1902",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the Tumblebrook entry is the line that also names the rector"
+      }
+    },
+    {
+      "kind": "town",
+      "date": {
+        "modifier": "from",
+        "value": {
+          "year": 1902
+        },
+        "as_written": "from 1902"
+      },
+      "confidence": 0.4,
+      "task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "6f18ce6f-6131-5e45-83fe-6bc30266f9bd",
+        "mention_id": "g2",
+        "quote": "a town from 1902",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the Tumblebrook entry is the line that also names the rector"
+      }
+    }
+  ],
+  "parent_place_assertions": [
+    {
+      "parent_place_id": "153a6f70-4f7f-5432-8fbf-9a0e0e20906c",
+      "hierarchy": "civil",
+      "confidence": 0.4,
+      "task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "6f18ce6f-6131-5e45-83fe-6bc30266f9bd",
+        "mention_id": "g1",
+        "quote": "County town: Tumblebrook",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the county entry is the line that also names the Lord Lieutenant"
+      }
+    }
+  ],
+  "coordinate_assertions": [
+    {
+      "latitude": -48.87,
+      "longitude": -123.39,
+      "uncertainty_m": 1500,
+      "confidence": 0.4,
+      "task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "6f18ce6f-6131-5e45-83fe-6bc30266f9bd",
+        "mention_id": "g1",
+        "quote": "48.87 S, 123.39 W",
+        "kind": "direct",
+        "about": "other_mention",
+        "note": "the county entry is the line that also names the Lord Lieutenant"
+      }
+    }
+  ],
+  "created_by_task_id": "5ee56274-20f4-5fab-8a2b-34d52efbfc83",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

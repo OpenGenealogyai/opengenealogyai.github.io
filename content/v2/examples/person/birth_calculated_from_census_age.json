@@ -1,0 +1,67 @@
+{
+  "person_id": "2a946e38-5769-5fdc-b888-e67cc4b40342",
+  "schema_version": "2.0",
+  "is_living": false,
+  "redistribution_license": "CC0",
+  "name_assertions": [
+    {
+      "name_as_written": "Mossbury, Amos",
+      "given_name": "Amos",
+      "surname": "Mossbury",
+      "confidence": 0.9,
+      "task_id": "f1f1f427-edc8-59ac-b068-c44d0daf5f82",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "325d904c-1f07-52ff-85d2-856cb65a60cd",
+        "mention_id": "11",
+        "record_event_ref": "e1",
+        "quote": "Mossbury, Amos",
+        "kind": "direct"
+      }
+    }
+  ],
+  "birth_assertions": [
+    {
+      "date": {
+        "modifier": "about",
+        "value": {
+          "year": 1896
+        },
+        "derivation": "calculated",
+        "derivation_note": "age 44 on the 1940 census day"
+      },
+      "age_as_written": "44",
+      "confidence": 0.6,
+      "task_id": "f1f1f427-edc8-59ac-b068-c44d0daf5f82",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "325d904c-1f07-52ff-85d2-856cb65a60cd",
+        "mention_id": "11",
+        "record_event_ref": "e1",
+        "quote": "Mossbury, Amos | Head | M | 44",
+        "kind": "indirect"
+      }
+    }
+  ],
+  "attribute_assertions": [
+    {
+      "attribute_type": "occupation",
+      "value_as_written": "Miller",
+      "occurrence_id": "8a37321b-3688-589b-8d1a-1a596a352edb",
+      "confidence": 0.85,
+      "task_id": "f1f1f427-edc8-59ac-b068-c44d0daf5f82",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "325d904c-1f07-52ff-85d2-856cb65a60cd",
+        "mention_id": "11",
+        "record_event_ref": "e1",
+        "quote": "Miller",
+        "kind": "direct"
+      }
+    }
+  ],
+  "created_by_task_id": "f1f1f427-edc8-59ac-b068-c44d0daf5f82",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

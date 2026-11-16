@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opengenealogyai.org/schemas/maxgen/v2/raw-record.schema.json",
+  "title": "MaxRecord",
+  "description": "MAXGEN 2.0 -- One MaxRecord is one original document (or one copy of it), copied word for word with every person it names and every event it records, so that one original equals one record.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "maxgen-defs.schema.json#/$defs/common_fields"},
+    {"$ref": "maxgen-defs.schema.json#/$defs/lifecycle_fields"},
+    {"if": {"properties": {"is_living_flag": {"const": true}}, "required": ["is_living_flag"]},
+     "then": {"properties": {"redistribution_license": {"const": "tier2-private"}}}},
+    {"if": {"properties": {"persons_mentioned": {"contains": {"properties": {"is_living": {"const": true}}, "required": ["is_living"]}}}, "required": ["persons_mentioned"]},
+     "then": {"properties": {"is_living_flag": {"const": true}}}},
+    {"anyOf": [
+      {"required": ["source_url"]},
+      {"required": ["saved_copies"], "properties": {"saved_copies": {"minItems": 1}}},
+      {"required": ["repository_as_written", "locator"]},
+      {"required": ["part_of_source_id", "locator"]}
+    ]},
+    {"if": {"properties": {"source_classification": {"properties": {"source": {"const": "derivative"}}, "required": ["source"]}}, "required": ["source_classification"]},
+     "then": {"required": ["copied_from"], "properties": {"copied_from": {"minItems": 1}}}},
+    {"if": {"required": ["transcription_parts"]},
+     "then": {"required": ["transcription_scope", "extraction_confidence"]}},
+    {"if": {"properties": {"record_type": {"const": "dna_match_list"}}, "required": ["record_type"]},
+     "then": {"required": ["is_living_flag", "redistribution_license"],
+              "properties": {"is_living_flag": {"const": true}, "redistribution_license": {"const": "tier2-private"},
+                             "persons_mentioned": {"items": {"properties": {"is_living": {"const": true}}}}}}}
+  ],
+  "required": ["record_id", "record_type", "redistribution_license", "is_living_flag", "source_classification"],
+  "properties": {
+    "record_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "This record's permanent random id, created once by the writer and never recomputed or reused."},
+    "record_type": {"enum": ["birth_certificate", "birth_register", "death_certificate", "death_register", "marriage_certificate",
+                             "marriage_register", "marriage_license", "marriage_banns", "divorce_record", "census_household",
+                             "parish_register", "probate_record", "will", "military_record", "immigration_record", "passenger_list",
+                             "naturalization_record", "land_deed", "land_patent", "tax_record", "court_record", "adoption_record",
+                             "gravestone", "obituary", "newspaper_article", "city_directory", "school_record", "church_record",
+                             "institution_record", "employment_record", "voter_list", "family_bible", "letter", "oral_history",
+                             "photograph", "media_item", "map", "tree_import", "wikidata_entity", "open_library_work", "dpla_item",
+                             "gazetteer_entry", "dna_match_list", "other"],
+                    "description": "What kind of document this is; census_household holds a whole household, gazetteer_entry is an authored gazetteer or authority page, and dna_match_list is always tier2-private and living."},
+    "record_type_as_written": {"type": "string", "maxLength": 200, "description": "The document's or program's own words for its type, used with other."},
+    "redistribution_license": {"$ref": "maxgen-defs.schema.json#/$defs/licence", "description": "Whether this record may be shared, and under what licence; must be tier2-private while is_living_flag is true."},
+    "is_living_flag": {"type": "boolean", "description": "Living A: whether anyone this record names may be alive (unsure means true); true requires tier2-private, it is a floor that only rises, and privacy is always worked out again when read."},
+    "source_classification": {"$ref": "#/$defs/source_classification", "description": "Whether the document is an original, a copy or an authored work, and how first-hand its information is overall."},
+    "transcription_parts": {"type": "array", "items": {"$ref": "#/$defs/transcription_part"}, "description": "The document's text word for word, in labelled parts; a line that starts with [label] and one space carries that line label."},
+    "transcription_scope": {"enum": ["complete_entry", "complete_list", "partial"], "description": "How much of the document was transcribed; only complete_entry or complete_list can carry evidence of absence; required when transcription_parts is present."},
+    "transcription_sha256": {"$ref": "maxgen-defs.schema.json#/$defs/sha256", "readOnly": true, "description": "Helper-owned fingerprint of transcription_parts in canonical form, used to tell when quote checks are stale."},
+    "extraction_confidence": {"$ref": "maxgen-defs.schema.json#/$defs/confidence", "description": "How faithfully the transcription follows the document, from 0 to 1; required when transcription_parts is present."},
+    "persons_mentioned": {"type": "array", "items": {"$ref": "#/$defs/mention"}, "description": "Every person the document names, one mention each, as written."},
+    "events_documented": {"type": "array", "items": {"$ref": "#/$defs/event_entry"}, "description": "The events this document records, one entry each (one per child for twins); the helper gives each entry its own occurrence."},
+    "record_date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "The date the entry or document was written, not the date of the event it records."},
+    "record_place": {"$ref": "maxgen-defs.schema.json#/$defs/place_ref", "description": "Where the document was made, as written."},
+    "record_status": {"enum": ["original_issue", "amended", "delayed", "reissued", "unknown", "other"], "description": "Whether this is the first issue of the document or an amended, delayed or reissued one; lineage facts citing an amended, delayed or reissued record are flagged for review (R-18)."},
+    "record_status_as_written": {"type": "string", "maxLength": 200, "description": "The document's own words for its status, used with other."},
+    "copied_from": {"type": "array", "items": {"$ref": "#/$defs/copy_step"}, "description": "The step back toward the original that this copy was made from; required with at least one step when the source is derivative, and the full chain is found by following record ids, never copied here."},
+    "part_of_source_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The MaxSource (collection, book, film) this record belongs to; containment, kept apart from copying."},
+    "repository_as_written": {"type": "string", "minLength": 1, "maxLength": 1000, "description": "The archive, library or family holding the document, as written."},
+    "collection_as_written": {"type": "string", "minLength": 1, "maxLength": 1000, "description": "The collection the document sits in, as written."},
+    "locator": {"$ref": "maxgen-defs.schema.json#/$defs/locator", "description": "Where the document sits in its collection: volume, page, line and so on."},
+    "original_key": {"$ref": "#/$defs/original_key", "readOnly": true, "description": "Helper-built stable name of the original document, used to refuse duplicates and to judge independence; never written by hand."},
+    "source_url": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "The web address where the document was read; optional, and never invented."},
+    "citation_as_written": {"type": "string", "minLength": 1, "maxLength": 4000, "description": "A footnote or citation string exactly as another program or publication gave it."},
+    "citation_template": {"$ref": "#/$defs/citation_template", "description": "A citation template another program used for this document, with its field values."},
+    "saved_copies": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/saved_copy"}, "description": "The files this record captured, each described here once and keyed by fingerprint; frozen once stored apart from their descriptive fields."},
+    "media_refs": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/media_ref"}, "description": "Files described on another record that this record also uses."},
+    "attribution": {"$ref": "maxgen-defs.schema.json#/$defs/attribution", "description": "Credit for the human who photographed, transcribed or compiled this record; a credit never sets a living flag."},
+    "rights_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "A web address stating the rights in this document."},
+    "sensitive_data_redacted": {"type": "boolean", "description": "True when sensitive details (identity numbers, medical details) were left out of the transcription."},
+    "redaction_notes": {"type": "string", "maxLength": 4000, "description": "What was left out and why."},
+    "archive_ref": {"type": "string", "maxLength": 1000, "description": "A local path where this record is kept; private, never exported."}
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "source_classification": {
+      "type": "object", "additionalProperties": false,
+      "description": "The source class of the whole document and the overall information class.",
+      "required": ["source", "information"],
+      "properties": {
+        "source": {"enum": ["original", "derivative", "authored", "undetermined"], "description": "original, derivative (a copy, index or abstract; needs copied_from) or authored (an online tree, a compiled history, an interview); undetermined only for imported citation stubs nobody has examined."},
+        "information": {"enum": ["primary", "secondary", "undetermined"], "description": "Whether the information is first-hand overall; each event entry is judged on its own as well."}
+      }
+    },
+    "transcription_part": {
+      "type": "object", "additionalProperties": false,
+      "description": "One labelled part of the transcription, such as one page.",
+      "required": ["part_id", "text"],
+      "properties": {
+        "part_id": {"$ref": "maxgen-defs.schema.json#/$defs/label", "description": "Permanent label of this part, never renumbered or reused."},
+        "text": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "The words of this part exactly as written, with line labels such as [97] at the start of lines."},
+        "lang": {"$ref": "maxgen-defs.schema.json#/$defs/lang", "description": "The language of this part."},
+        "page": {"type": "integer", "minimum": 1, "description": "The page or image number this part comes from."},
+        "kind": {"enum": ["original", "translation", "abstract_note", "other"], "default": "original", "description": "Whether this part is the document's own words, a translation, or an abstract or note."},
+        "kind_as_written": {"type": "string", "maxLength": 200, "description": "Plain words for the kind of part, used with other."}
+      }
+    },
+    "mention": {
+      "type": "object", "additionalProperties": false,
+      "description": "One person as this document names them.",
+      "required": ["mention_id", "name_as_written", "role_as_written", "is_living"],
+      "properties": {
+        "mention_id": {"$ref": "maxgen-defs.schema.json#/$defs/label", "description": "Permanent label of this mention on this record (a census line uses the page's own line number), never renumbered or reused."},
+        "name_as_written": {"type": "string", "minLength": 0, "maxLength": 500, "description": "The name exactly as the document gives it; at least one character unless name_status says the name is not a real name."},
+        "name_status": {"$ref": "maxgen-defs.schema.json#/$defs/name_status", "default": "known", "description": "Whether the name is a real name or a stand-in such as Unknown, Infant or Mrs. John Smith (MC-1)."},
+        "role_as_written": {"type": "string", "minLength": 1, "maxLength": 200, "description": "The document's own word for this person's part, such as Head, Step-dau or godfather."},
+        "role": {"$ref": "maxgen-defs.schema.json#/$defs/role", "description": "This person's part on the document, from the shared role list (principal, never subject)."},
+        "role_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "A published vocabulary term for the role."},
+        "role_as_imported": {"type": "string", "maxLength": 200, "description": "Another program's word for the role, word for word."},
+        "relative_to": {"$ref": "maxgen-defs.schema.json#/$defs/label", "description": "The mention_id on this record that role_as_written is relative to, such as the head of the household."},
+        "age_as_written": {"type": "string", "maxLength": 100, "description": "The age exactly as written."},
+        "gender_as_written": {"type": "string", "maxLength": 100, "description": "The gender exactly as written."},
+        "facts_as_written": {"type": "array", "items": {"$ref": "#/$defs/fact_as_written"}, "description": "Other things the document states about this person, such as a stated birthplace or occupation, as written."},
+        "group_as_written": {"type": "string", "maxLength": 500, "description": "A group the document names for this person, as written."},
+        "group_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "readOnly": true, "description": "The MaxGroup this mention belongs to, set only by the helper (kept from input only under an import_file task)."},
+        "in_event_refs": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/label"}, "description": "The refs of this record's event entries this person takes part in."},
+        "lines": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/label"}, "description": "The line labels of the transcription where this person's entry is; quote checks search these lines."},
+        "is_living": {"type": "boolean", "description": "Living A: whether this named person may be alive (unsure means true); true requires the record's is_living_flag to be true."},
+        "status": {"enum": ["active", "retracted"], "readOnly": true, "default": "active", "description": "Helper-owned: a mention is retracted, never removed or renamed."},
+        "status_reason": {"$ref": "maxgen-defs.schema.json#/$defs/text", "readOnly": true, "description": "Helper-owned: why the mention was retracted."},
+        "outside_ids": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/outside_id"}, "description": "Other systems' ids for this person on this document, such as an index entry id."},
+        "notes": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/note"}, "description": "Notes about this mention."},
+        "extensions": {"$ref": "maxgen-defs.schema.json#/$defs/extensions", "description": "Anything another program kept about this mention that MAXGEN has no field for, never dropped."}
+      },
+      "allOf": [
+        {"if": {"anyOf": [{"not": {"required": ["name_status"]}}, {"properties": {"name_status": {"const": "known"}}, "required": ["name_status"]}]},
+         "then": {"properties": {"name_as_written": {"minLength": 1}}}}
+      ]
+    },
+    "fact_as_written": {
+      "type": "object", "additionalProperties": false,
+      "description": "One stated fact about a mentioned person, kept as written.",
+      "required": ["value_as_written"],
+      "properties": {
+        "label_as_written": {"type": "string", "maxLength": 200, "description": "The column heading or words that introduce the fact, as written."},
+        "value_as_written": {"type": "string", "minLength": 1, "maxLength": 2000, "description": "The fact exactly as written."}
+      }
+    },
+    "event_entry": {
+      "type": "object", "additionalProperties": false,
+      "description": "One event this document records; a mistyped entry is retracted, never edited.",
+      "required": ["ref", "event_type", "information"],
+      "properties": {
+        "ref": {"$ref": "maxgen-defs.schema.json#/$defs/label", "description": "Permanent label of this entry on this record, never renumbered or reused."},
+        "event_type": {"$ref": "maxgen-defs.schema.json#/$defs/event_type", "description": "What kind of event the entry records."},
+        "event_type_as_written": {"type": "string", "minLength": 1, "maxLength": 200, "description": "The document's own word for the event; required when event_type is other."},
+        "type_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "A published vocabulary term for the event type."},
+        "is_primary": {"type": "boolean", "description": "True for the event the document was made to record; at most one entry per record."},
+        "date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "When the event happened, as the document states it."},
+        "place": {"$ref": "maxgen-defs.schema.json#/$defs/place_ref", "description": "Where the event happened, as written."},
+        "informant_mention_id": {"$ref": "maxgen-defs.schema.json#/$defs/label", "description": "The mention_id of the person who gave the information for this event."},
+        "information": {"enum": ["primary", "secondary", "undetermined"], "description": "Whether the information for this event is first-hand, judged per event (a death certificate's informant is first-hand for the death and second-hand for the birth)."},
+        "occurrence_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "readOnly": true, "description": "Helper-owned: the MaxEvent the helper created for this entry; an identity key read from input on a replace."},
+        "status": {"enum": ["active", "retracted"], "readOnly": true, "default": "active", "description": "Helper-owned: an entry is retracted (with its occurrence), never removed or edited."},
+        "status_reason": {"$ref": "maxgen-defs.schema.json#/$defs/text", "readOnly": true, "description": "Helper-owned: why the entry was retracted."},
+        "status_task_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "readOnly": true, "description": "Helper-owned: the task under which the entry was retracted."},
+        "notes": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/note"}, "description": "Notes about this entry."},
+        "extensions": {"$ref": "maxgen-defs.schema.json#/$defs/extensions", "description": "Anything another program kept about this event entry that MAXGEN has no field for, never dropped."}
+      },
+      "allOf": [
+        {"if": {"properties": {"event_type": {"const": "other"}}, "required": ["event_type"]},
+         "then": {"required": ["event_type_as_written"]}}
+      ]
+    },
+    "copy_step": {
+      "type": "object", "additionalProperties": false,
+      "description": "One step back from this copy toward the original: what it was made from and how.",
+      "required": ["derivation", "as_written", "seen"],
+      "properties": {
+        "derivation": {"enum": ["image", "transcription", "abstract", "index", "translation", "compilation", "citing_only", "other"], "description": "How this copy was made from the earlier one."},
+        "derivation_as_written": {"type": "string", "maxLength": 200, "description": "Plain words for how the copy was made, used with other."},
+        "as_written": {"type": "string", "minLength": 1, "maxLength": 2000, "description": "What this copy says about where it came from, word for word; \"not stated\" is honest."},
+        "seen": {"type": "boolean", "description": "True when the earlier copy or original was itself seen."},
+        "record_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The earlier copy, when it is itself a MaxRecord here; not with source_id."},
+        "source_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The MaxSource holding an original not saved yet; given together with locator, and its original key is worked out when read, never stored."},
+        "locator": {"$ref": "maxgen-defs.schema.json#/$defs/locator", "description": "Where the original sits in that source; given together with source_id."},
+        "note": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "A plain note about this step."}
+      },
+      "dependentRequired": {"source_id": ["locator"], "locator": ["source_id"]},
+      "allOf": [
+        {"not": {"required": ["record_id", "source_id"]}}
+      ]
+    },
+    "original_key": {
+      "type": "object", "additionalProperties": false,
+      "description": "Helper-built name of the original document from closed parts (spec 5.2.1).",
+      "required": ["key", "partial", "parts"],
+      "properties": {
+        "key": {"type": "string", "pattern": "^v2\\|", "maxLength": 2000, "description": "v2| followed by part=value pairs joined by |, in the fixed part order."},
+        "partial": {"type": "boolean", "description": "True when the key lacks the custodian, the middle tier or the item tier; a partial key never blocks a duplicate and never counts toward independence."},
+        "parts": {"type": "object", "additionalProperties": {"type": "string", "maxLength": 500}, "description": "The normalised parts the key was built from, by part name."}
+      }
+    },
+    "citation_template": {
+      "type": "object", "additionalProperties": false,
+      "description": "A citation template another program used, with its field values word for word.",
+      "required": ["system", "template_id"],
+      "properties": {
+        "system": {"$ref": "maxgen-defs.schema.json#/$defs/system", "description": "The program or style the template belongs to, in lower case."},
+        "template_id": {"type": "string", "minLength": 1, "maxLength": 200, "description": "The template's id or name in that program."},
+        "fields": {"type": "object", "additionalProperties": {"type": "string", "maxLength": 4000}, "description": "The template's field values by field name, word for word."}
+      }
+    }
+  }
+}

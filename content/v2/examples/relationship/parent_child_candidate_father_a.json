@@ -1,0 +1,33 @@
+{
+  "relationship_id": "c967855d-e512-5c3c-8084-aa1c3439e312",
+  "schema_version": "2.0",
+  "kind": "parent_child",
+  "is_living_flag": false,
+  "redistribution_license": "CC0",
+  "parent_id": "fed1f33a-d9b4-51f2-9d73-d97aee90c2b4",
+  "child_id": "65feecf1-edc0-53b0-8a07-facdedecc81b",
+  "parent_role": "father",
+  "parent_role_as_written": "reputed father",
+  "lineage_assertions": [
+    {
+      "assertion_id": "7d437c4d-f926-5e5d-907f-d8240e0c8b20",
+      "fact_type": "birth_parent",
+      "parent_mention_id": "m3",
+      "child_mention_id": "m1",
+      "confidence": 0.6,
+      "task_id": "321dd029-e1b0-5335-814f-37fd6711f5bb",
+      "evidence": {
+        "basis": "document",
+        "source_record_id": "cbbbabf3-db47-51a4-8001-88c4e784c88a",
+        "mention_id": "m1",
+        "record_event_ref": "e1",
+        "quote": "Pip, base son of Dorcas Bramblecott, singlewoman; reputed father Ned Mossbury",
+        "kind": "direct"
+      }
+    }
+  ],
+  "created_by_task_id": "321dd029-e1b0-5335-814f-37fd6711f5bb",
+  "extensions": {
+    "fixture": "made up"
+  }
+}

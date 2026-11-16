@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opengenealogyai.org/schemas/maxgen/v2/event.schema.json",
+  "title": "MaxEvent",
+  "description": "MAXGEN 2.0 -- the identity of one occasion (one baptism, one wedding, one voyage), kept thin: its permanent occurrence id, its ids in other programs, notes, pointers to the preferred versions and same-occasion merges. It never holds a participant list, the dates each document gives, copies of evidence, scores or its owner: who took part is worked out from role claims and mentions, and the owner is computed when read. Only the helper (one for every document event entry), importers and analysis tasks write it (R-24).",
+  "type": "object",
+  "allOf": [
+    {"$ref": "maxgen-defs.schema.json#/$defs/common_fields"},
+    {"$ref": "maxgen-defs.schema.json#/$defs/lifecycle_fields"},
+    {"if": {"properties": {"is_living_flag": {"const": true}}, "required": ["is_living_flag"]},
+     "then": {"properties": {"redistribution_license": {"const": "tier2-private"}}}},
+    {"if": {"required": ["conclusion_assertions"]},
+     "then": {"required": ["origin"], "properties": {"origin": {"required": ["kind"], "properties": {"kind": {"const": "analysis"}}}}}}
+  ],
+  "required": ["occurrence_id", "event_type", "origin", "is_living_flag", "redistribution_license"],
+  "properties": {
+    "occurrence_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid",
+      "description": "This occasion's permanent id: a random UUID created once, by the helper when a record with event entries is stored or by the importer or analysis task that brings an outside event, and carried by every claim about the occasion."},
+    "event_type": {"$ref": "maxgen-defs.schema.json#/$defs/event_type",
+      "description": "What kind of occasion this is; there is exactly one type per occurrence, so a licence and its ceremony never share an id."},
+    "event_type_as_written": {"type": "string", "maxLength": 200,
+      "description": "The document's or the other program's own words for the type, kept when event_type is other or when the words say more."},
+    "type_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri",
+      "description": "A published vocabulary's address for the event type, when one exists."},
+    "origin": {"$ref": "#/$defs/origin",
+      "description": "Where this occurrence came from: one document event entry, an outside program's event brought by an import, or an analysis."},
+    "preferred": {"$ref": "#/$defs/preferred",
+      "description": "Pointers only to the claims that hold the preferred date and place and to the preferred order of versions; changed only under a resolve_conflict or build_tree task (R-24)."},
+    "conclusion_assertions": {"type": "array", "items": {"$ref": "#/$defs/conclusion_claim"},
+      "description": "A reasoned conclusion that no single document states (a mine explosion dated between two reports), allowed only on an occurrence that an analysis created (origin.kind analysis) and changed only under a resolve_conflict or build_tree task; each claim cites an accepted proof (evidence basis conclusion)."},
+    "related": {"type": "array", "items": {"$ref": "#/$defs/related_occurrence"},
+      "description": "Links to other occasions that an analysis concluded (a licence or banns for a wedding, part of a larger occasion, twins born together); changed only under a resolve_conflict or build_tree task."},
+    "description_as_written": {"type": "string", "minLength": 1, "maxLength": 4000,
+      "description": "A description of the occasion exactly as a document or another program gives it (a GEDCOM 7 or Gramps event description)."},
+    "attributes": {"type": "array", "items": {"$ref": "#/$defs/attribute"},
+      "description": "Facts about the occasion itself that another program kept as named attributes, word for word."},
+    "media_refs": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/media_ref"},
+      "description": "Pictures or recordings of the occasion, pointing at saved copies that are described once on the records that captured them."},
+    "is_private": {"type": "boolean",
+      "description": "True hides this occurrence from anything shareable; it only rises."},
+    "is_living_flag": {"type": "boolean",
+      "description": "Living A floor, required with no default: true when any participant may be alive; unsure means true, the helper raises it and never lowers it, and the live answer is always computed at read time."},
+    "redistribution_license": {"$ref": "maxgen-defs.schema.json#/$defs/licence",
+      "description": "Licence of this occurrence, raised by the helper and never lowered; a true is_living_flag requires tier2-private."}
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "origin": {
+      "type": "object", "additionalProperties": false, "required": ["kind"],
+      "description": "Where an occurrence came from; document_entry needs record_id and record_event_ref, import and analysis need task_id.",
+      "properties": {
+        "kind": {"enum": ["document_entry", "import", "analysis"],
+          "description": "document_entry: the helper made it for one event entry of a stored record; import: an outside program's own event (its id kept in outside_ids); analysis: an analysis task concluded the occasion. Grouping claims merely because they share a source never creates an occurrence, and an unknown kind is refused at write and skipped with a warning at read."},
+        "record_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "For document_entry: the record that holds the event entry, used as written and never redirected, because it is the identity of the entry."},
+        "record_event_ref": {"$ref": "maxgen-defs.schema.json#/$defs/label",
+          "description": "For document_entry: the event entry's ref on that record."},
+        "task_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The task that created the occurrence; required for import and analysis."}
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "document_entry"}}, "required": ["kind"]},
+         "then": {"required": ["record_id", "record_event_ref"]}},
+        {"if": {"properties": {"kind": {"enum": ["import", "analysis"]}}, "required": ["kind"]},
+         "then": {"required": ["task_id"]}}
+      ]
+    },
+    "preferred": {
+      "type": "object", "additionalProperties": false, "required": ["set_by_task_id"],
+      "description": "Pointers only: which live claims citing this occurrence hold the preferred date and place, and the preferred order of versions; nothing is copied.",
+      "properties": {
+        "date_assertion_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The live claim citing this occurrence whose date is preferred."},
+        "place_assertion_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The live claim citing this occurrence whose place is preferred."},
+        "order": {"type": "array", "items": {"$ref": "maxgen-defs.schema.json#/$defs/uuid"},
+          "description": "Claims citing this occurrence, in the preferred order of versions."},
+        "set_by_task_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The resolve_conflict or build_tree task that set these pointers."}
+      }
+    },
+    "conclusion_claim": {
+      "type": "object",
+      "allOf": [
+        {"$ref": "maxgen-defs.schema.json#/$defs/claim_header"},
+        {"properties": {"evidence": {"properties": {"basis": {"const": "conclusion"}}}}}
+      ],
+      "required": ["evidence", "confidence"],
+      "description": "One conclusion about an occasion that an analysis created, citing an accepted proof (evidence basis conclusion).",
+      "properties": {
+        "date": {"$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "The concluded date, such as between the dates of two reports."},
+        "place": {"$ref": "maxgen-defs.schema.json#/$defs/place_ref",
+          "description": "The concluded place."},
+        "description_as_written": {"type": "string", "minLength": 1, "maxLength": 4000,
+          "description": "The conclusion's own words about the occasion."}
+      },
+      "unevaluatedProperties": false
+    },
+    "related_occurrence": {
+      "type": "object", "additionalProperties": false, "required": ["relation", "occurrence_id", "task_id"],
+      "description": "One link from this occasion to another, concluded by an analysis task.",
+      "properties": {
+        "relation": {"enum": ["license_for", "banns_for", "ceremony_of", "part_of", "same_series", "multiple_birth_with", "other"],
+          "description": "How this occasion relates to the other one: a licence or banns for a wedding, the ceremony of another occasion, part of a larger occasion, one of the same series, or a birth of the same multiple birth (twins: this only ties the two occasions; that the children were born together is recorded once, as a multiple_birth association); the two occasions keep their own ids and types."},
+        "relation_as_written": {"type": "string", "maxLength": 200,
+          "description": "The document's or the analysis's own words for the relation, kept when relation is other or when the words say more."},
+        "occurrence_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The other occasion (resolved through merge redirects when read)."},
+        "task_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The analysis task (resolve_conflict or build_tree) that concluded this link."}
+      }
+    },
+    "attribute": {
+      "type": "object", "additionalProperties": false, "required": ["name_as_written", "value_as_written"],
+      "description": "One named fact about the occasion itself, word for word.",
+      "properties": {
+        "name_as_written": {"type": "string", "minLength": 1, "maxLength": 200,
+          "description": "The attribute's name as the document or the other program gives it."},
+        "value_as_written": {"type": "string", "minLength": 1, "maxLength": 4000,
+          "description": "The attribute's value as the document or the other program gives it."},
+        "type_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri",
+          "description": "A published vocabulary's address for the attribute, when one exists."}
+      }
+    }
+  }
+}

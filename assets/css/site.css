@@ -181,3 +181,13 @@ details p { margin: 0.5rem 0; }
 .site-footer a { color: var(--gold-muted); }
 .site-footer p { max-width: none; margin: 0.4rem 0; }
 .site-footer .muted { color: #8d8a99; }
+
+/* MAXGEN 2.0 additions */
+.banner-archived { background: var(--paper-warm); border: 1px solid var(--gold-muted); border-left: 6px solid var(--gold-deep); padding: 0.7rem 1rem; border-radius: 6px; font-family: var(--font-sans); font-size: 0.95rem; }
+.schema-head .sha, td.sha { font-family: var(--font-sans); font-size: 0.82rem; color: var(--muted); word-break: break-all; }
+td.sha code { font-size: 0.78rem; }
+blockquote.schema-desc { font-style: normal; }
+.ep-note { font-family: var(--font-sans); font-size: 0.9rem; color: var(--muted); }
+.badge.archived { background: var(--paper-warm); color: var(--muted); border: 1px solid var(--line, #d8d2c2); }
+.badge.beta { background: var(--gold-bright); color: var(--ink); }
+.beta-note { background: #fff8db; border: 1px solid var(--gold); border-radius: 8px; padding: 0.4rem 1rem; margin: 1rem 0 1.5rem; }
