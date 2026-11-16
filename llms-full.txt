@@ -313,7 +313,7 @@ What is OpenGenealogyAI, and what is The Probable Pedigree?OpenGenealogyAI is th
 
 Why seven schemas instead of one?Because evidence, interpretation, work, names, sources, transcription and DNA are different things with different privacy needs and different owners. Separating them lets a document be re-read without touching conclusions, lets DNA be locked down harder than everything else, and lets an organisation adopt only the layer it needs.
 
-Who made the podcasts?They were produced with an AI narration tool from scripts written by the standard's author and describe MAXGEN v1.11. Where a later release changed a detail, the schema pages on this site are authoritative. Each episode has a written study guide.
+Who made the podcasts?They were produced with an AI narration tool from scripts written by the standard's author and describe MAXGEN v1.11. Where a later release changed a detail, the schema pages on this site are authoritative.
 
 How does this relate to FamilySearch, Ancestry, WikiTree and the other sites?They hold the records and the communities; MAXGEN is a format for describing evidence that any of them, and any tool built around them, could read and write. It is not a competing service and it does not replace anyone's database. A MaxPerson can carry scored links to the same person on FamilySearch, WikiTree or Find a Grave, so research done in different places can be reconciled instead of duplicated. The aim is a shared language, and the more sites speak it the more useful everyone's work becomes.
 
@@ -461,7 +461,7 @@ You do not need permission. Some useful starting points:
 
 ## Help with the content
 
-The podcast study guides, the FAQ and the schema pages are all improvable. Corrections and clearer wording are welcome as issues or pull requests against the website repository.
+The FAQ and the schema pages are all improvable. Corrections and clearer wording are welcome as issues or pull requests against the website repository.
 
 
 ---
@@ -505,7 +505,7 @@ The validators, fixtures and tooling in the schema repository are released under
 Listen · eight episodes · about 20 minutes each
 # The MAXGEN podcast
 
-Each schema gets one conversation. Start with the overview if you are new, or jump to the schema you care about. Every episode has a written study guide with practice questions and a glossary.
+Each schema gets one conversation. Start with the overview if you are new, or jump to the schema you care about.
 
 Subscribe in any podcast app with the feed address **`https://opengenealogyai.org/podcasts/feed.xml`**.
 

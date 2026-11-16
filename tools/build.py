@@ -477,7 +477,7 @@ def build_llms_txt(pages) -> None:
     for slug, t, tag, n in pages:
         lines.append(f"- [{t}]({BASE_URL}/schemas/{slug}/): {tag} — file: {BASE_URL}/schemas/maxgen/v1/{n}.schema.json")
     lines += ["", f"- Machine-readable version index: {BASE_URL}/schemas/maxgen/index.json", "",
-              "## Listen", f"- [Podcast episodes and study guides]({BASE_URL}/podcasts/) — RSS: {BASE_URL}/podcasts/feed.xml", "",
+              "## Listen", f"- [Podcast episodes]({BASE_URL}/podcasts/) — RSS: {BASE_URL}/podcasts/feed.xml", "",
               "## Contribute", f"- [Ask a question or propose a change]({BASE_URL}/contribute/)", "- GitHub: https://github.com/OpenGenealogyai", ""]
     write(SITE / "llms.txt", "\n".join(lines))
 

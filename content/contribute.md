@@ -31,4 +31,4 @@ You do not need permission. Some useful starting points:
 
 ## Help with the content
 
-The podcast study guides, the FAQ and the schema pages are all improvable. Corrections and clearer wording are welcome as issues or pull requests against the website repository.
+The FAQ and the schema pages are all improvable. Corrections and clearer wording are welcome as issues or pull requests against the website repository.

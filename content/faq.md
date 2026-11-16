@@ -72,7 +72,7 @@ Grouped by who is asking. If your question is not here, [ask it](/contribute/) a
 
 <details><summary>Why seven schemas instead of one?</summary><p>Because evidence, interpretation, work, names, sources, transcription and DNA are different things with different privacy needs and different owners. Separating them lets a document be re-read without touching conclusions, lets DNA be locked down harder than everything else, and lets an organisation adopt only the layer it needs.</p></details>
 
-<details><summary>Who made the podcasts?</summary><p>They were produced with an AI narration tool from scripts written by the standard's author and describe MAXGEN v1.11. Where a later release changed a detail, the schema pages on this site are authoritative. Each episode has a written study guide.</p></details>
+<details><summary>Who made the podcasts?</summary><p>They were produced with an AI narration tool from scripts written by the standard's author and describe MAXGEN v1.11. Where a later release changed a detail, the schema pages on this site are authoritative.</p></details>
 
 <details><summary>How does this relate to FamilySearch, Ancestry, WikiTree and the other sites?</summary><p>They hold the records and the communities; MAXGEN is a format for describing evidence that any of them, and any tool built around them, could read and write. It is not a competing service and it does not replace anyone's database. A MaxPerson can carry scored links to the same person on FamilySearch, WikiTree or Find a Grave, so research done in different places can be reconciled instead of duplicated. The aim is a shared language, and the more sites speak it the more useful everyone's work becomes.</p></details>
 

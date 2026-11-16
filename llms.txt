@@ -23,7 +23,7 @@ MAXGEN is designed to work alongside existing genealogy sites, archives and the 
 - Machine-readable version index: https://opengenealogyai.org/schemas/maxgen/index.json
 
 ## Listen
-- [Podcast episodes and study guides](https://opengenealogyai.org/podcasts/) — RSS: https://opengenealogyai.org/podcasts/feed.xml
+- [Podcast episodes](https://opengenealogyai.org/podcasts/) — RSS: https://opengenealogyai.org/podcasts/feed.xml
 
 ## Contribute
 - [Ask a question or propose a change](https://opengenealogyai.org/contribute/)
