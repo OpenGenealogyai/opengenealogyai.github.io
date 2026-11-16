@@ -49,6 +49,12 @@ def main() -> int:
     versions: dict[str, list[str]] = {}
 
     current = version_of(SCHEMA_REPO / "person.schema.json")
+    if not re.fullmatch(r"1\.\d+", current):
+        # Since 2026-10-16 the schema repo's working files are MAXGEN 2.0 (unpublished). Copying them
+        # here would overwrite the published 1.x files at /v1/. 2.0 is synced by tools/sync_v2.py.
+        print(f"refusing: schema repo's current files are not 1.x (found {current!r}); /v1/ left untouched",
+              file=sys.stderr)
+        return 2
     versions[current] = copy_set(SCHEMA_REPO, OUT / "v1")
     copy_set(SCHEMA_REPO, OUT / f"v{current}")
     print(f"current v{current}: {len(versions[current])} schemas -> v1/ and v{current}/")
