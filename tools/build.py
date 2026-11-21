@@ -58,7 +58,18 @@ V2_KINDS = [
 GITHUB_REPO = "https://github.com/OpenGenealogyai/opengenealogyai/blob/main/"
 V2_ENTRY_ANCHOR = "/changelog/#v20-2026-10-16"
 V2_PREV_DIR = SITE / "schemas" / "maxgen" / "v2.0"      # the 2.0 release, frozen; 2.1 is compared against it
-V21_ANCHOR_ID = "v21-2026-11-21"
+def _changelog_anchor(version: str, fallback: str) -> str:
+    """The id the changelog page gives the '## v<version> …' heading (same slug rule the page uses), so links follow
+    whatever date BuildGenealogy writes; the fallback is the id of the interim list shown until that entry exists."""
+    from markdown.extensions.toc import slugify
+    if V2_CHANGELOG.exists():
+        for line in V2_CHANGELOG.read_text(encoding="utf-8").splitlines():
+            if re.match(rf"## v{re.escape(version)}(\s|$)", line):
+                return slugify(line[3:].strip(), "-")
+    return fallback
+
+
+V21_ANCHOR_ID = _changelog_anchor("2.1", "v21-2026-11-21")
 V21_ANCHOR = f"/changelog/#{V21_ANCHOR_ID}"
 
 NAV = [
