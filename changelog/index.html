@@ -35,24 +35,16 @@
   </div>
 </header>
 <main id="main" class="wrap">
-<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc"><ul><li class="lvl2"><a href="#v21-2026-11-21">v2.1 — 2026-11-21</a></li><li class="lvl2"><a href="#versioning-policy-2x-is-additive-only-as-of-v20">Versioning policy — 2.x is additive only (as of v2.0)</a></li><li class="lvl2"><a href="#v20-2026-10-16">v2.0 — 2026-10-16</a></li><li class="lvl2"><a href="#v113-2026-08-14">v1.13 — 2026-08-14</a></li><li class="lvl2"><a href="#v112-2026-08-14">v1.12 — 2026-08-14</a></li><li class="lvl2"><a href="#v111-2026-07-26">v1.11 — 2026-07-26</a></li><li class="lvl2"><a href="#v110-2026-07-01">v1.10 — 2026-07-01</a></li><li class="lvl2"><a href="#v19-2026-07-01">v1.9 — 2026-07-01</a></li><li class="lvl2"><a href="#v18-2026-06-25">v1.8 — 2026-06-25</a></li><li class="lvl2"><a href="#v17-2026-06-25">v1.7 — 2026-06-25</a></li><li class="lvl2"><a href="#v16-2026-06-02">v1.6 — 2026-06-02</a></li><li class="lvl2"><a href="#v15-2026-06-02">v1.5 — 2026-06-02</a></li><li class="lvl2"><a href="#v14-addendum-2026-06-02-no-schema-version-bump">v1.4 addendum — 2026-06-02 (NO schema version bump)</a></li><li class="lvl2"><a href="#v14-2026-05-17">v1.4 — 2026-05-17</a></li><li class="lvl2"><a href="#v13-2026-05-17">v1.3 — 2026-05-17</a></li><li class="lvl2"><a href="#v12-2026-05-15">v1.2 — 2026-05-15</a></li><li class="lvl2"><a href="#v11-pre-2026-05-15">v1.1 — (pre-2026-05-15)</a></li><li class="lvl2"><a href="#v10-initial-release">v1.0 — initial release</a></li><li class="lvl2"><a href="#schema-id-urls-permanent">Schema $id URLs (permanent)</a></li></ul></div></aside><div class="content"><p class="eyebrow">Releases · current v2.1</p>
+<div class="with-toc"><aside class="toc-side" aria-label="On this page"><p class="toc-title">On this page</p><div class="toc"><ul><li class="lvl2"><a href="#versioning-policy-2x-is-additive-only-as-of-v20">Versioning policy — 2.x is additive only (as of v2.0)</a></li><li class="lvl2"><a href="#v21-2026-11-21">v2.1 — 2026-11-21</a></li><li class="lvl2"><a href="#v20-2026-10-16">v2.0 — 2026-10-16</a></li><li class="lvl2"><a href="#v113-2026-08-14">v1.13 — 2026-08-14</a></li><li class="lvl2"><a href="#v112-2026-08-14">v1.12 — 2026-08-14</a></li><li class="lvl2"><a href="#v111-2026-07-26">v1.11 — 2026-07-26</a></li><li class="lvl2"><a href="#v110-2026-07-01">v1.10 — 2026-07-01</a></li><li class="lvl2"><a href="#v19-2026-07-01">v1.9 — 2026-07-01</a></li><li class="lvl2"><a href="#v18-2026-06-25">v1.8 — 2026-06-25</a></li><li class="lvl2"><a href="#v17-2026-06-25">v1.7 — 2026-06-25</a></li><li class="lvl2"><a href="#v16-2026-06-02">v1.6 — 2026-06-02</a></li><li class="lvl2"><a href="#v15-2026-06-02">v1.5 — 2026-06-02</a></li><li class="lvl2"><a href="#v14-addendum-2026-06-02-no-schema-version-bump">v1.4 addendum — 2026-06-02 (NO schema version bump)</a></li><li class="lvl2"><a href="#v14-2026-05-17">v1.4 — 2026-05-17</a></li><li class="lvl2"><a href="#v13-2026-05-17">v1.3 — 2026-05-17</a></li><li class="lvl2"><a href="#v12-2026-05-15">v1.2 — 2026-05-15</a></li><li class="lvl2"><a href="#v11-pre-2026-05-15">v1.1 — (pre-2026-05-15)</a></li><li class="lvl2"><a href="#v10-initial-release">v1.0 — initial release</a></li><li class="lvl2"><a href="#schema-id-urls-permanent">Schema $id URLs (permanent)</a></li></ul></div></aside><div class="content"><p class="eyebrow">Releases · current v2.1</p>
 <h1 id="changelog">MAXGEN Schema Changelog</h1>
-<h2 id="v21-2026-11-21">v2.1 — 2026-11-21</h2>
-<p>MAXGEN 2.1 adds optional fields and allowed values to six of the twelve files. Nothing was removed or narrowed, so every file valid under 2.0 stays valid under 2.1. The written changelog entry for 2.1 is still to come; until then, this list gives every addition in the schema files' own words.</p>
-<h3>maxgen-defs.schema.json</h3><ul class="additions"><li><code>evidence.origin_tree_id</code> (new field): G-03 (MAXGEN 2.1, additive): the other tree this claim came from (a relative&#x27;s file brought in as suggestions, a findings delivery): its own tree id for a MAXGEN file, else a random id kept with the label the person typed. Lets one tree&#x27;s facts be taken back together.</li><li><code>evidence.origin_tree_label</code> (new field): G-03: the person&#x27;s own words for that tree, such as &quot;Aunt Ruth&#x27;s tree&quot;.</li><li><code>evidence.received_at</code> (new field): G-03: when the finding holding this claim came into the tree.</li><li><code>note.ai_badge</code> (new field): MAXGEN 2.1 (G-07): a biography written by an AI carries its badge: which AI, when, and the person&#x27;s review of it.</li><li><code>note.cited_record_ids</code> (new field): MAXGEN 2.1 (G-07): the documents a biography note rests on; each must exist (R-04).</li><li><code>note.note_id</code> (new field): MAXGEN 2.1 (G-24): the note&#x27;s own identity, so it can be changed as a new version, withdrawn and brought back.</li><li><code>note.status</code> (new field): MAXGEN 2.1 (G-24): a withdrawn note is kept, never deleted.</li><li><code>note.supersedes_note_id</code> (new field): MAXGEN 2.1 (G-24): the note this one replaces; the replaced note is kept, withdrawn.</li><li><code>saved_copy.georeference</code> (new field): MAXGEN 2.1 (G-32): where a picture of an old map lies on today&#x27;s map, from three or more control points: a point on the picture (fractions of its width and height, from the top left) with its latitude and longitude. A descriptive field a replace may change.</li><li><code>note.note_type</code>: new allowed value <code>biography</code></li></ul>
-<h3>raw-record.schema.json</h3><ul class="additions"><li><code>cited_record_ids</code> (new field): MAXGEN 2.1 (G-29): on a life_story record only, the documents the story draws on; each must exist (R-04), as MaxPlace lists its own.</li><li><code>record_type</code>: new allowed value <code>life_story</code></li></ul>
-<h3>person.schema.json</h3><ul class="additions"><li><code>attribute_claim.attribute_type</code>: new allowed value <code>health_condition</code></li><li><code>attribute_claim.attribute_type</code> (description updated): What kind of lasting fact this is; health_condition (MAXGEN 2.1) is a health condition as written, private by default and never shared.</li></ul>
-<h3>task-queue.schema.json</h3><ul class="additions"><li><code>payload.kind</code> (description updated): Which documented payload this is: interview, person_request, person_page_session, fan_survey, run, find_original, import_file, analysis, or (G-04, additive) incoming_finding: one finding from another tree (a relative&#x27;s file as suggestions, a findings delivery), holding its proposed facts and any proposed new person in the payload (sender_tree_id, sender_label, received_at, verdict, person_id or new_person and relation, facts) until the person lets it in; it is never a claim on the person&#x27;s people while it waits.</li></ul>
-<h3>source.schema.json</h3><ul class="additions"><li><code>source_type</code> (new field): </li><li><code>address</code> (new field): MAXGEN 2.1 (G-14): where an archive or library is: its postal address in address_as_written, its town in place_as_written, and the MaxPlace in place_id; only on a source whose source_type is archive or library, or other for a church office, government office, cemetery, family papers or a private collection, and never a person&#x27;s home address.</li></ul>
-<h3>recognition.schema.json</h3><ul class="additions"><li><code>field_comparison.field</code> (new field): The field compared, as written (name, age, birthplace ...).</li><li><code>field_comparison.index_value</code> (new field): What the index says.</li><li><code>field_comparison.mention_ref</code> (new field): Which person or line of the index the field belongs to, as the reader wrote it.</li><li><code>field_comparison.page_value</code> (new field): What the image says, as read.</li><li><code>field_comparison.result</code> (new field): The image and the index agree, differ, or the image is unclear there.</li><li><code>based_on_recognition_id</code> (new field): MAXGEN 2.1 (G-30): the reading this one started from and corrected; what changed is worked out by comparing the two.</li><li><code>field_comparison</code> (new field): MAXGEN 2.1 (G-11): how this reading compares with an index of the same image, field by field, as the reader judged it.</li><li><code>read_blind</code> (new field): MAXGEN 2.1 (G-30): true when the image was read before the reader saw any index or other reading of it, so the reading is independent; false when it was read after seeing one.</li></ul>
-<hr>
 <p>Version history for the MAXGEN schemas. Since v2.0 there are <strong>eleven record schemas plus one
 shared building-blocks file</strong>: <strong>MaxRecord</strong>, <strong>MaxPerson</strong>, <strong>MaxRelationship</strong>, <strong>MaxTask</strong>,
 <strong>MaxSource</strong>, <strong>MaxPlace</strong>, <strong>MaxGroup</strong>, <strong>MaxEvent</strong>, <strong>MaxName</strong>, <strong>MaxRecognition</strong>,
 <strong>MaxDNA</strong>, and <code>maxgen-defs.schema.json</code>. The 1.x releases below had seven.</p>
 <h2 id="versioning-policy-2x-is-additive-only-as-of-v20">Versioning policy — 2.x is additive only (as of v2.0)</h2>
-<p>All twelve files share <strong>one MAXGEN version</strong>, <code>2.0</code>. Every document carries <code>schema_version</code>,
-and the schemas accept any <code>"2.&lt;n&gt;"</code> stamp (<code>"2.0"</code>, <code>"2.1"</code> …; not <code>"2.01"</code>, not <code>"1.13"</code>).</p>
+<p>All twelve files share <strong>one MAXGEN version</strong>, now <code>2.1</code> (the 2.x line began with <code>2.0</code>).
+Every document carries <code>schema_version</code>, and the schemas accept any <code>"2.&lt;n&gt;"</code> stamp (<code>"2.0"</code>,
+<code>"2.1"</code> …; not <code>"2.01"</code>, not <code>"1.13"</code>).</p>
 <ul>
 <li><strong>Within 2.x, every change is additive:</strong> a new optional property, a new value in a list, a
   new shared definition in <code>maxgen-defs.schema.json</code> (a <code>$defs</code> entry), a new record schema
@@ -74,6 +66,169 @@ and the schemas accept any <code>"2.&lt;n&gt;"</code> stamp (<code>"2.0"</code>,
 <p>From v1.3 to v1.13 the seven schemas versioned in <strong>lockstep</strong> (all bumped together): every release bumped every
 schema's <code>schema_version</code> const, even schemas that did not change, and every fixture was
 re-stamped. That history is kept below as written.</p>
+<hr />
+<h2 id="v21-2026-11-21">v2.1 — 2026-11-21</h2>
+<p>MAXGEN 2.1 is additive only: it adds fourteen optional fields, three values to existing lists, one
+new definition and one rule that applies only to a document that uses a new field, and nothing a
+2.0 document could contain is removed, renamed, made required or narrowed, so a file valid under
+2.0 stays valid under 2.1. Six of the twelve schema files changed; the other six are byte for byte
+the 2.0 files (see "Reading 2.1" at the end of this entry).</p>
+<p>Paths below are JSON Pointers inside the named file (for example <code>/$defs/note/properties/note_id</code>).
+Every new field is optional; where a member is required, it is required only inside a new optional
+object.</p>
+<h3 id="shared-building-blocks-maxgen-defsschemajson">Shared building blocks (<code>maxgen-defs.schema.json</code>)</h3>
+<p>Changes here reach every schema that uses the definition.</p>
+<p><strong>Notes</strong> (<code>/$defs/note</code>, the shared note: every document carries a list of them, and so do
+claims, saved copies and tree citations):</p>
+<ul>
+<li><code>/$defs/note/properties/note_type/enum</code> gains <code>biography</code>: a short life summary written on a
+  person. The schema text says it is never made or shown for someone who may be living; the schema
+  states that rule but does not enforce it, so the program must. <em>Why:</em> a written life story can
+  sit next to the facts it rests on, marked as a summary.</li>
+<li><code>/$defs/note/properties/note_id</code> (a UUID): the note's own identity. <em>Why:</em> a note can be replaced
+  by a newer version, withdrawn and brought back, and be pointed at.</li>
+<li><code>/$defs/note/properties/supersedes_note_id</code> (a UUID): the note this one replaces; the replaced
+  note is kept, marked withdrawn. <em>Why:</em> editing a note leaves its history instead of overwriting it.</li>
+<li><code>/$defs/note/properties/status</code> (<code>active</code> or <code>retracted</code>, default <code>active</code>). <em>Why:</em> a withdrawn
+  note is kept, never deleted.</li>
+<li><code>/$defs/note/properties/cited_record_ids</code> (record UUIDs, no repeats): the documents a biography
+  note rests on. <em>Why:</em> a life summary shows its sources. A schema cannot check that a cited record
+  exists; the program must.</li>
+<li><code>/$defs/note/properties/ai_badge</code> (an object; <code>model_name</code> and <code>written_at</code> are required inside
+  it, <code>review</code> is <code>waiting</code>, <code>accepted</code> or <code>rejected</code> and defaults to <code>waiting</code>): marks a biography
+  written by an AI, saying which AI, when, and whether the person has accepted it. <em>Why:</em>
+  AI-written text is labelled as such and waits for the person's review.</li>
+</ul>
+<p><strong>Evidence link</strong> (<code>/$defs/evidence</code>, the proof every claim cites):</p>
+<ul>
+<li><code>/$defs/evidence/properties/origin_tree_id</code> (a UUID): the other tree a claim came from, such as a
+  relative's file brought in as suggestions or a delivery of findings; a MAXGEN file's own tree id,
+  otherwise a random id kept with the label the person typed.</li>
+<li><code>/$defs/evidence/properties/origin_tree_label</code> (text, 1 to 200 characters): the person's own
+  words for that tree.</li>
+<li><code>/$defs/evidence/properties/received_at</code> (a timestamp): when the finding holding the claim came
+  into the tree.</li>
+<li><em>Why (all three):</em> everything that arrived from one outside tree can be recognised and taken
+  back together.</li>
+</ul>
+<p><strong>Saved copies</strong> (<code>/$defs/saved_copy</code>, the description of a stored image or file):</p>
+<ul>
+<li><code>/$defs/saved_copy/properties/georeference</code> (an object): where a picture of an old map lies on
+  today's map. <code>points</code> is required and holds 3 to 50 control points, each with <code>x</code> and <code>y</code> (the
+  place on the picture, as fractions from 0 to 1 of its width and height, from the top left) and
+  <code>latitude</code> and <code>longitude</code>; <code>method_as_written</code> (up to 500 characters) may say how it was worked
+  out. It describes the copy and may be corrected later. <em>Why:</em> an old map can be laid over a
+  modern one.</li>
+</ul>
+<h3 id="maxrecord-raw-recordschemajson">MaxRecord (<code>raw-record.schema.json</code>)</h3>
+<ul>
+<li><code>/properties/record_type/enum</code> gains <code>life_story</code>. <em>Why:</em> a written life story can be kept as a
+  record of its own.</li>
+<li><code>/properties/cited_record_ids</code> (record UUIDs, no repeats): the documents a life story draws on.
+  The text says it is for a <code>life_story</code> record only; the schema does not check that. <em>Why:</em> a life
+  story lists its sources. As with notes, the program must check that each cited record exists.</li>
+</ul>
+<h3 id="maxrecognition-recognitionschemajson">MaxRecognition (<code>recognition.schema.json</code>)</h3>
+<ul>
+<li><code>/properties/read_blind</code> (true or false): true when the image was read before the reader saw any
+  index or other reading of it, false when it was read after seeing one. <em>Why:</em> it tells an
+  independent reading from one influenced by an index.</li>
+<li><code>/properties/based_on_recognition_id</code> (a UUID): the reading this one started from and corrected;
+  what changed is worked out by comparing the two. <em>Why:</em> a corrected reading points back at the
+  one it improves.</li>
+<li><code>/properties/field_comparison</code> (a list; each item is the new definition
+  <code>/$defs/field_comparison</code>): how this reading compares with an index of the same image, field by
+  field. Inside an item <code>field</code> and <code>result</code> are required (<code>result</code> is <code>agrees</code>, <code>differs</code> or
+  <code>unclear</code>); <code>mention_ref</code>, <code>page_value</code> and <code>index_value</code> are optional. <em>Why:</em> where a reading
+  and an index disagree is recorded field by field.</li>
+</ul>
+<h3 id="maxsource-sourceschemajson">MaxSource (<code>source.schema.json</code>)</h3>
+<ul>
+<li><code>/properties/address</code> (a place reference: the postal address in <code>address_as_written</code>, the town in
+  <code>place_as_written</code>, the MaxPlace in <code>place_id</code>): where an archive or library is. The text says
+  never a person's home address. <em>Why:</em> a researcher can tell where an original is kept.</li>
+<li><code>/allOf/3</code> (a new rule): when <code>address</code> is present, <code>source_type</code> must be <code>archive</code>, <code>library</code> or
+  <code>other</code>. A 2.0 document cannot have an <code>address</code>, so this rule cannot affect one.</li>
+</ul>
+<h3 id="maxperson-personschemajson">MaxPerson (<code>person.schema.json</code>)</h3>
+<ul>
+<li><code>/$defs/attribute_claim/properties/attribute_type/enum</code> gains <code>health_condition</code>: a health
+  condition as written. The schema text says it is private by default and never shared; as with
+  <code>biography</code>, that rule is stated, not enforced, by the schema. <em>Why:</em> a lasting health fact has
+  a place of its own, apart from <code>physical_description</code> and the other attribute types.</li>
+</ul>
+<h3 id="maxtask-task-queueschemajson">MaxTask (<code>task-queue.schema.json</code>)</h3>
+<ul>
+<li><code>/properties/payload/properties/kind/description</code> now names <code>incoming_finding</code>: one finding from
+  another tree (a relative's file as suggestions, a findings delivery), whose proposed facts and
+  any proposed new person sit in the payload (<code>sender_tree_id</code>, <code>sender_label</code>, <code>received_at</code>,
+  <code>verdict</code>, <code>person_id</code> or <code>new_person</code> and <code>relation</code>, <code>facts</code>) until the person lets it in; the
+  text adds that it is never a claim on the person's people while it waits. This is wording only:
+  a task's payload was always an open object, so a payload of this kind also validated under 2.0.
+  <em>Why:</em> programs that hand findings from one tree to another can agree on the name.</li>
+</ul>
+<h3 id="wording-only">Wording only</h3>
+<p>The descriptions of <code>note_type</code> and <code>attribute_type</code> now explain their new values, and the one for
+a task's <code>payload.kind</code> names <code>incoming_finding</code> (above). No limit was loosened and no structure
+other than the additions above changed.</p>
+<h3 id="not-in-21-planned-additive-so-nothing-breaks">Not in 2.1 (planned; additive, so nothing breaks)</h3>
+<ul>
+<li><strong>Two task payload members are not yet defined.</strong> <code>known_at_start</code> and <code>lead_expires_on</code> are
+  accepted today, because a task's payload is an open object, but none of the twelve files names or
+  describes them yet. A later 2.x release can define them.</li>
+<li><strong>MaxDNA match additions.</strong> None are in 2.1: <code>dna.schema.json</code> is byte for byte the 2.0 file. A
+  match is a closed object, so a field it does not define (such as one holding the amounts shared
+  between matches, or a cluster id) is refused until a later 2.x release defines it.</li>
+<li><strong>More payload kinds are not yet listed.</strong> The reference program already writes task payload
+  kinds beyond the ones named in the <code>kind</code> description above, and the <code>payload</code> description still
+  lists only the 2.0 kinds. They already validate; a later release can list them.</li>
+</ul>
+<p><strong>Wording to fix in a later release.</strong> These are faults in description text only. They change no
+limit and no structure, so fixing them is a description-only release.</p>
+<ul>
+<li><strong>Short reference labels in descriptions.</strong> Some description strings in five of the six changed
+  files (<code>maxgen-defs</code>, <code>raw-record</code>, <code>recognition</code>, <code>source</code> and <code>task-queue</code>) carry a short
+  label made of the letter G, a hyphen and two digits, usually in brackets after "MAXGEN 2.1". (The rule
+  numbers written R, a hyphen and two digits are real and are defined in the rulebook; only the G labels are meant.)
+  The label has no meaning for an implementer. A later description-only release will remove them.</li>
+<li><strong>The description of source <code>address</code></strong> (<code>/properties/address</code> in <code>source.schema.json</code>) needs
+  one clarification. It allows <code>other</code> for family papers or a private collection, and it also
+  says never a person's home address, which reads as a conflict. The rule <code>/allOf/3</code> is not at
+  fault: it limits only <code>source_type</code>, and the schema does not check what the address text says.</li>
+</ul>
+<h3 id="reading-21">Reading 2.1</h3>
+<ul>
+<li><strong>The twelve files are one set.</strong> Load all twelve into one registry, as for 2.0;
+  <code>docs/onboarding/check_maxgen.py</code> does this.</li>
+<li><strong>Six changed, six are byte for byte the 2.0 files.</strong> Changed: <code>maxgen-defs.schema.json</code>,
+  <code>person.schema.json</code>, <code>raw-record.schema.json</code>, <code>recognition.schema.json</code>, <code>source.schema.json</code>
+  and <code>task-queue.schema.json</code>. Identical to 2.0: <code>dna.schema.json</code>, <code>event.schema.json</code>,
+  <code>group.schema.json</code>, <code>name.schema.json</code>, <code>place.schema.json</code> and <code>relationship.schema.json</code>.</li>
+<li><strong>The "2.0" label in each file stays.</strong> Each file's description still begins "MAXGEN 2.0 --",
+  which names the 2.x line, and it does not change inside 2.x; the <code>$id</code> addresses stay under
+  <code>https://opengenealogyai.org/schemas/maxgen/v2/</code>.</li>
+<li><strong>Stamps.</strong> A document keeps the stamp it was written with, and a reader that knows 2.1 accepts
+  any <code>"2.&lt;n&gt;"</code> stamp (see the versioning policy above). A document that uses a 2.1 addition
+  should carry <code>"2.1"</code>. A document stamped <code>"2.0"</code> that uses one is valid under the 2.1 files but
+  is refused by the frozen 2.0 files. The reference kit (<code>docs/agents/maxgen_db.py</code>, version
+  1.2.0) still stamps the documents it makes <code>"2.0"</code>; it will move to <code>"2.1"</code> in its next release.</li>
+<li><strong>Compatibility runs one way.</strong> A 2.0 file is valid under the 2.1 files. A document that uses a
+  2.1 field or list value is refused by the 2.0 files. They refuse a new member because the
+  objects that would carry it are closed (a note, the evidence link, a saved copy, and the top
+  level of a MaxRecord, a MaxRecognition and a MaxSource), and they refuse a new list value
+  because the lists that would carry it (<code>note_type</code>, <code>record_type</code> and <code>attribute_type</code>) are
+  fixed. Not every object is closed: a task's <code>payload</code> and <code>extensions</code> are open, which is why
+  the one change to a payload, naming <code>incoming_finding</code>, is wording only and also validated under
+  2.0. A program that only has the 2.0 files should update its schemas folder.</li>
+<li><strong>The frozen 2.0 set</strong> is in <code>schemas/archive/v2.0/</code> (see
+  <a href="https://github.com/OpenGenealogyai/opengenealogyai/blob/main/schemas/archive/README.md"><code>schemas/archive/README.md</code></a>). The 2.0 specification,
+  <a href="https://github.com/OpenGenealogyai/opengenealogyai/blob/main/docs/standard/SPEC-2.0.md"><code>docs/standard/SPEC-2.0.md</code></a>, is unchanged and does not describe the 2.1
+  additions; this entry lists them.</li>
+<li><strong>How 2.0 and 2.1 were released.</strong> 2.0 was built on 2026-10-16. 2.0 and 2.1 both went public on
+  2026-11-21: 2.1 as the current version, and 2.0 as the previous version, kept frozen in
+  <code>schemas/archive/v2.0/</code>. They went public without a public comment period, because nobody
+  outside the project was using 2.0.</li>
+</ul>
 <hr />
 <h2 id="v20-2026-10-16">v2.0 — 2026-10-16</h2>
 <p><strong>Driver:</strong> the review of 16 October 2026 (a unanimous review of the whole schema set, plus two
@@ -136,7 +291,7 @@ eleven record schemas plus one shared file. The full specification is
 <li>No stored scores anywhere: per-claim <code>confidence</code> stays; computed scores are worked out when
   read.</li>
 </ul>
-<h3 id="maxperson-personschemajson">MaxPerson (<code>person.schema.json</code>)</h3>
+<h3 id="maxperson-personschemajson_1">MaxPerson (<code>person.schema.json</code>)</h3>
 <p><strong>Holds no family links.</strong> Removed: <code>parent_assertions</code>, <code>child_assertions</code>,
 <code>spouse_assertions</code> (to MaxRelationship); <code>composite_confidence</code> (a stored score);
 <code>external_ids</code> (a mirror); <code>dna_evidence</code> (DNA is cited through the evidence link);
@@ -150,7 +305,7 @@ claim header and an evidence link; photo claims point at a photograph record. Ad
 <code>name_parts</code> and <code>name_status</code>, <code>attached_sources</code>, <code>same_as_candidates</code>. <code>is_living</code> and
 <code>redistribution_license</code> become required, with no default; <code>name_assertions</code> is required for a
 documented person.</p>
-<h3 id="maxrecord-raw-recordschemajson">MaxRecord (<code>raw-record.schema.json</code>)</h3>
+<h3 id="maxrecord-raw-recordschemajson_1">MaxRecord (<code>raw-record.schema.json</code>)</h3>
 <p>One original, one record, holding the whole entry. <code>transcription</code> becomes
 <code>transcription_parts</code> with permanent line labels, <code>transcription_scope</code> (complete entry,
 complete list, partial) and a kit-computed fingerprint. Added: <code>persons_mentioned</code> with a
@@ -181,7 +336,7 @@ several parent sets, so an adopted person can trace both their birth and their a
 lineage. Agents never write these files: the kit's <code>link</code> command finds or makes them. Replaces
 1.13's <code>parent_assertions</code>, <code>child_assertions</code>, <code>spouse_assertions</code>, <code>relationship_type</code> on
 parents and the <code>ecclesiastical</code> type.</p>
-<h3 id="maxtask-task-queueschemajson">MaxTask (<code>task-queue.schema.json</code>)</h3>
+<h3 id="maxtask-task-queueschemajson_1">MaxTask (<code>task-queue.schema.json</code>)</h3>
 <p>Removed: <code>contributor</code> (now <code>provenance</code>, written once by the kit), the top-level <code>review</code>
 (reviews are now separate <code>judge_review</code> tasks, never overwritten), a required <code>created_at</code>
 (now kit-owned). Added: <code>provenance</code>, <code>is_living_flag</code> (required), statuses <code>on_hold</code> and
@@ -191,7 +346,7 @@ log), a proof write-up (the single authority for "proven"), occurrence verdicts,
 decisions and FAN-club associates (the friends, associates and neighbours studied around one
 person). A proof's parent-set changes can set a set's kind, make it the main set, add a
 parent's existing link to it, or retract it.</p>
-<h3 id="maxsource-sourceschemajson">MaxSource (<code>source.schema.json</code>)</h3>
+<h3 id="maxsource-sourceschemajson_1">MaxSource (<code>source.schema.json</code>)</h3>
 <p><code>source_url</code> becomes optional; the <code>provenance</code> block is dissolved (<code>status</code> → <code>link_status</code>,
 <code>asserted_by</code> → <code>created_by_task_id</code>, <code>asserted_at</code> → <code>created_at</code>); <code>coverage.time_period</code>
 becomes <code>coverage.span</code> (a date block, no year cap); places use the place block. Added:
@@ -222,7 +377,7 @@ took part is worked out from role claims.</p>
 <p>The 1.13 shape is kept. <code>contributor</code> is removed (the task's provenance replaces it). Every
 variant and cognate becomes a claim, with a kit-owned <code>assertion_id</code>, a status and a required
 evidence link and confidence. Lifecycle fields added; <code>redistribution_license</code> required.</p>
-<h3 id="maxrecognition-recognitionschemajson">MaxRecognition (<code>recognition.schema.json</code>)</h3>
+<h3 id="maxrecognition-recognitionschemajson_1">MaxRecognition (<code>recognition.schema.json</code>)</h3>
 <p>The 1.13 fields are kept. <code>is_living_flag</code> added (required); <code>contributor</code> removed;
 <code>image_url</code> and <code>raw_record_id</code> both optional but one required; <code>copy_sha256</code> and <code>region_id</code>
 added (the same copy and region evidence cites); <code>processing_date</code> renamed <code>processed_at</code>;

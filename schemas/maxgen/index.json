@@ -100,7 +100,8 @@
     },
     {
       "version": "2.0",
-      "released": "2026-10-16",
+      "released": "2026-11-21",
+      "built": "2026-10-16",
       "status": "previous",
       "url": "https://opengenealogyai.org/schemas/maxgen/v2.0/",
       "frozen_url": "https://opengenealogyai.org/schemas/maxgen/v2.0/",

@@ -1,8 +1,10 @@
-# MAXGEN 2.0 schemas
+# MAXGEN 2.1 schemas
 
-MAXGEN 2.0 is one release: eleven record schemas plus one shared building-blocks file. Every file is JSON Schema
-Draft 2020-12. The full build specification is [`docs/standard/SPEC-2.0.md`](../docs/standard/SPEC-2.0.md); where
-this page and the specification differ, the specification wins.
+MAXGEN 2.1 is the current release: twelve files, being eleven record schemas plus one shared building-blocks file.
+Every file is JSON Schema Draft 2020-12. The set began as 2.0; the 2.0 files are frozen in `archive/v2.0/`. The full
+build specification, [`docs/standard/SPEC-2.0.md`](../docs/standard/SPEC-2.0.md), describes 2.0. For the additions
+of 2.1, the v2.1 entry of [`docs/SCHEMA_CHANGELOG.md`](../docs/SCHEMA_CHANGELOG.md) is the description until the
+specification is revised.
 
 ## The twelve files
 
@@ -29,8 +31,8 @@ A document's kind is the first of these keys found at its top level: `dna_id`, `
 `relationship_id`, `occurrence_id`, `place_id`, `group_id`, `record_id`, `task_id`, `source_id`, `person_id`.
 (MaxDNA also carries `person_id`, so the order matters.)
 
-The 1.13 files are kept in `archive/v1.13/` with their rules unchanged; older versions are in the other `archive/`
-folders.
+The 2.0 files are kept in `archive/v2.0/` and the 1.13 files in `archive/v1.13/`, each with its rules unchanged;
+older versions are in the other `archive/` folders.
 
 ## Version policy
 

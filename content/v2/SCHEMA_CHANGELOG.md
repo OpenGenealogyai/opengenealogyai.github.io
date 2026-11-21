@@ -7,8 +7,9 @@ shared building-blocks file**: **MaxRecord**, **MaxPerson**, **MaxRelationship**
 
 ## Versioning policy — 2.x is additive only (as of v2.0)
 
-All twelve files share **one MAXGEN version**, `2.0`. Every document carries `schema_version`,
-and the schemas accept any `"2.<n>"` stamp (`"2.0"`, `"2.1"` …; not `"2.01"`, not `"1.13"`).
+All twelve files share **one MAXGEN version**, now `2.1` (the 2.x line began with `2.0`).
+Every document carries `schema_version`, and the schemas accept any `"2.<n>"` stamp (`"2.0"`,
+`"2.1"` …; not `"2.01"`, not `"1.13"`).
 
 - **Within 2.x, every change is additive:** a new optional property, a new value in a list, a
   new shared definition in `maxgen-defs.schema.json` (a `$defs` entry), a new record schema
@@ -30,6 +31,177 @@ and the schemas accept any `"2.<n>"` stamp (`"2.0"`, `"2.1"` …; not `"2.01"`, 
 From v1.3 to v1.13 the seven schemas versioned in **lockstep** (all bumped together): every release bumped every
 schema's `schema_version` const, even schemas that did not change, and every fixture was
 re-stamped. That history is kept below as written.
+
+---
+
+## v2.1 — 2026-11-21
+
+MAXGEN 2.1 is additive only: it adds fourteen optional fields, three values to existing lists, one
+new definition and one rule that applies only to a document that uses a new field, and nothing a
+2.0 document could contain is removed, renamed, made required or narrowed, so a file valid under
+2.0 stays valid under 2.1. Six of the twelve schema files changed; the other six are byte for byte
+the 2.0 files (see "Reading 2.1" at the end of this entry).
+
+Paths below are JSON Pointers inside the named file (for example `/$defs/note/properties/note_id`).
+Every new field is optional; where a member is required, it is required only inside a new optional
+object.
+
+### Shared building blocks (`maxgen-defs.schema.json`)
+
+Changes here reach every schema that uses the definition.
+
+**Notes** (`/$defs/note`, the shared note: every document carries a list of them, and so do
+claims, saved copies and tree citations):
+
+- `/$defs/note/properties/note_type/enum` gains `biography`: a short life summary written on a
+  person. The schema text says it is never made or shown for someone who may be living; the schema
+  states that rule but does not enforce it, so the program must. *Why:* a written life story can
+  sit next to the facts it rests on, marked as a summary.
+- `/$defs/note/properties/note_id` (a UUID): the note's own identity. *Why:* a note can be replaced
+  by a newer version, withdrawn and brought back, and be pointed at.
+- `/$defs/note/properties/supersedes_note_id` (a UUID): the note this one replaces; the replaced
+  note is kept, marked withdrawn. *Why:* editing a note leaves its history instead of overwriting it.
+- `/$defs/note/properties/status` (`active` or `retracted`, default `active`). *Why:* a withdrawn
+  note is kept, never deleted.
+- `/$defs/note/properties/cited_record_ids` (record UUIDs, no repeats): the documents a biography
+  note rests on. *Why:* a life summary shows its sources. A schema cannot check that a cited record
+  exists; the program must.
+- `/$defs/note/properties/ai_badge` (an object; `model_name` and `written_at` are required inside
+  it, `review` is `waiting`, `accepted` or `rejected` and defaults to `waiting`): marks a biography
+  written by an AI, saying which AI, when, and whether the person has accepted it. *Why:*
+  AI-written text is labelled as such and waits for the person's review.
+
+**Evidence link** (`/$defs/evidence`, the proof every claim cites):
+
+- `/$defs/evidence/properties/origin_tree_id` (a UUID): the other tree a claim came from, such as a
+  relative's file brought in as suggestions or a delivery of findings; a MAXGEN file's own tree id,
+  otherwise a random id kept with the label the person typed.
+- `/$defs/evidence/properties/origin_tree_label` (text, 1 to 200 characters): the person's own
+  words for that tree.
+- `/$defs/evidence/properties/received_at` (a timestamp): when the finding holding the claim came
+  into the tree.
+- *Why (all three):* everything that arrived from one outside tree can be recognised and taken
+  back together.
+
+**Saved copies** (`/$defs/saved_copy`, the description of a stored image or file):
+
+- `/$defs/saved_copy/properties/georeference` (an object): where a picture of an old map lies on
+  today's map. `points` is required and holds 3 to 50 control points, each with `x` and `y` (the
+  place on the picture, as fractions from 0 to 1 of its width and height, from the top left) and
+  `latitude` and `longitude`; `method_as_written` (up to 500 characters) may say how it was worked
+  out. It describes the copy and may be corrected later. *Why:* an old map can be laid over a
+  modern one.
+
+### MaxRecord (`raw-record.schema.json`)
+
+- `/properties/record_type/enum` gains `life_story`. *Why:* a written life story can be kept as a
+  record of its own.
+- `/properties/cited_record_ids` (record UUIDs, no repeats): the documents a life story draws on.
+  The text says it is for a `life_story` record only; the schema does not check that. *Why:* a life
+  story lists its sources. As with notes, the program must check that each cited record exists.
+
+### MaxRecognition (`recognition.schema.json`)
+
+- `/properties/read_blind` (true or false): true when the image was read before the reader saw any
+  index or other reading of it, false when it was read after seeing one. *Why:* it tells an
+  independent reading from one influenced by an index.
+- `/properties/based_on_recognition_id` (a UUID): the reading this one started from and corrected;
+  what changed is worked out by comparing the two. *Why:* a corrected reading points back at the
+  one it improves.
+- `/properties/field_comparison` (a list; each item is the new definition
+  `/$defs/field_comparison`): how this reading compares with an index of the same image, field by
+  field. Inside an item `field` and `result` are required (`result` is `agrees`, `differs` or
+  `unclear`); `mention_ref`, `page_value` and `index_value` are optional. *Why:* where a reading
+  and an index disagree is recorded field by field.
+
+### MaxSource (`source.schema.json`)
+
+- `/properties/address` (a place reference: the postal address in `address_as_written`, the town in
+  `place_as_written`, the MaxPlace in `place_id`): where an archive or library is. The text says
+  never a person's home address. *Why:* a researcher can tell where an original is kept.
+- `/allOf/3` (a new rule): when `address` is present, `source_type` must be `archive`, `library` or
+  `other`. A 2.0 document cannot have an `address`, so this rule cannot affect one.
+
+### MaxPerson (`person.schema.json`)
+
+- `/$defs/attribute_claim/properties/attribute_type/enum` gains `health_condition`: a health
+  condition as written. The schema text says it is private by default and never shared; as with
+  `biography`, that rule is stated, not enforced, by the schema. *Why:* a lasting health fact has
+  a place of its own, apart from `physical_description` and the other attribute types.
+
+### MaxTask (`task-queue.schema.json`)
+
+- `/properties/payload/properties/kind/description` now names `incoming_finding`: one finding from
+  another tree (a relative's file as suggestions, a findings delivery), whose proposed facts and
+  any proposed new person sit in the payload (`sender_tree_id`, `sender_label`, `received_at`,
+  `verdict`, `person_id` or `new_person` and `relation`, `facts`) until the person lets it in; the
+  text adds that it is never a claim on the person's people while it waits. This is wording only:
+  a task's payload was always an open object, so a payload of this kind also validated under 2.0.
+  *Why:* programs that hand findings from one tree to another can agree on the name.
+
+### Wording only
+
+The descriptions of `note_type` and `attribute_type` now explain their new values, and the one for
+a task's `payload.kind` names `incoming_finding` (above). No limit was loosened and no structure
+other than the additions above changed.
+
+### Not in 2.1 (planned; additive, so nothing breaks)
+
+- **Two task payload members are not yet defined.** `known_at_start` and `lead_expires_on` are
+  accepted today, because a task's payload is an open object, but none of the twelve files names or
+  describes them yet. A later 2.x release can define them.
+- **MaxDNA match additions.** None are in 2.1: `dna.schema.json` is byte for byte the 2.0 file. A
+  match is a closed object, so a field it does not define (such as one holding the amounts shared
+  between matches, or a cluster id) is refused until a later 2.x release defines it.
+- **More payload kinds are not yet listed.** The reference program already writes task payload
+  kinds beyond the ones named in the `kind` description above, and the `payload` description still
+  lists only the 2.0 kinds. They already validate; a later release can list them.
+
+**Wording to fix in a later release.** These are faults in description text only. They change no
+limit and no structure, so fixing them is a description-only release.
+
+- **Short reference labels in descriptions.** Some description strings in five of the six changed
+  files (`maxgen-defs`, `raw-record`, `recognition`, `source` and `task-queue`) carry a short
+  label made of the letter G, a hyphen and two digits, usually in brackets after "MAXGEN 2.1". (The rule
+  numbers written R, a hyphen and two digits are real and are defined in the rulebook; only the G labels are meant.)
+  The label has no meaning for an implementer. A later description-only release will remove them.
+- **The description of source `address`** (`/properties/address` in `source.schema.json`) needs
+  one clarification. It allows `other` for family papers or a private collection, and it also
+  says never a person's home address, which reads as a conflict. The rule `/allOf/3` is not at
+  fault: it limits only `source_type`, and the schema does not check what the address text says.
+
+### Reading 2.1
+
+- **The twelve files are one set.** Load all twelve into one registry, as for 2.0;
+  `docs/onboarding/check_maxgen.py` does this.
+- **Six changed, six are byte for byte the 2.0 files.** Changed: `maxgen-defs.schema.json`,
+  `person.schema.json`, `raw-record.schema.json`, `recognition.schema.json`, `source.schema.json`
+  and `task-queue.schema.json`. Identical to 2.0: `dna.schema.json`, `event.schema.json`,
+  `group.schema.json`, `name.schema.json`, `place.schema.json` and `relationship.schema.json`.
+- **The "2.0" label in each file stays.** Each file's description still begins "MAXGEN 2.0 --",
+  which names the 2.x line, and it does not change inside 2.x; the `$id` addresses stay under
+  `https://opengenealogyai.org/schemas/maxgen/v2/`.
+- **Stamps.** A document keeps the stamp it was written with, and a reader that knows 2.1 accepts
+  any `"2.<n>"` stamp (see the versioning policy above). A document that uses a 2.1 addition
+  should carry `"2.1"`. A document stamped `"2.0"` that uses one is valid under the 2.1 files but
+  is refused by the frozen 2.0 files. The reference kit (`docs/agents/maxgen_db.py`, version
+  1.2.0) still stamps the documents it makes `"2.0"`; it will move to `"2.1"` in its next release.
+- **Compatibility runs one way.** A 2.0 file is valid under the 2.1 files. A document that uses a
+  2.1 field or list value is refused by the 2.0 files. They refuse a new member because the
+  objects that would carry it are closed (a note, the evidence link, a saved copy, and the top
+  level of a MaxRecord, a MaxRecognition and a MaxSource), and they refuse a new list value
+  because the lists that would carry it (`note_type`, `record_type` and `attribute_type`) are
+  fixed. Not every object is closed: a task's `payload` and `extensions` are open, which is why
+  the one change to a payload, naming `incoming_finding`, is wording only and also validated under
+  2.0. A program that only has the 2.0 files should update its schemas folder.
+- **The frozen 2.0 set** is in `schemas/archive/v2.0/` (see
+  [`schemas/archive/README.md`](../schemas/archive/README.md)). The 2.0 specification,
+  [`docs/standard/SPEC-2.0.md`](standard/SPEC-2.0.md), is unchanged and does not describe the 2.1
+  additions; this entry lists them.
+- **How 2.0 and 2.1 were released.** 2.0 was built on 2026-10-16. 2.0 and 2.1 both went public on
+  2026-11-21: 2.1 as the current version, and 2.0 as the previous version, kept frozen in
+  `schemas/archive/v2.0/`. They went public without a public comment period, because nobody
+  outside the project was using 2.0.
 
 ---
 

@@ -36,8 +36,9 @@ V2_BASE = f"{BASE}/schemas/maxgen/v2/"
 CURRENT = "2.1"
 CURRENT_RELEASED = "2026-11-21"   # first served on the site this day (Garlon: no comment period, no outside users yet)
 CURRENT_DIR = "schemas"
-# Earlier 2.x releases kept as frozen copies: version -> (folder in the repo, release date)
-EARLIER = {"2.0": ("schemas/archive/v2.0", "2026-10-16")}
+# Earlier 2.x releases kept as frozen copies: version -> (folder in the repo, public release date, build date).
+# 2.0 was built 2026-10-16 but went public with 2.1 on 2026-11-21 (BuildGenealogy's v2.1 changelog entry).
+EARLIER = {"2.0": ("schemas/archive/v2.0", "2026-11-21", "2026-10-16")}
 
 # (file, title) in BuildGenealogy's handoff order
 SCHEMAS = [
@@ -151,9 +152,9 @@ def main() -> int:
     # 1. schemas: the current release at /v2/ and /v<CURRENT>/, earlier 2.x releases frozen at /v<ver>/
     cur_files = publish_set(c, CURRENT_DIR, [maxgen / "v2", maxgen / f"v{CURRENT}"], record, changed)
     earlier_entries = []
-    for ver, (folder, released) in EARLIER.items():
+    for ver, (folder, released, built) in EARLIER.items():
         files = publish_set(c, folder, [maxgen / f"v{ver}"], record, changed)
-        earlier_entries.append({"version": ver, "released": released, "status": "previous",
+        earlier_entries.append({"version": ver, "released": released, "built": built, "status": "previous",
                                 "url": f"{BASE}/schemas/maxgen/v{ver}/", "frozen_url": f"{BASE}/schemas/maxgen/v{ver}/",
                                 "schemas": [n.replace(".schema.json", "") for n, _ in SCHEMAS], "files": files})
 
