@@ -54,7 +54,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 100,
-          "description": "Which documented payload this is: interview, person_request, person_page_session, fan_survey, run, find_original, import_file or analysis."
+          "description": "Which documented payload this is: interview, person_request, person_page_session, fan_survey, run, find_original, import_file, analysis, or (G-04, additive) incoming_finding: one finding from another tree (a relative's file as suggestions, a findings delivery), holding its proposed facts and any proposed new person in the payload (sender_tree_id, sender_label, received_at, verdict, person_id or new_person and relation, facts) until the person lets it in; it is never a claim on the person's people while it waits."
         },
         "person_id": {
           "$ref": "maxgen-defs.schema.json#/$defs/uuid",

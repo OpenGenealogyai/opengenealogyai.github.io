@@ -1,11 +1,11 @@
 ---
 title: The MAXGEN schemas
-description: The eleven MAXGEN 2.0 record schemas (MaxRecord, MaxPerson, MaxRelationship, MaxTask, MaxSource, MaxPlace, MaxGroup, MaxEvent, MaxName, MaxRecognition, MaxDNA) and the shared building-blocks file, explained and downloadable.
+description: The eleven MAXGEN record schemas (MaxRecord, MaxPerson, MaxRelationship, MaxTask, MaxSource, MaxPlace, MaxGroup, MaxEvent, MaxName, MaxRecognition, MaxDNA) and the shared building-blocks file, explained and downloadable.
 ---
 <p class="eyebrow">MAXGEN v<!--CURRENT--> · twelve files, one version</p>
 # The schemas
 
-MAXGEN 2.0 is one release: eleven record schemas plus one shared building-blocks file. Every file is JSON Schema Draft 2020-12. All twelve files share one version number, and within 2.x every change is additive: a file valid under 2.0 stays valid under every 2.x.
+Since version 2.0, MAXGEN has eleven record schemas plus one shared building-blocks file; the current release is <!--CURRENT-->. Every file is JSON Schema Draft 2020-12. All twelve files share one version number, and within 2.x every change is additive: a file valid under 2.0 stays valid under every 2.x.
 
 <!--CARDS-->
 

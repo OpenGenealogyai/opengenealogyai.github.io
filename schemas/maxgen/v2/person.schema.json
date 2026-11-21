@@ -180,7 +180,7 @@
       "allOf": [{"$ref": "maxgen-defs.schema.json#/$defs/claim_header"}],
       "required": ["attribute_type", "value_as_written", "evidence", "confidence"],
       "properties": {
-        "attribute_type": {"enum": ["occupation", "residence", "religion", "nationality", "ethnicity", "title", "physical_description", "id_number", "education", "property", "military_rank", "caste", "other"], "description": "What kind of lasting fact this is."},
+        "attribute_type": {"enum": ["occupation", "residence", "religion", "nationality", "ethnicity", "title", "physical_description", "id_number", "education", "property", "military_rank", "caste", "health_condition", "other"], "description": "What kind of lasting fact this is; health_condition (MAXGEN 2.1) is a health condition as written, private by default and never shared."},
         "attribute_type_as_written": {"type": "string", "maxLength": 200, "description": "The source's own word for the fact, used with other."},
         "value_as_written": {"type": "string", "minLength": 1, "maxLength": 2000, "description": "The fact exactly as written, such as Miller or Tumblebrook."},
         "date": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "The period the fact applies to, as stated."},

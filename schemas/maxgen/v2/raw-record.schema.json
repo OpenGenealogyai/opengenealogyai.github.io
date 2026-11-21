@@ -36,7 +36,7 @@
                              "gravestone", "obituary", "newspaper_article", "city_directory", "school_record", "church_record",
                              "institution_record", "employment_record", "voter_list", "family_bible", "letter", "oral_history",
                              "photograph", "media_item", "map", "tree_import", "wikidata_entity", "open_library_work", "dpla_item",
-                             "gazetteer_entry", "dna_match_list", "other"],
+                             "gazetteer_entry", "dna_match_list", "life_story", "other"],
                     "description": "What kind of document this is; census_household holds a whole household, gazetteer_entry is an authored gazetteer or authority page, and dna_match_list is always tier2-private and living."},
     "record_type_as_written": {"type": "string", "maxLength": 200, "description": "The document's or program's own words for its type, used with other."},
     "redistribution_license": {"$ref": "maxgen-defs.schema.json#/$defs/licence", "description": "Whether this record may be shared, and under what licence; must be tier2-private while is_living_flag is true."},
@@ -67,7 +67,8 @@
     "rights_uri": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "A web address stating the rights in this document."},
     "sensitive_data_redacted": {"type": "boolean", "description": "True when sensitive details (identity numbers, medical details) were left out of the transcription."},
     "redaction_notes": {"type": "string", "maxLength": 4000, "description": "What was left out and why."},
-    "archive_ref": {"type": "string", "maxLength": 1000, "description": "A local path where this record is kept; private, never exported."}
+    "archive_ref": {"type": "string", "maxLength": 1000, "description": "A local path where this record is kept; private, never exported."},
+    "cited_record_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "maxgen-defs.schema.json#/$defs/uuid"}, "description": "MAXGEN 2.1 (G-29): on a life_story record only, the documents the story draws on; each must exist (R-04), as MaxPlace lists its own."}
   },
   "unevaluatedProperties": false,
   "$defs": {

@@ -1,17 +1,19 @@
-"""Copy MAXGEN 2.0 and its agent kit from the schema repo into this site, byte for byte.
+"""Copy the current MAXGEN 2.x release and its agent kit into this site, byte for byte.
 
 Run deliberately:  python tools/sync_v2.py
-The build never reads the schema repo itself; it reads only what this script pinned.
+The build never reads the source repositories itself; it reads only what this script pinned.
+
+Sources (both owned by BuildGenealogy; read only)
+  CURRENT_SRC   C:\\Users\\stock\\dev\\maxgen-workbench   2.1 schemas and the newest kit (2026-11-08)
+  DOCS_SRC      C:\\Users\\stock\\dev\\opengenealogyai    the changelog, the starter prompt and the 2.0 release files
 
 Writes
-  schemas/maxgen/v2/<12 files>          raw schema files at their $id addresses
-  schemas/maxgen/v2.0/<12 files>        frozen copy of the 2.0 release
-  schemas/maxgen/v2/SHA256SUMS.txt      "<sha256>  <file name>" per file, from the bytes served
-  schemas/maxgen/index.json             current -> 2.0, a 2.0 entry, 1.x entries marked archived
-  agents/*.md, agents/*.py, agents/LICENSE, agents/SHA256SUMS.txt, agents/manifest.json
-  onboarding/STARTER_PROMPT.md, onboarding/check_maxgen.py, onboarding/SHA256SUMS.txt
-  content/v2/  pinned build inputs: the changelog, the agents' llms.txt, one example per kind, SYNC.json
-Source: BuildGenealogy's handoff, docs/agents/HANDOFF-to-website.md in the schema repo.
+  schemas/maxgen/v2/<12 files>          the current 2.x files at their $id addresses (now 2.1)
+  schemas/maxgen/v<ver>/<12 files>      a frozen copy of each 2.x release (2.0 and 2.1)
+  .../SHA256SUMS.txt                    "<sha256>  <file name>" per file, from the bytes served
+  schemas/maxgen/index.json             current -> 2.1; 2.x entries with fingerprints; 1.x entries archived
+  agents/*, onboarding/*                the kit (hidden beta), with SHA256SUMS.txt and manifest.json
+  content/v2/                           pinned build inputs and SYNC.json
 """
 from __future__ import annotations
 
@@ -24,12 +26,18 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-SRC = Path(r"C:\Users\stock\dev\opengenealogyai")
+CURRENT_SRC = Path(r"C:\Users\stock\dev\maxgen-workbench")
+DOCS_SRC = Path(r"C:\Users\stock\dev\opengenealogyai")
 SITE = Path(__file__).resolve().parents[1]
 BASE = "https://opengenealogyai.org"
 V2_BASE = f"{BASE}/schemas/maxgen/v2/"
 
-# (file, title) in the handoff's order
+CURRENT = "2.1"
+CURRENT_RELEASED = "2026-11-21"   # published on the site this day (Garlon: no comment period, nobody else uses it yet)
+# Earlier 2.x releases kept as frozen copies: version -> (schema folder, release date)
+EARLIER = {"2.0": (DOCS_SRC / "schemas", "2026-10-16")}
+
+# (file, title) in BuildGenealogy's handoff order
 SCHEMAS = [
     ("maxgen-defs.schema.json", "MAXGEN shared building blocks"),
     ("raw-record.schema.json", "MaxRecord"),
@@ -47,16 +55,16 @@ SCHEMAS = [
 AGENT_DOCS = ["START.md", "RULES.md", "ORCHESTRATOR.md", "GENEALOGIST.md", "QUALITY_CONTROL.md",
               "CYCLE.md", "DATABASE.md", "EXAMPLE.md", "AGENTS.md"]
 AGENT_PY = {  # served name -> source
-    "maxgen_db.py": SRC / "docs" / "agents" / "maxgen_db.py",
-    "probable_pedigree.py": SRC / "docs" / "agents" / "probable_pedigree.py",
-    "sample_family.py": SRC / "docs" / "agents" / "sample_family.py",
-    "check_maxgen.py": SRC / "docs" / "onboarding" / "check_maxgen.py",
+    "maxgen_db.py": CURRENT_SRC / "docs" / "agents" / "maxgen_db.py",
+    "probable_pedigree.py": CURRENT_SRC / "docs" / "agents" / "probable_pedigree.py",
+    "sample_family.py": CURRENT_SRC / "docs" / "agents" / "sample_family.py",
+    "check_maxgen.py": CURRENT_SRC / "docs" / "onboarding" / "check_maxgen.py",
 }
 ONBOARDING = {
-    "STARTER_PROMPT.md": SRC / "docs" / "onboarding" / "STARTER_PROMPT.md",
-    "check_maxgen.py": SRC / "docs" / "onboarding" / "check_maxgen.py",
+    "STARTER_PROMPT.md": DOCS_SRC / "docs" / "onboarding" / "STARTER_PROMPT.md",   # only in the schema repo
+    "check_maxgen.py": CURRENT_SRC / "docs" / "onboarding" / "check_maxgen.py",
 }
-# one made-up example per record kind (tests/fixtures/v2/<kind>/valid/<file>)
+# one made-up example per record kind (tests/fixtures/v2/<kind>/valid/<file>; identical in both repos)
 EXAMPLES = {
     "record": "marriage_register_1880_obadiah_patience.json",
     "person": "birth_calculated_from_census_age.json",
@@ -103,48 +111,64 @@ def py_version(p: Path) -> str:
     return m.group(1) if m else ""
 
 
+def git_head(repo: Path) -> str:
+    return subprocess.run(["git", "-C", str(repo), "rev-parse", "--short", "HEAD"], capture_output=True, text=True,
+                          creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout.strip()
+
+
+def publish_set(src_dir: Path, folders: list[Path], record: dict) -> list[dict]:
+    files = []
+    for folder in folders:
+        for name, title in SCHEMAS:
+            dst = copy(src_dir / name, folder / name, record)
+            sid = json.loads(dst.read_bytes()).get("$id", "")
+            if sid != V2_BASE + name:
+                raise SystemExit(f"{name}: $id is {sid!r}, expected {V2_BASE + name}")
+        sums_file(folder, [n for n, _ in SCHEMAS])
+    first = folders[0]
+    for name, title in SCHEMAS:
+        files.append({"file": name, "title": title, "$id": V2_BASE + name, "sha256": sha256(first / name)})
+    return files
+
+
 def main() -> int:
     record: dict[str, str] = {}
+    maxgen = SITE / "schemas" / "maxgen"
 
-    # 1. schemas
-    v2, v20 = SITE / "schemas" / "maxgen" / "v2", SITE / "schemas" / "maxgen" / "v2.0"
-    files = []
-    for name, title in SCHEMAS:
-        dst = copy(SRC / "schemas" / name, v2 / name, record)
-        copy(SRC / "schemas" / name, v20 / name, record)
-        sid = json.loads(dst.read_bytes()).get("$id", "")
-        if sid != V2_BASE + name:
-            raise SystemExit(f"{name}: $id is {sid!r}, expected {V2_BASE + name}")
-        files.append({"file": name, "title": title, "$id": sid, "sha256": sha256(dst)})
-    sums_file(v2, [n for n, _ in SCHEMAS])
-    sums_file(v20, [n for n, _ in SCHEMAS])
+    # 1. schemas: the current release at /v2/ and /v<CURRENT>/, earlier 2.x releases frozen at /v<ver>/
+    cur_files = publish_set(CURRENT_SRC / "schemas", [maxgen / "v2", maxgen / f"v{CURRENT}"], record)
+    earlier_entries = []
+    for ver, (folder, released) in EARLIER.items():
+        files = publish_set(folder, [maxgen / f"v{ver}"], record)
+        earlier_entries.append({"version": ver, "released": released, "status": "previous",
+                                "url": f"{BASE}/schemas/maxgen/v{ver}/", "frozen_url": f"{BASE}/schemas/maxgen/v{ver}/",
+                                "schemas": [n.replace(".schema.json", "") for n, _ in SCHEMAS], "files": files})
 
-    # 2. index.json (keep the structure; add 2.0; mark 1.x archived)
-    idx_path = SITE / "schemas" / "maxgen" / "index.json"
+    # 2. index.json (keep the structure; current 2.x first; 1.x entries archived)
+    idx_path = maxgen / "index.json"
     idx = json.loads(idx_path.read_text(encoding="utf-8"))
-    idx["current"] = "2.0"
+    idx["current"] = CURRENT
     idx["canonical_base"] = V2_BASE
     idx["policy"] = POLICY
     old = [v for v in idx["versions"] if not str(v["version"]).startswith("2.")]
     for v in old:
         v["status"] = "archived"
-    entry = {"version": "2.0", "released": "2026-10-16", "status": "current", "url": V2_BASE,
-             "frozen_url": f"{BASE}/schemas/maxgen/v2.0/",
-             "schemas": [n.replace(".schema.json", "") for n, _ in SCHEMAS], "files": files}
-    idx["versions"] = [entry] + old
+    current_entry = {"version": CURRENT, "released": CURRENT_RELEASED, "status": "current", "url": V2_BASE,
+                     "frozen_url": f"{BASE}/schemas/maxgen/v{CURRENT}/",
+                     "schemas": [n.replace(".schema.json", "") for n, _ in SCHEMAS], "files": cur_files}
+    idx["versions"] = [current_entry] + earlier_entries + old
     write_json(idx_path, idx)
 
-    # 3. agent kit
+    # 3. agent kit (hidden beta)
     agents, onboard = SITE / "agents", SITE / "onboarding"
     for n in AGENT_DOCS:
-        copy(SRC / "docs" / "agents" / n, agents / n, record)
+        copy(CURRENT_SRC / "docs" / "agents" / n, agents / n, record)
     for n, src in AGENT_PY.items():
         copy(src, agents / n, record)
-    copy(SRC / "LICENSE", agents / "LICENSE", record)
+    copy(CURRENT_SRC / "LICENSE", agents / "LICENSE", record)
     for n, src in ONBOARDING.items():
         copy(src, onboard / n, record)
-    served = AGENT_DOCS + list(AGENT_PY) + ["LICENSE"]
-    sums_file(agents, served)
+    sums_file(agents, AGENT_DOCS + list(AGENT_PY) + ["LICENSE"])
     sums_file(onboard, list(ONBOARDING))
     manifest = {
         "note": "SHA-256 and __version__ computed from the files exactly as served here.",
@@ -160,20 +184,20 @@ def main() -> int:
 
     # 4. pinned build inputs
     pin = SITE / "content" / "v2"
-    copy(SRC / "docs" / "SCHEMA_CHANGELOG.md", pin / "SCHEMA_CHANGELOG.md", record)
-    copy(SRC / "docs" / "agents" / "llms.txt", pin / "agents-llms.txt", record)
-    copy(SRC / "schemas" / "README-v2.md", pin / "README-v2.md", record)
+    copy(DOCS_SRC / "docs" / "SCHEMA_CHANGELOG.md", pin / "SCHEMA_CHANGELOG.md", record)
+    copy(CURRENT_SRC / "docs" / "agents" / "llms.txt", pin / "agents-llms.txt", record)
+    copy(CURRENT_SRC / "schemas" / "README-v2.md", pin / "README-v2.md", record)
     for kind, fname in EXAMPLES.items():
-        dst = copy(SRC / "tests" / "fixtures" / "v2" / kind / "valid" / fname, pin / "examples" / kind / fname, record)
+        dst = copy(DOCS_SRC / "tests" / "fixtures" / "v2" / kind / "valid" / fname, pin / "examples" / kind / fname, record)
         if b'"fixture": "made up"' not in dst.read_bytes():   # the marker sits inside the document (e.g. extensions)
             raise SystemExit(f"example {kind}/{fname} is not marked \"fixture\": \"made up\"")
-    head = subprocess.run(["git", "-C", str(SRC), "rev-parse", "--short", "HEAD"], capture_output=True, text=True,
-                          creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout.strip()
     write_json(pin / "SYNC.json", {
         "synced_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "source": str(SRC), "source_state": f"working copy (uncommitted 2.0 files; repo HEAD {head})",
+        "current": CURRENT,
+        "sources": {"current_schemas_and_kit": f"{CURRENT_SRC} (HEAD {git_head(CURRENT_SRC)})",
+                    "changelog_starter_prompt_examples_and_2.0": f"{DOCS_SRC} (uncommitted working copy; HEAD {git_head(DOCS_SRC)})"},
         "examples": EXAMPLES, "sha256": record})
-    print(f"synced {len(record)} files; schemas v2 x{len(SCHEMAS)}; kit scripts: "
+    print(f"synced {len(record)} files; current {CURRENT} at /v2/ and /v{CURRENT}/; earlier: {', '.join(EARLIER)}; kit scripts: "
           + ", ".join(f"{s['path'].rsplit('/', 1)[1]} {s['version']}" for s in manifest["scripts"]))
     return 0
 

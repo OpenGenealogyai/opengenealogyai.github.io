@@ -89,7 +89,8 @@ python maxgen_db.py review genealogy.db <record_id> fail --by "Quality Control" 
 6. **Confidence reasonable, and the cap kept.** A census row supports a name at 0.8 to 0.9. A
    claim whose evidence is not reliable — the interview, an online tree, an imported file, a
    compiled work — is 0.4 or below and **never stands alone**: approve it only as a labelled
-   lead: it never supports a proof, never counts as independent, and never shows a death. A
+   lead: it never supports a proof, never counts as independent, and never shows a death to the
+   four rules of 4.2 (Probable Pedigree's R-40 still reads its year; RULES, "Who may be living"). A
    claim whose evidence stopped being reliable (its proof was withdrawn) is read as capped:
    fail the person until the Genealogist rewrites it with reliable evidence.
 7. **Not a copied tree.** If a claim's real basis is another website's family tree presented as
@@ -97,8 +98,17 @@ python maxgen_db.py review genealogy.db <record_id> fail --by "Quality Control" 
 8. **`is_living` is explicit and right.** `false` is right only when reliable evidence shows a
    death, burial or cremation; or their latest possible birth year is 110 or more years ago; or
    a marriage of theirs is 90 or more years ago; or a birth child of theirs was born 90 or more
-   years ago (always counting the latest year the date allows; RULES, "Who may be living"). If
-   the helper printed `is_living false but no reliable death or age evidence`, fail.
+   years ago (always counting the latest year the date allows; RULES, "Who may be living"). With
+   R-40 on (the default in Probable Pedigree's helper), `false` is also right where any evidence
+   but DNA, unchecked included, gives a death year, a birth 110 or more years ago, or a marriage
+   or a child's birth 90 or more years ago; and (R-40b) a recorded birth 110 or more years ago,
+   from any evidence but DNA, shows even a stored `true` as deceased, so that flag is stale and
+   may be lowered with the person's yes (unless the same person's other dated records, such as a
+   census or a marriage more than 110 years after that birth, contradict the birth: the year is
+   then most likely mistyped; fix the birth claim and the flag stands meanwhile). If the helper
+   printed `is_living false but no reliable
+   death or age evidence; treated as living`, the person is still treated as living (nothing at
+   all, reliable or not, puts them past the limits): fail.
 9. **The person said yes.** A parent link approved below 0.70 confidence, any merge of two
    people, an adoption, or a lowered living flag needs a recorded yes from the person
    (ORCHESTRATOR, "Stop and ask the person before"). A parent link that rests only on the

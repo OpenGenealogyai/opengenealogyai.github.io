@@ -62,10 +62,27 @@
     "approx_century": {"type": "integer", "minimum": 1000, "maximum": 2100,
       "description": "Handwritten readings: the rough age of the handwriting as the first year of its century (1800 means the 1800s)."},
     "searchable_variants": {"type": "array", "items": {"type": "string"},
-      "description": "Every spelling this reading should be findable under, including uncertain readings and normalised forms."}
+      "description": "Every spelling this reading should be findable under, including uncertain readings and normalised forms."},
+    "read_blind": {"type": "boolean",
+      "description": "MAXGEN 2.1 (G-30): true when the image was read before the reader saw any index or other reading of it, so the reading is independent; false when it was read after seeing one."},
+    "based_on_recognition_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid",
+      "description": "MAXGEN 2.1 (G-30): the reading this one started from and corrected; what changed is worked out by comparing the two."},
+    "field_comparison": {"type": "array", "items": {"$ref": "#/$defs/field_comparison"},
+      "description": "MAXGEN 2.1 (G-11): how this reading compares with an index of the same image, field by field, as the reader judged it."}
   },
   "unevaluatedProperties": false,
   "$defs": {
+    "field_comparison": {
+      "type": "object", "additionalProperties": false, "required": ["field", "result"],
+      "description": "MAXGEN 2.1 (G-11): one field of one person or line, as the image and the index give it.",
+      "properties": {
+        "mention_ref": {"type": "string", "maxLength": 200, "description": "Which person or line of the index the field belongs to, as the reader wrote it."},
+        "field": {"type": "string", "maxLength": 100, "description": "The field compared, as written (name, age, birthplace ...)."},
+        "page_value": {"type": "string", "maxLength": 2000, "description": "What the image says, as read."},
+        "index_value": {"type": "string", "maxLength": 2000, "description": "What the index says."},
+        "result": {"enum": ["agrees", "differs", "unclear"], "description": "The image and the index agree, differ, or the image is unclear there."}
+      }
+    },
     "word_confidence": {
       "type": "object", "additionalProperties": false, "required": ["word", "confidence"],
       "description": "One word of the reading with its confidence.",

@@ -12,6 +12,9 @@ Every write runs under your own helper session: `--as <your session id>` from `s
 
 ## Working a task
 
+Write every note, reason and summary in the archivist's voice: what the document says, plainly, and nothing it does
+not say.
+
 Take tasks that are `pending`, one at a time, highest `priority` first, and claim each one
 before you write anything for it. Leave `judge_review` tasks and `person_request` tasks to the
 Orchestrator (a `judge_review` is a question for the person or a review, never research):
@@ -358,6 +361,12 @@ file: in a match-list transcription write `[kit number withheld]`. For `kit_id_h
 `echo <kit number> | python maxgen_db.py kit-hash genealogy.db` (a fingerprint made with this
 database's own secret key; nothing is logged or stored).
 
+Use a DNA test only while its agreement stands: its `consent_status` is one of the consent values
+and it has no `withdrawal_requested_at`. When the person withdraws agreement (in their own
+program), the test and its matches are out of use at once: do not cite them, and never put
+agreement back yourself (only the person can, with "Keep my DNA test"). Thirty days after the
+withdrawal the person's program erases the test for good.
+
 ## Places, groups and occasions
 
 Write places as the document gives them: `"place": {"place_as_written": "Greywater, Erewhon"}`.
@@ -389,6 +398,19 @@ you find a document that shows the fact, add your own claim citing it. A pending
 `payload.kind: "person_request"` is the person asking the Orchestrator for research from the
 same page: leave it for the Orchestrator.
 
+Three more payload kinds come from the program's temple tools (proposed change G-35 of the
+FamilySearch bridge, text only): `temple_prepare` (fill one gap the readiness check named, in
+`payload.gap`: a death place, a date, dates that disagree, a document for a fact),
+`temple_pack` (draft the citations and reason statements for a family) and `temple_check`
+(Quality Control checks that the person is the right one and related as the tree says). Work
+them like any research task, on this computer only (`payload.local_only: true`): never offer
+or send one to anyone else, a paid helper included; never search, read or copy anything from
+FamilySearch for one (FamilySearch's terms forbid automated access; hand every FamilySearch
+search to the person); never ask for, use or keep anyone's FamilySearch sign-in; and never
+write a living person's details into one. Never mark, reserve, share or print anything for
+the temple, and never decide which ordinances a person needs: FamilySearch makes that check,
+and the last click is always the person's own.
+
 ## Searches and dead ends
 
 Every search is a step on the task — the task's search log, which the next batch reads:
@@ -405,6 +427,25 @@ python maxgen_db.py dead-end genealogy.db --task <task_id> --person <person_id> 
 
 A search you could not run at all (a login, a site that forbids automation, a site that is
 down) is `--verdict inaccessible`, never a dead end.
+
+## Keeping copies the person asked for — `fetch_copies` tasks
+
+Probable Pedigree never goes online. When the person presses "Ask my AI agent to fetch these", it makes one task of
+type `other` whose `payload.kind` is `fetch_copies`; `payload.records` lists each record id, its stored address and its
+site, and `payload.rules` repeats what follows. For each record:
+
+1. Follow the site etiquette above. A site that forbids automated access, needs a sign-in or keeps its records on site
+   only is not fetched; record a step with `--verdict inaccessible` and leave that record for the person, who saves it
+   by hand. The program already left out the sites its catalogue knows forbid it; check again anyway.
+2. Fetch the picture or page at the stored address only, then store it:
+   `python maxgen_db.py store-media genealogy.db <file>`, which prints its fingerprint.
+3. Describe it on that record, never on a new one: add a `saved_copies` entry with the `sha256`, `content_type`, a
+   `copy_kind` (`page_image` for a picture of a page, `web_page` for a saved page), your task as `capture_task_id`, and
+   `locations: [{"uri": "<the stored address>", "is_public": false}]`. Send the whole record back with
+   `add --replace --expect-sha256 <its doc_sha256>`. One file is described on one record only (R-09).
+
+The copies appear in the program by themselves. Close the task `done` when every record is fetched or left for the
+person, saying which.
 
 ## When you find a new place records live — a MaxSource
 
@@ -470,4 +511,6 @@ person; the note is stored as `escalation_reason`. With `done`, `--note` is stor
 - change `RULES.md`, the schemas, the thresholds or Quality Control's notes;
 - invent a fact, a source, a date, a person or a licence;
 - tidy a transcription, or change or delete a stored claim;
-- keep working on a task after its acceptance criteria are met.
+- keep working on a task after its acceptance criteria are met;
+- claim, start or finish a task whose payload says `for_the_person: true`, or work past a task's `task_budget`;
+- send a living person, a DNA test or match, or a health condition to a model or service run by another company.

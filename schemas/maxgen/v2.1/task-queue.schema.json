@@ -1,0 +1,719 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opengenealogyai.org/schemas/maxgen/v2/task-queue.schema.json",
+  "title": "MaxTask",
+  "description": "MAXGEN 2.0 -- One MaxTask is the permanent record of one piece of work done in a database (research, an import, a review or a proof), never pruned while anything points at it.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "maxgen-defs.schema.json#/$defs/common_fields"},
+    {
+      "if": {
+        "properties": {"is_living_flag": {"const": true}},
+        "required": ["is_living_flag"]
+      },
+      "then": {
+        "properties": {"contributor_eligibility": {"const": "first_party_only"}}
+      }
+    }
+  ],
+  "required": ["task_id", "task_type", "status", "is_living_flag"],
+  "properties": {
+    "task_id": {
+      "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+      "description": "This task's own id: a random UUID created once by the writer and never reused."
+    },
+    "created_by_task_id": false,
+    "task_type": {
+      "enum": [
+        "extract_record", "find_original", "validate_record", "merge_person", "judge_review", "resolve_conflict",
+        "build_tree", "import_file", "fetch_internet_archive", "ingest_to_qdrant", "cost_report", "other"
+      ],
+      "description": "What kind of work this is; a task of type other permits none of the gated actions of rules R-24, R-28 and R-31."
+    },
+    "task_type_as_written": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The kind of work in the writer's own words, given when task_type is other."
+    },
+    "status": {
+      "enum": ["pending", "processing", "done", "failed", "escalated", "on_hold", "cancelled"],
+      "description": "Where the work stands, changed only through the helper's task command (pending, processing, then done, failed or escalated; on_hold pauses it; a task made by mistake or retracted is cancelled, never deleted)."
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "default": 5,
+      "description": "How urgent the task is, from 1 (lowest) to 10 (highest)."
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Which documented payload this is: interview, person_request, person_page_session, fan_survey, run, find_original, import_file, analysis, or (G-04, additive) incoming_finding: one finding from another tree (a relative's file as suggestions, a findings delivery), holding its proposed facts and any proposed new person in the payload (sender_tree_id, sender_label, received_at, verdict, person_id or new_person and relation, facts) until the person lets it in; it is never a claim on the person's people while it waits."
+        },
+        "person_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The person this task is about (a fan_survey, a person request or a review of a child's main parents); read through merge redirects."
+        },
+        "person_ids": {
+          "type": "array",
+          "items": {"$ref": "maxgen-defs.schema.json#/$defs/uuid"},
+          "description": "The persons this task is about, when it concerns more than one."
+        },
+        "record_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "On a find_original task: the record (often an index entry) whose original image is to be found and looked at."
+        },
+        "target_task_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "On a judge_review task: the task being reviewed."
+        }
+      },
+      "description": "The task's input, an open object whose documented kinds are interview, person_request, person_page_session, fan_survey (person_id), run (run_id, on a judge_review task), find_original (record_id), import_file (format: gedcom7, gedcom551, gedcomx, gramps_xml, rootsmagic, maxgen (another MAXGEN database, with source_database_id) or other; file_name) and analysis (an imported write-up, as a child task of its import)."
+    },
+    "result": {"$ref": "#/$defs/result", "description": "What the work found and decided, in a closed, readable shape."},
+    "provenance": {
+      "$ref": "maxgen-defs.schema.json#/$defs/provenance",
+      "readOnly": true,
+      "description": "Helper-owned and written once: who did the work of this task, filled when the task is first claimed (moved to processing) or created already done."
+    },
+    "created_by": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{0,199}$",
+      "description": "The agent id of the session that wrote this task: optional in input, filled by the helper from the writing session, required in stored form, and a different value is refused (R-14)."
+    },
+    "started_at": {
+      "$ref": "maxgen-defs.schema.json#/$defs/timestamp",
+      "readOnly": true,
+      "description": "Helper-owned: when the task was first moved to processing."
+    },
+    "completed_at": {
+      "$ref": "maxgen-defs.schema.json#/$defs/timestamp",
+      "readOnly": true,
+      "description": "Helper-owned: when the task reached done, failed or cancelled."
+    },
+    "is_living_flag": {
+      "type": "boolean",
+      "description": "Living A floor: true when the task names or concerns someone who may be alive (unsure means true); it only rises, and while it is true the task must be first_party_only."
+    },
+    "contributor_eligibility": {
+      "enum": ["first_party_only", "any_contributor"],
+      "default": "first_party_only",
+      "description": "Who may be given this task: first_party_only (the person's own kit and agents, the default, failing closed) or any_contributor; it must be first_party_only whenever is_living_flag is true."
+    },
+    "assigned_to": {"type": "string", "description": "The agent id now working on this task; absent while it is pending."},
+    "cost_usd": {"type": "number", "minimum": 0, "description": "What the work actually cost, in US dollars."},
+    "cost_cap_usd": {
+      "type": "number",
+      "minimum": 0,
+      "description": "The most this task may cost, in US dollars; the agent stops and escalates before going over it."
+    },
+    "retry_count": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "How many times the task has been retried after a failure."
+    },
+    "max_retries": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 3,
+      "description": "How many retries are allowed before the task is left failed."
+    },
+    "error_message": {"type": "string", "description": "What went wrong, when the task failed or was escalated."},
+    "escalation_reason": {"type": "string", "description": "Why the task was escalated for a further decision."},
+    "queue_file_path": {
+      "type": "string",
+      "description": "The task's path in a file-based queue on this computer; private, never exported."
+    },
+    "depends_on": {
+      "type": "array",
+      "items": {"$ref": "maxgen-defs.schema.json#/$defs/uuid"},
+      "description": "Tasks that must be done before this one can start."
+    },
+    "parent_task_id": {
+      "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+      "description": "The task that made this task (on MaxTask this replaces created_by_task_id, which tasks may not carry)."
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Plain, checkable conditions that a complete result must meet."
+    },
+    "min_confidence": {
+      "$ref": "maxgen-defs.schema.json#/$defs/confidence",
+      "description": "The lowest result confidence that can be accepted."
+    },
+    "evidence_required": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "What the worker must hand back as proof of the work (addresses, exact queries, records saved)."
+    },
+    "deadline": {"$ref": "maxgen-defs.schema.json#/$defs/timestamp", "description": "When the work should be finished."}
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "verdict": {
+      "enum": ["key_finding", "usable", "inconclusive", "ruled_out", "dead_end", "inaccessible", "infra", "other"],
+      "description": "The outcome of a task or step: key_finding (confirmed or found), usable (a usable lead), inconclusive (mixed), ruled_out (proved this is not the right person or record, a disproof), dead_end (searched and found nothing), inaccessible (could not search because of a login, a prohibition or the site being offline; never filed as dead_end), infra (a support task) or other."
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "One line saying what this task was."},
+        "hypothesis_tested": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "The claim or link this task tested."},
+        "why_this_matters": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "description": "Why the work was done, in terms of the person's goal."
+        },
+        "what_we_did_and_result": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "description": "What was done and the headline result, in plain words."
+        },
+        "how_results_affect_goal": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "description": "How the result moves the person's goal forward or back."
+        },
+        "what_we_did_with_results": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "description": "What was written or changed because of the result."
+        },
+        "next_step": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "The next thing to do."},
+        "steps": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/step"},
+          "description": "One entry per search or lookup performed; these steps are the only search log (the dead_end view is read from them)."
+        },
+        "verdict": {"$ref": "#/$defs/verdict", "description": "The outcome of the task as a whole."},
+        "verdict_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The outcome in the writer's own words, given when verdict is other."
+        },
+        "verdict_reason": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "Why the task got its verdict."},
+        "confidence": {
+          "$ref": "maxgen-defs.schema.json#/$defs/confidence",
+          "description": "The writer's confidence in the result, from 0 to 1."
+        },
+        "next_directions_suggested": {
+          "type": "array",
+          "items": {"$ref": "maxgen-defs.schema.json#/$defs/text"},
+          "description": "Suggested next research directions, one per item."
+        },
+        "proof": {
+          "$ref": "#/$defs/proof",
+          "description": "A proof write-up (on resolve_conflict and merge_person tasks, and reasoning brought in on an import_file task), which once accepted is the single authority for the status of the claims it settles."
+        },
+        "occurrence_verdicts": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/occurrence_verdict"},
+          "description": "Decisions that two or more occurrences are, or are not, the same occasion."
+        },
+        "review": {
+          "$ref": "#/$defs/review",
+          "description": "On a judge_review task: the review of another task (reviews are their own tasks and are never overwritten)."
+        },
+        "run_decisions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/run_decision"},
+          "description": "On a judge_review task whose payload kind is run: one keep, retract or correct decision per object the run wrote (a blanket retraction of a whole run is refused)."
+        },
+        "associates": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/associate"},
+          "description": "On a fan_survey task: the friends, associates and neighbours studied around one person (FAN clusters live here, never as MaxGroups)."
+        },
+        "import_header_as_written": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "description": "On an import_file task: the imported file's header, word for word (named submitters or contact details make the task living)."
+        }
+      },
+      "description": "What the work found and decided."
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_no", "source", "query", "found", "verdict"],
+      "properties": {
+        "step_no": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "This step's permanent number within the task, never renumbered or reused."
+        },
+        "action": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The kind of lookup, as a short word such as web_search or catalog_lookup."
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "description": "Exactly which site, database, book or archive was searched, as written."
+        },
+        "source_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The MaxSource searched, when it is in this database."
+        },
+        "source_url": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uri",
+          "description": "The address searched, when there is one; never invented."
+        },
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000,
+          "description": "The exact search terms or browse path used."
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "span": {
+              "$ref": "maxgen-defs.schema.json#/$defs/date",
+              "description": "The years or dates the search covered (use derivation interpreted when the span is not quoted from the source)."
+            },
+            "place": {
+              "$ref": "maxgen-defs.schema.json#/$defs/place_ref",
+              "description": "The place the search covered, as written."
+            },
+            "record_types": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "description": "One kind of record searched, in plain words or a MaxRecord record_type value."
+              },
+              "description": "The kinds of record the search covered."
+            }
+          },
+          "description": "What the search covered, so a later search does not repeat it blindly."
+        },
+        "found": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "What came back, or the word nothing."},
+        "record_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The record saved from this step, if any."},
+        "person_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The person searched for, when the step was about one person (what step --person and dead-end --person store)."
+        },
+        "verdict": {"$ref": "#/$defs/verdict", "description": "The outcome of this step."},
+        "verdict_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The outcome in the writer's own words, given when verdict is other."
+        },
+        "confidence": {
+          "$ref": "maxgen-defs.schema.json#/$defs/confidence",
+          "description": "The writer's confidence in this step's finding, from 0 to 1."
+        },
+        "at": {"$ref": "maxgen-defs.schema.json#/$defs/timestamp", "description": "When the search was done."}
+      },
+      "description": "One search or lookup, recorded once and kept."
+    },
+    "proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject", "question", "relied_on", "proof_form", "conclusion"],
+      "properties": {
+        "subject": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/proof_subject"},
+          "description": "What the proof is about: people, claims, links, unions, memberships, occurrences, records, mentions, places, groups or pairs of people."
+        },
+        "question": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "description": "The research question the proof answers, in plain words."
+        },
+        "relied_on": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/relied_on"},
+          "description": "Everything the proof relies on, which may never include a claim it settles (P3)."
+        },
+        "argument": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "The full written argument."},
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "description": "A short summary of at most 2,000 characters, for exports."
+        },
+        "proof_form": {
+          "enum": ["statement", "summary", "argument"],
+          "description": "How full the write-up is; argument requires the argument field, and a proof that relies on indirect, negative, DNA or search-step evidence must be an argument (P5)."
+        },
+        "conclusion": {"$ref": "#/$defs/conclusion", "description": "What the proof concludes and what it settles."},
+        "supersedes_task_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "An earlier proof task that this proof replaces."
+        },
+        "origin": {
+          "enum": ["maxgen", "imported", "foreign_maxgen"],
+          "default": "maxgen",
+          "description": "Where the reasoning was written: in this database (maxgen), in another program (imported) or in another MAXGEN database (foreign_maxgen); only a maxgen proof can ever be accepted, count as reliable or make a claim proven."
+        },
+        "origin_outside_ids": {
+          "type": "array",
+          "items": {"$ref": "maxgen-defs.schema.json#/$defs/outside_id"},
+          "description": "The other program's or database's ids for this reasoning."
+        },
+        "origin_attribution": {
+          "$ref": "maxgen-defs.schema.json#/$defs/imported_attribution",
+          "description": "Who wrote the brought-in reasoning and when, word for word."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"proof_form": {"const": "argument"}},
+            "required": ["proof_form"]
+          },
+          "then": {"required": ["argument"]}
+        }
+      ],
+      "description": "A proof write-up: the question, what it relied on, the argument and the conclusion."
+    },
+    "proof_subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "person", "claim", "link", "union", "membership", "occurrence", "record", "mention", "place", "group",
+            "person_pair"
+          ],
+          "description": "What kind of thing this subject is (link and union both name a MaxRelationship)."
+        },
+        "id": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The subject's id: a UUID, or record_id#mention_id for a mention."
+        },
+        "id2": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "For a person_pair: the second person."}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"kind": {"const": "mention"}},
+            "required": ["kind"]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}#[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$"
+              }
+            }
+          },
+          "else": {
+            "properties": {"id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid"}}
+          }
+        },
+        {
+          "if": {
+            "properties": {"kind": {"const": "person_pair"}},
+            "required": ["kind"]
+          },
+          "then": {"required": ["id2"]},
+          "else": {"properties": {"id2": false}}
+        }
+      ],
+      "description": "One thing a proof is about."
+    },
+    "relied_on": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": ["claim", "record", "mention", "dna_match", "search_step", "proof", "authored_record"],
+          "description": "What kind of thing the proof relies on; it names the ids that kind needs."
+        },
+        "assertion_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "For a claim: its assertion id."},
+        "record_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "For a record, an authored record or a mention: the record."
+        },
+        "mention_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/label",
+          "description": "For a mention: the mention's label on that record."
+        },
+        "dna_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "For a DNA match: the DNA test that holds the match."
+        },
+        "match_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "For a DNA match: the match's permanent id."},
+        "task_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "For a search step or another proof: the task that holds it."
+        },
+        "step_no": {"type": "integer", "minimum": 1, "description": "For a search step: its step number."},
+        "note": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "What this item contributes to the argument."}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"kind": {"const": "claim"}},
+            "required": ["kind"]
+          },
+          "then": {"required": ["assertion_id"]}
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {"enum": ["record", "authored_record"]}
+            },
+            "required": ["kind"]
+          },
+          "then": {"required": ["record_id"]}
+        },
+        {
+          "if": {
+            "properties": {"kind": {"const": "mention"}},
+            "required": ["kind"]
+          },
+          "then": {"required": ["record_id", "mention_id"]}
+        },
+        {
+          "if": {
+            "properties": {"kind": {"const": "dna_match"}},
+            "required": ["kind"]
+          },
+          "then": {"required": ["dna_id", "match_id"]}
+        },
+        {
+          "if": {
+            "properties": {"kind": {"const": "search_step"}},
+            "required": ["kind"]
+          },
+          "then": {"required": ["task_id", "step_no"]}
+        },
+        {
+          "if": {
+            "properties": {"kind": {"const": "proof"}},
+            "required": ["kind"]
+          },
+          "then": {"required": ["task_id"]}
+        }
+      ],
+      "description": "One thing a proof relies on."
+    },
+    "conclusion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement"],
+      "properties": {
+        "statement": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "The conclusion in plain words."},
+        "settles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["assertion_id", "status"],
+            "properties": {
+              "assertion_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The claim this proof settles."},
+              "status": {
+                "$ref": "maxgen-defs.schema.json#/$defs/claim_status",
+                "description": "The status apply-proof copies onto that claim once the proof is accepted (proven only under rules P1 to P7)."
+              }
+            },
+            "description": "One claim this proof settles, and how."
+          },
+          "description": "The claims this proof settles."
+        },
+        "membership_updates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["membership_id"],
+            "properties": {
+              "membership_id": {
+                "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+                "description": "The membership (one child's place in one parent set) to update; a membership combined into another by a merge is followed to the one it was combined into."
+              },
+              "set_kind": {
+                "enum": ["birth", "adoptive", "step_household", "foster", "guardianship", "sealing", "alternative_hypothesis"],
+                "description": "The kind of parent set the proof settles for this membership (setting adoptive also needs the person's recorded yes, R-31; a change that would give the child two live memberships of one kind in one family is refused, R-20)."
+              },
+              "prefer": {
+                "type": "boolean",
+                "description": "True records this membership as the child's preferred (main) parent set, as the prefer command would."
+              },
+              "add_parent_link_ids": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {"$ref": "maxgen-defs.schema.json#/$defs/uuid"},
+                "description": "Parent links (parent_child records of the same child, each with a live fact) to add to this membership, such as the known mother's link when a candidate father was linked alone; the parent also fills an empty partner slot of the family."
+              },
+              "retract": {
+                "type": "boolean",
+                "description": "True retracts this membership (kept, marked retracted), such as the parent set the proof shows was wrong."
+              }
+            },
+            "allOf": [
+              {"anyOf": [
+                {"required": ["set_kind"]},
+                {"required": ["prefer"]},
+                {"required": ["add_parent_link_ids"]},
+                {"required": ["retract"], "properties": {"retract": {"const": true}}}
+              ]},
+              {
+                "if": {"properties": {"retract": {"const": true}}, "required": ["retract"]},
+                "then": {"properties": {"prefer": {"const": false}, "add_parent_link_ids": false, "set_kind": false}}
+              }
+            ],
+            "description": "One parent-set change this proof settles."
+          },
+          "description": "Parent-set changes apply-proof makes after the claim statuses, under the same gates (the only way besides link that a membership's kind changes)."
+        }
+      },
+      "description": "What a proof concludes."
+    },
+    "occurrence_verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["occurrence_ids", "verdict", "reason"],
+      "properties": {
+        "occurrence_ids": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {"$ref": "maxgen-defs.schema.json#/$defs/uuid"},
+          "description": "The occurrences (MaxEvent ids) judged, two or more."
+        },
+        "verdict": {
+          "enum": ["same", "not_same"],
+          "description": "same merges the occurrences when the task is accepted (undoably); not_same records them as distinct."
+        },
+        "survivor_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "For same: the occurrence that survives the merge."
+        },
+        "reason": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "Why they are, or are not, the same occasion."},
+        "reverted_at": {
+          "$ref": "maxgen-defs.schema.json#/$defs/timestamp",
+          "readOnly": true,
+          "description": "Helper-owned: when the merge this verdict made was undone."
+        }
+      },
+      "description": "A decision about whether two or more occurrences are one occasion."
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_task_id", "verdict"],
+      "properties": {
+        "target_task_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The task being reviewed."},
+        "verdict": {
+          "enum": ["accepted", "rework", "rejected"],
+          "description": "The review's decision; how independent the reviewer was is worked out from the two tasks' provenance and never stored."
+        },
+        "rejection_reason": {
+          "enum": [
+            "insufficient_sources", "unverifiable", "low_confidence", "off_task", "fabricated_or_hallucinated",
+            "incomplete", "privacy_violation", "impossible_timeline", "other"
+          ],
+          "description": "Why the work was not accepted; with other, say why in notes."
+        },
+        "notes": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "description": "The reviewer's own words (for a decision the person made, the person's own words)."
+        }
+      },
+      "description": "One review of another task."
+    },
+    "run_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["object_kind", "id", "decision", "reason"],
+      "properties": {
+        "object_kind": {
+          "enum": [
+            "claim", "record", "person", "relationship", "membership", "mention", "region", "place", "group", "event",
+            "task", "source", "name", "recognition", "dna", "dna_match", "event_entry", "partner", "saved_copy"
+          ],
+          "description": "What kind of object the decision is about."
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(#[A-Za-z0-9][A-Za-z0-9._:-]{0,199})?$",
+          "description": "The object's id in a form the retract command accepts: a UUID, or record_id#mention_id, record_id#event:ref, record_id#copy:sha256, family_id#partner:person_id, family_id#partner:absent or dna_id#match:match_id."
+        },
+        "decision": {
+          "enum": ["keep", "retract", "correct"],
+          "description": "What happens to the object (retracting a task sets it cancelled)."
+        },
+        "reason": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "Why, for this one object."},
+        "replacement_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(#[A-Za-z0-9][A-Za-z0-9._:-]{0,199})?$",
+          "description": "For correct: the object that replaces this one, in the same id forms."
+        }
+      },
+      "description": "One decision of a run review about one object a run wrote."
+    },
+    "associate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "person_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The associate, when they are a person in this database."
+        },
+        "mention": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["record_id", "mention_id"],
+          "properties": {
+            "record_id": {"$ref": "maxgen-defs.schema.json#/$defs/uuid", "description": "The record that names the associate."},
+            "mention_id": {
+              "$ref": "maxgen-defs.schema.json#/$defs/label",
+              "description": "The associate's mention label on that record."
+            }
+          },
+          "description": "The associate as one record names them, when they are not a person in this database."
+        },
+        "name_as_written": {"type": "string", "maxLength": 500, "description": "The associate's name exactly as the document gives it."},
+        "role_as_written": {"type": "string", "maxLength": 200, "description": "The associate's role in the document's own words."},
+        "association_type": {
+          "enum": [
+            "godparent", "enslaved_by", "ancestor_descendant", "employer", "neighbour", "friend", "multiple_birth",
+            "other"
+          ],
+          "description": "The kind of tie to the person studied, in the MaxRelationship association words."
+        },
+        "association_type_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The kind of tie in the writer's or document's own words, given when association_type is other."
+        },
+        "evidence": {
+          "$ref": "maxgen-defs.schema.json#/$defs/evidence",
+          "description": "The one piece of evidence that shows this associate."
+        },
+        "confidence": {
+          "$ref": "maxgen-defs.schema.json#/$defs/confidence",
+          "description": "The writer's confidence in this finding, from 0 to 1."
+        },
+        "note": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "Why this associate matters to the research."}
+      },
+      "allOf": [
+        {
+          "oneOf": [
+            {"required": ["person_id"]},
+            {"required": ["mention"]}
+          ]
+        }
+      ],
+      "description": "One friend, associate or neighbour found by a FAN survey: exactly one of person_id or mention."
+    }
+  }
+}

@@ -1,11 +1,11 @@
 ---
 title: Validator
-description: Paste a JSON record and check it against the MAXGEN 2.0 schemas, entirely in your browser.
+description: Paste a JSON record and check it against the current MAXGEN schemas, entirely in your browser.
 ---
 <p class="eyebrow">Tools</p>
 # Check a record
 
-Paste a JSON record, choose the schema (or let the page detect the kind from the record), and press **Validate**. The check runs in your browser using the canonical schema files: all twelve MAXGEN 2.0 files are loaded together, the shared building-blocks file first. Nothing you paste is sent anywhere. The archived 1.13 schemas are in the list too.
+Paste a JSON record, choose the schema (or let the page detect the kind from the record), and press **Validate**. The check runs in your browser using the canonical schema files: all twelve current MAXGEN files are loaded together, the shared building-blocks file first. Nothing you paste is sent anywhere. The archived 1.13 schemas are in the list too.
 
 <div class="validator">
 <label for="schema-select"><strong>Schema</strong></label><br>

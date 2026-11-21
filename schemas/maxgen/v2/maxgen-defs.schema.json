@@ -39,12 +39,17 @@
       "properties": {
         "text": {"$ref": "#/$defs/text"},
         "lang": {"$ref": "#/$defs/lang"},
-        "note_type": {"enum": ["general", "research", "to_do", "transcription", "translation", "source_comment", "imported", "other"], "default": "general"},
+        "note_type": {"enum": ["general", "research", "to_do", "transcription", "translation", "source_comment", "imported", "biography", "other"], "default": "general", "description": "MAXGEN 2.1 (G-07) adds biography: a short life summary on a person, never made or shown for someone who may be living."},
         "note_type_as_written": {"type": "string", "maxLength": 200},
         "task_id": {"$ref": "#/$defs/uuid"},
         "is_private": {"type": "boolean"},
         "outside_ids": {"type": "array", "items": {"$ref": "#/$defs/outside_id"}},
-        "created_at": {"$ref": "#/$defs/timestamp", "readOnly": true}
+        "created_at": {"$ref": "#/$defs/timestamp", "readOnly": true},
+        "note_id": {"$ref": "#/$defs/uuid", "description": "MAXGEN 2.1 (G-24): the note's own identity, so it can be changed as a new version, withdrawn and brought back."},
+        "supersedes_note_id": {"$ref": "#/$defs/uuid", "description": "MAXGEN 2.1 (G-24): the note this one replaces; the replaced note is kept, withdrawn."},
+        "status": {"enum": ["active", "retracted"], "default": "active", "description": "MAXGEN 2.1 (G-24): a withdrawn note is kept, never deleted."},
+        "cited_record_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/uuid"}, "description": "MAXGEN 2.1 (G-07): the documents a biography note rests on; each must exist (R-04)."},
+        "ai_badge": {"type": "object", "additionalProperties": false, "required": ["model_name", "written_at"], "description": "MAXGEN 2.1 (G-07): a biography written by an AI carries its badge: which AI, when, and the person's review of it.", "properties": {"model_name": {"type": "string", "minLength": 1, "maxLength": 200}, "written_at": {"$ref": "#/$defs/timestamp"}, "review": {"enum": ["waiting", "accepted", "rejected"], "default": "waiting"}}}
       }
     },
     "qualifier": {
@@ -262,7 +267,15 @@
         "redistribution_license": {"$ref": "#/$defs/licence"},
         "rights_uri": {"$ref": "#/$defs/uri"},
         "outside_ids": {"type": "array", "items": {"$ref": "#/$defs/outside_id"}},
-        "notes": {"type": "array", "items": {"$ref": "#/$defs/note"}}
+        "notes": {"type": "array", "items": {"$ref": "#/$defs/note"}},
+        "georeference": {"type": "object", "additionalProperties": false, "required": ["points"],
+          "description": "MAXGEN 2.1 (G-32): where a picture of an old map lies on today's map, from three or more control points: a point on the picture (fractions of its width and height, from the top left) with its latitude and longitude. A descriptive field a replace may change.",
+          "properties": {"points": {"type": "array", "minItems": 3, "maxItems": 50, "items": {"type": "object",
+            "additionalProperties": false, "required": ["x", "y", "latitude", "longitude"],
+            "properties": {"x": {"type": "number", "minimum": 0, "maximum": 1}, "y": {"type": "number", "minimum": 0, "maximum": 1},
+                           "latitude": {"type": "number", "minimum": -90, "maximum": 90},
+                           "longitude": {"type": "number", "minimum": -180, "maximum": 180}}}},
+            "method_as_written": {"type": "string", "maxLength": 500}}}
       },
       "allOf": [
         {"if": {"properties": {"pending": {"const": true}}, "required": ["pending"]},
@@ -355,7 +368,10 @@
         "conclusion_task_id": {"$ref": "#/$defs/uuid"},
         "task_id": {"$ref": "#/$defs/uuid"},
         "step_no": {"type": "integer", "minimum": 1},
-        "qualifiers": {"type": "array", "items": {"$ref": "#/$defs/qualifier"}}
+        "qualifiers": {"type": "array", "items": {"$ref": "#/$defs/qualifier"}},
+        "origin_tree_id": {"$ref": "#/$defs/uuid", "description": "G-03 (MAXGEN 2.1, additive): the other tree this claim came from (a relative's file brought in as suggestions, a findings delivery): its own tree id for a MAXGEN file, else a random id kept with the label the person typed. Lets one tree's facts be taken back together."},
+        "origin_tree_label": {"type": "string", "minLength": 1, "maxLength": 200, "description": "G-03: the person's own words for that tree, such as \"Aunt Ruth's tree\"."},
+        "received_at": {"$ref": "#/$defs/timestamp", "description": "G-03: when the finding holding this claim came into the tree."}
       },
       "allOf": [
         {"if": {"properties": {"basis": {"const": "document"}}, "required": ["basis"]},

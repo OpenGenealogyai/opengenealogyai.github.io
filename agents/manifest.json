@@ -4,8 +4,8 @@
     {
       "path": "/agents/maxgen_db.py",
       "version": "1.2.0",
-      "sha256": "94ff437b17a1994fda43b809591db2a44e7bfd2ad62038314b85dd30e926d1d2",
-      "bytes": 523654
+      "sha256": "bb375e0387c8f11e498ddd6ae838bbd46bfb32cd203218dcacde0a01aa88132d",
+      "bytes": 893358
     },
     {
       "path": "/agents/probable_pedigree.py",
@@ -35,23 +35,23 @@
   "documents": [
     {
       "path": "/agents/START.md",
-      "sha256": "a6f241b98adb5ffe226b839e2e1875188ce176579d8578a5fa8540639ad5a2b4"
+      "sha256": "f02f752260a74fa88cb66275105f419d0d7a0975d5f00fd9b35f00a4bc54ed4a"
     },
     {
       "path": "/agents/RULES.md",
-      "sha256": "a6680d84cc93cebd72199d74db2ce56ea477ea84a65010dd18eb389ed587bf6d"
+      "sha256": "18f9283f01f351eb2e0eed1ba780388482bcf0dd6306556e50d72a234574ff3e"
     },
     {
       "path": "/agents/ORCHESTRATOR.md",
-      "sha256": "fd15213f3d590a5406a74183c580034b755778c7f22afec5d8d9f4af4afa6ce1"
+      "sha256": "a04562347bb8ccb69478509ebccfe3c6086f533d921748f991c85fc93fad2ba4"
     },
     {
       "path": "/agents/GENEALOGIST.md",
-      "sha256": "6167ad856997d54e14bb1f18b377f73ba2d85efaddfd434d3ae7c22dba78b7aa"
+      "sha256": "5b4a350aa9cfce2e8f68c1f900bf873e5ec9635a38302b8c3ea446e6eb6ef080"
     },
     {
       "path": "/agents/QUALITY_CONTROL.md",
-      "sha256": "d19bc2225212c5e09e91cd60f90222a6cb1adccff32ebe1ba4b9df238a04a781"
+      "sha256": "615f9465be1116f814dde169b2c4934c7b666d5091299643a241041c65341a46"
     },
     {
       "path": "/agents/CYCLE.md",
@@ -59,7 +59,7 @@
     },
     {
       "path": "/agents/DATABASE.md",
-      "sha256": "77d92f26e383aab63b5dc4d764a4a6c8a2e049f4039741ddda0268ac2f339f29"
+      "sha256": "9761f7a6729cedd167d7dfce9a19f910d7ca3a01d5a6c55eb29e747281d29da8"
     },
     {
       "path": "/agents/EXAMPLE.md",
@@ -67,11 +67,11 @@
     },
     {
       "path": "/agents/AGENTS.md",
-      "sha256": "94eed55d2ec28d52681401912880ddafc01ed6cb7dd3a969667010d847df2b2f"
+      "sha256": "1605a29fc9b83cf4d0f72319fd48266a9fcf8c984a6c235dfcc1c6f025b16da1"
     },
     {
       "path": "/agents/LICENSE",
-      "sha256": "1cda2539b5f98ab8bb0e2e2d54016a30bc3380897ad8d73c4b55f475b55da683"
+      "sha256": "b5729b31b58dafb7ffbcb30fb6d550680f2be71ab915738efd29cc7c6a436b13"
     },
     {
       "path": "/onboarding/STARTER_PROMPT.md",

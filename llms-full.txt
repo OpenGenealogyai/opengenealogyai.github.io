@@ -1,11 +1,11 @@
-# MAXGEN — The Maxwell Genealogy Standard (v2.0) — full text of opengenealogyai.org
+# MAXGEN — The Maxwell Genealogy Standard (v2.1) — full text of opengenealogyai.org
 
 
 
 ---
 ## MAXGEN
 
-An open standard · public domain · current release v2.0
+An open standard · public domain · current release v2.1
 Genealogy data that is honest about what it doesn't know.
 MAXGEN is a free, open data standard for family history. Every fact carries its source and a confidence score. Conflicting evidence is kept, not deleted. Anyone can use it, build on it, or extend it. No permission required.
 
@@ -27,7 +27,7 @@ MAXGEN is built to sit alongside the archives, record sites, and communities res
 
 ## The eleven record schemas
 
-A schema is a written rule-set that says exactly what fields a record has and what each one means, so that any program can read a record written by any other program. MAXGEN 2.0 has eleven record schemas, plus one shared file of building blocks that they all use, and each record schema has its own page.
+A schema is a written rule-set that says exactly what fields a record has and what each one means, so that any program can read a record written by any other program. Since version 2.0, MAXGEN has eleven record schemas, plus one shared file of building blocks that they all use, and each record schema has its own page.
 
 
 
@@ -49,7 +49,7 @@ MAXGEN is short for the Maxwell Genealogy Standard, named for its author, Garlon
 ---
 ## The Standard
 
-The Maxwell Genealogy Standard · v2.0 · CC0
+The Maxwell Genealogy Standard · v2.1 · CC0
 # The Standard
 
 MAXGEN is a language for describing family-history evidence. It is not a product, not a database, and not a website. It is a set of eleven record schemas (written rule-sets for data records), plus one shared file of building blocks, that any program can read and write, so that research done in one place can be understood everywhere else. This page explains the standard in plain English. The exact rules live in the [schema files](/schemas/).
@@ -327,7 +327,7 @@ A MAXGEN document is one JSON file of one kind: one MaxPerson, one MaxRecord, an
 
 ## 10. Versioning
 
-All twelve files share one version number; the current release is v2.0. Every document carries a `schema_version` stamp. The schemas accept any `"2."` stamp (`"2.0"`, `"2.1"` and so on, but not `"1.13"`), and a file keeps the stamp it was written with.
+All twelve files share one version number; the current release is v2.1. Every document carries a `schema_version` stamp. The schemas accept any `"2."` stamp (`"2.0"`, `"2.1"` and so on, but not `"1.13"`), and a file keeps the stamp it was written with.
 
 **Within 2.x, every change is additive:** a new optional property, a new value in a list, a new shared definition in `maxgen-defs.schema.json`, a new record schema file, or a loosened limit. **Never:** removing or renaming a property, making an optional property required, narrowing a pattern, range or list, or changing what a value means. A file valid under 2.0 stays valid under every 2.x. Breaking changes wait for a new major version, with a new address space; the [governance page](/governance/) describes how changes are proposed and decided.
 
@@ -356,10 +356,10 @@ MAXGEN is public domain, so anyone can use it, fork it, or extend it. What is st
 ---
 ## The MAXGEN schemas
 
-MAXGEN v2.0 · twelve files, one version
+MAXGEN v2.1 · twelve files, one version
 # The schemas
 
-MAXGEN 2.0 is one release: eleven record schemas plus one shared building-blocks file. Every file is JSON Schema Draft 2020-12. All twelve files share one version number, and within 2.x every change is additive: a file valid under 2.0 stays valid under every 2.x.
+Since version 2.0, MAXGEN has eleven record schemas plus one shared building-blocks file; the current release is 2.1. Every file is JSON Schema Draft 2020-12. All twelve files share one version number, and within 2.x every change is additive: a file valid under 2.0 stays valid under every 2.x.
 
 
 
@@ -466,12 +466,12 @@ How do I follow changes?Every release is recorded in the changelog with the reas
 ---
 ## Versions
 
-Releases · current v2.0
+Releases · current v2.1
 # Versions and the stability promise
 
 ## How versions work
 
-**One version number for all twelve files.** The eleven record schemas and the shared building-blocks file are released together as one MAXGEN version, so you adopt "MAXGEN 2.0" as a set and never have to wonder which file goes with which. Every document carries `schema_version`, and the 2.x schemas accept any `"2."` stamp (`"2.0"`, `"2.1"` and so on; not `"2.01"`, not `"1.13"`).
+**One version number for all twelve files.** The eleven record schemas and the shared building-blocks file are released together as one MAXGEN version, so you adopt "MAXGEN 2.1" as a set and never have to wonder which file goes with which. Every document carries `schema_version`, and the 2.x schemas accept any `"2."` stamp (`"2.0"`, `"2.1"` and so on; not `"2.01"`, not `"1.13"`).
 
 ## The 2.x promise
 
@@ -485,12 +485,18 @@ Releases · current v2.0
 
 MAXGEN 2.0 is the first major version. It reshaped the seven 1.x schemas, added four new ones (MaxRelationship, MaxPlace, MaxGroup and MaxEvent) and a shared building-blocks file, and moved family links out of MaxPerson into MaxRelationship, where each link is stored once. **2.0 does not read 1.x files, and there is no migration from 1.x.** The 1.x files are not deleted: they stay at their permanent addresses, unchanged. The [changelog](/changelog/#v20-2026-10-16) lists what changed in every schema and what breaks.
 
+## What 2.1 added
+
+MAXGEN 2.1 adds optional fields and allowed values to six of the twelve files: where a fact came from, life stories and biographies, notes that keep their history, comparing a reading with an index, health conditions kept private, archive addresses and old-map alignment. Nothing was removed or narrowed, so every 2.0 file stays valid. The [changelog](/changelog/#v21-2026-11-21) lists every addition in the schema files' own words.
+
+2.0 and 2.1 were published without the public comment period described on the [governance page](/governance/), because the standard had no outside users yet.
+
 ## Permanent addresses
 
-- `/schemas/maxgen/v2/` holds the **current 2.x files**. This is the `$id` inside every 2.0 file.
-- `/schemas/maxgen/v2.0/` is a **frozen copy** of the 2.0 release.
+- `/schemas/maxgen/v2/` holds the **current 2.x files** (now 2.1). This is the `$id` inside every 2.x file.
+- `/schemas/maxgen/v2.1/` and `/schemas/maxgen/v2.0/` are **frozen copies** of each release.
 - `/schemas/maxgen/v1/.schema.json` and `/schemas/maxgen/v1.NN/.schema.json` hold the **archived 1.x releases**, unchanged.
-- `/schemas/maxgen/index.json` lists every version, with each 2.0 file's SHA-256, for machines.
+- `/schemas/maxgen/index.json` lists every version, with each 2.x file's SHA-256, for machines.
 
 
 
@@ -612,7 +618,7 @@ Legal
 
 ## The standard: CC0
 
-The MAXGEN schema files (the twelve files of MAXGEN 2.0 and every archived 1.x file) and the text of the standard on this site are dedicated to the public domain under the [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) dedication. You may copy, change, redistribute and build on them for any purpose, commercial or not, without asking and without attribution.
+The MAXGEN schema files (the twelve files of MAXGEN 2.x and every archived 1.x file) and the text of the standard on this site are dedicated to the public domain under the [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) dedication. You may copy, change, redistribute and build on them for any purpose, commercial or not, without asking and without attribution.
 
 Why CC0 rather than a licence that requires credit? Because a standard only works when adopting it costs nothing, legally or administratively. An archive's counsel should be able to approve MAXGEN in one reading. Credit is welcome, never required.
 
@@ -636,7 +642,7 @@ The validators, fixtures and tooling in the schema repository are released under
 
 ## How to cite
 
-> Maxwell, G. *MAXGEN: The Maxwell Genealogy Standard*, version 2.0. OpenGenealogyAI. https://opengenealogyai.org/ — CC0 1.0.
+> Maxwell, G. *MAXGEN: The Maxwell Genealogy Standard*, version 2.1. OpenGenealogyAI. https://opengenealogyai.org/ — CC0 1.0.
 
 
 ---
@@ -653,10 +659,10 @@ These episodes were produced with an AI narration tool from written scripts by t
 
 
 ---
-## MaxRecord (MAXGEN 2.0 schema)
+## MaxRecord (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxrecord/
-File: https://opengenealogyai.org/schemas/maxgen/v2/raw-record.schema.json  SHA-256 14b1cc31cdfda239d90d0e6e7b49dcbf27a6c3b28581c1d9ccf8ae1bdac27760
+File: https://opengenealogyai.org/schemas/maxgen/v2/raw-record.schema.json  SHA-256 ad38d5a1d421bcd74389c2bddb6887d62a2c66ac88cf092f9af3e0d8d502bd67
 One MaxRecord is one document, copied word for word.
 
 Definition: MAXGEN 2.0 -- One MaxRecord is one original document (or one copy of it), copied word for word with every person it names and every event it records, so that one original equals one record.
@@ -695,6 +701,7 @@ Definition: MAXGEN 2.0 -- One MaxRecord is one original document (or one copy of
 - sensitive_data_redacted (boolean): True when sensitive details (identity numbers, medical details) were left out of the transcription.
 - redaction_notes (string): What was left out and why.
 - archive_ref (string): A local path where this record is kept; private, never exported.
+- cited_record_ids (array of uuid): MAXGEN 2.1 (G-29): on a life_story record only, the documents the story draws on; each must exist (R-04), as MaxPlace lists its own.
 
 ### Example (made up; marriage_register_1880_obadiah_patience.json)
 
@@ -797,16 +804,21 @@ invented URL). `record_date` is the date the entry was written. `census_row` is 
 `repository`, `collection` (now `_as_written` fields), `language`, `alternate_names`,
 `digital_object_id`, `extracted_by`, `extracted_at`.
 
+### Added in 2.1
+
+- cited_record_ids (new field): MAXGEN 2.1 (G-29): on a life_story record only, the documents the story draws on; each must exist (R-04), as MaxPlace lists its own.
+- record_type: new allowed value life_story
+
 ### Listen
 
 Episode 1, MaxRecord — Source documents as written (25:40): https://opengenealogyai.org/podcasts/audio/MAXGEN-01-maxrecord.mp3 — Evidence versus interpretation, and why the clerk who wrote 'Makeswell' must never be corrected. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
 
 
 ---
-## MaxPerson (MAXGEN 2.0 schema)
+## MaxPerson (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxperson/
-File: https://opengenealogyai.org/schemas/maxgen/v2/person.schema.json  SHA-256 280f09fbee28e3048dd443ff8dee5ec4d12449b2eada4dd4470df2945b582ac6
+File: https://opengenealogyai.org/schemas/maxgen/v2/person.schema.json  SHA-256 33a42e40d29768874c1def2ba9823bc28455a614bf18efe5a0bfb452f2dee700
 One MaxPerson is one person, as a researched conclusion (holds no family links).
 
 Definition: MAXGEN 2.0 -- One MaxPerson is one person as a researched conclusion, every fact about them a claim citing one piece of evidence, holding no family links (parents, children and partners live in MaxRelationship).
@@ -920,13 +932,18 @@ claim header and an evidence link; photo claims point at a photograph record. Ad
 `redistribution_license` become required, with no default; `name_assertions` is required for a
 documented person.
 
+### Added in 2.1
+
+- attribute_claim.attribute_type: new allowed value health_condition
+- attribute_claim.attribute_type (description updated): What kind of lasting fact this is; health_condition (MAXGEN 2.1) is a health condition as written, private by default and never shared.
+
 ### Listen
 
 Episode 2, MaxPerson — The person who might be your ancestor (22:46): https://opengenealogyai.org/podcasts/audio/MAXGEN-02-maxperson-v2.mp3 — Assertions not facts, probabilistic parents, composite confidence, and the merge model. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
 
 
 ---
-## MaxRelationship (MAXGEN 2.0 schema)
+## MaxRelationship (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxrelationship/
 File: https://opengenealogyai.org/schemas/maxgen/v2/relationship.schema.json  SHA-256 3fe0a82b950eb6fa5b501258cf50c9b41894f7f41039051a16170cc5c5af5d5d
@@ -1021,10 +1038,10 @@ No episode yet: MaxRelationship is new in MAXGEN 2.0.
 
 
 ---
-## MaxTask (MAXGEN 2.0 schema)
+## MaxTask (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxtask/
-File: https://opengenealogyai.org/schemas/maxgen/v2/task-queue.schema.json  SHA-256 f636aebfa334a37021ec4b5f1ebc9b41ab61c4cdfc0cde5200fb112686005b6c
+File: https://opengenealogyai.org/schemas/maxgen/v2/task-queue.schema.json  SHA-256 0a5d2354506e81bc336cefe3b9af5c387fd5f4e83dc8b255f4e274586ecef457
 One MaxTask is one piece of work: research, an import, a review or a proof.
 
 Definition: MAXGEN 2.0 -- One MaxTask is the permanent record of one piece of work done in a database (research, an import, a review or a proof), never pruned while anything points at it.
@@ -1161,16 +1178,20 @@ decisions and FAN-club associates (the friends, associates and neighbours studie
 person). A proof's parent-set changes can set a set's kind, make it the main set, add a
 parent's existing link to it, or retract it.
 
+### Added in 2.1
+
+- payload.kind (description updated): Which documented payload this is: interview, person_request, person_page_session, fan_survey, run, find_original, import_file, analysis, or (G-04, additive) incoming_finding: one finding from another tree (a relative's file as suggestions, a findings delivery), holding its proposed facts and any proposed new person in the payload (sender_tree_id, sender_label, received_at, verdict, person_id or new_person and relation, facts) until the person lets it in; it is never a claim on the person's people while it waits.
+
 ### Listen
 
 Episode 3, MaxTask — Distributing the work (24:29): https://opengenealogyai.org/podcasts/audio/MAXGEN-03-maxtask.mp3 — Task types, the verdict vocabulary, acceptance criteria, and the anti-hallucination rule. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
 
 
 ---
-## MaxSource (MAXGEN 2.0 schema)
+## MaxSource (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxsource/
-File: https://opengenealogyai.org/schemas/maxgen/v2/source.schema.json  SHA-256 c20053e226e30f3c83fc33a0899b60969deb54195e860ab4dd3823c4281ef1ac
+File: https://opengenealogyai.org/schemas/maxgen/v2/source.schema.json  SHA-256 c46fe41a47a681c20634e00d616a31e084db4ba807bac0a80ee58d284f5d6a16
 One MaxSource is one work, collection or repository.
 
 Definition: MAXGEN 2.0 -- One MaxSource is one work, collection or repository that documents come from or are held by (a book, a periodical, a census collection, a microfilm publication, a family Bible, an archive, a library or a website), with what it covers and how to search it.
@@ -1184,6 +1205,7 @@ Definition: MAXGEN 2.0 -- One MaxSource is one work, collection or repository th
 - redistribution_license (licence, required): Whether this source entry may be shared (unclear means ask, never guess); a tier2-private entry never appears in any open dataset, share, export, public embedding or commit.
 - is_living_flag (boolean, required): Living A floor: true when this source entry names someone who may be alive, such as a privately held family Bible (unsure means true; credits never set it); true requires tier2-private.
 - source_url (uri): The source's own address, when it has one; optional (a book or a family Bible has none) and never invented.
+- address (place_ref): MAXGEN 2.1 (G-14): where an archive or library is: its postal address in address_as_written, its town in place_as_written, and the MaxPlace in place_id; only on a source whose source_type is archive or library, or other 
 - parent_source_id (uuid): The larger MaxSource this one is part of, such as the collection that holds this series.
 - description (text): What this source holds and who it serves, in plain words.
 - embedding_text (text): Plain text built from the name, description and coverage, for search indexes.
@@ -1284,13 +1306,18 @@ becomes `coverage.span` (a date block, no year cap); places use the place block.
 `bibliographic` (title, creators, publisher, edition), `holdings` (which repository holds the
 original), `is_living_flag` (required), a wider `source_type` list, `discovered_via`.
 
+### Added in 2.1
+
+- source_type (new field): 
+- address (new field): MAXGEN 2.1 (G-14): where an archive or library is: its postal address in address_as_written, its town in place_as_written, and the MaxPlace in place_id; only on a source whose source_type is archive or library, or other for a church office, government office, cemetery, family papers or a private collection, and never a person's home address.
+
 ### Listen
 
 Episode 5, MaxSource — The routing brain (18:16): https://opengenealogyai.org/podcasts/audio/MAXGEN-05-maxsource.mp3 — Where records hide: coverage, access, provenance, and semantic search over sources. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
 
 
 ---
-## MaxPlace (MAXGEN 2.0 schema)
+## MaxPlace (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxplace/
 File: https://opengenealogyai.org/schemas/maxgen/v2/place.schema.json  SHA-256 6940b499ea549f8314227906ae120f90fdc90e536e5824b5f34233a9c16fff4d
@@ -1437,7 +1464,7 @@ No episode yet: MaxPlace is new in MAXGEN 2.0.
 
 
 ---
-## MaxGroup (MAXGEN 2.0 schema)
+## MaxGroup (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxgroup/
 File: https://opengenealogyai.org/schemas/maxgen/v2/group.schema.json  SHA-256 8dcdd51571717a6ae38eb9c6378ec0ae140423cd8999b548beee78045ba34657
@@ -1548,7 +1575,7 @@ No episode yet: MaxGroup is new in MAXGEN 2.0.
 
 
 ---
-## MaxEvent (MAXGEN 2.0 schema)
+## MaxEvent (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxevent/
 File: https://opengenealogyai.org/schemas/maxgen/v2/event.schema.json  SHA-256 1b69ee119e49ec2ecfaa10010017e93afec2fd79a6ac0e96f88e44c126cd2966
@@ -1633,7 +1660,7 @@ No episode yet: MaxEvent is new in MAXGEN 2.0.
 
 
 ---
-## MaxName (MAXGEN 2.0 schema)
+## MaxName (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxname/
 File: https://opengenealogyai.org/schemas/maxgen/v2/name.schema.json  SHA-256 521b1b28cfba2a121e40a9bb71b08982aa3bacba0d39a62907088c40606bacb1
@@ -1754,10 +1781,10 @@ Episode 7, MaxName — Why Maxwell and Makeswell are the same family (23:31): ht
 
 
 ---
-## MaxRecognition (MAXGEN 2.0 schema)
+## MaxRecognition (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxrecognition/
-File: https://opengenealogyai.org/schemas/maxgen/v2/recognition.schema.json  SHA-256 26bf0db4ce155d833611be273af9ec8c8bde5e79895fa9171574a5e66d19c517
+File: https://opengenealogyai.org/schemas/maxgen/v2/recognition.schema.json  SHA-256 ca72abecd356d4bee9bbc827c3213c231b95931d7884f9122ad744006e0f6e4e
 One MaxRecognition is one machine reading of an image.
 
 Definition: MAXGEN 2.0 -- One MaxRecognition document is one machine reading (OCR of print or HTR of handwriting) of one image, kept with its per-word confidences so that readings of the same image can be compared; who or what made the reading is recorded on the task that produced it.
@@ -1789,6 +1816,9 @@ Definition: MAXGEN 2.0 -- One MaxRecognition document is one machine reading (OC
 - script_type_as_written (string): The reader's own words for the script, written when script_type is other.
 - approx_century (integer): Handwritten readings: the rough age of the handwriting as the first year of its century (1800 means the 1800s).
 - searchable_variants (array of string): Every spelling this reading should be findable under, including uncertain readings and normalised forms.
+- read_blind (boolean): MAXGEN 2.1 (G-30): true when the image was read before the reader saw any index or other reading of it, so the reading is independent; false when it was read after seeing one.
+- based_on_recognition_id (uuid): MAXGEN 2.1 (G-30): the reading this one started from and corrected; what changed is worked out by comparing the two.
+- field_comparison (array of field_comparison): MAXGEN 2.1 (G-11): how this reading compares with an index of the same image, field by field, as the reader judged it.
 
 ### Example (made up; htr_reading_with_region.json)
 
@@ -1864,13 +1894,24 @@ added (the same copy and region evidence cites); `processing_date` renamed `proc
 `review_status`, `is_human_reviewed` and `is_independent` removed (reviews are tasks;
 independence is computed).
 
+### Added in 2.1
+
+- field_comparison.field (new field): The field compared, as written (name, age, birthplace ...).
+- field_comparison.index_value (new field): What the index says.
+- field_comparison.mention_ref (new field): Which person or line of the index the field belongs to, as the reader wrote it.
+- field_comparison.page_value (new field): What the image says, as read.
+- field_comparison.result (new field): The image and the index agree, differ, or the image is unclear there.
+- based_on_recognition_id (new field): MAXGEN 2.1 (G-30): the reading this one started from and corrected; what changed is worked out by comparing the two.
+- field_comparison (new field): MAXGEN 2.1 (G-11): how this reading compares with an index of the same image, field by field, as the reader judged it.
+- read_blind (new field): MAXGEN 2.1 (G-30): true when the image was read before the reader saw any index or other reading of it, so the reading is independent; false when it was read after seeing one.
+
 ### Listen
 
 Episode 6, MaxRecognition — Teaching machines to read (25:21): https://opengenealogyai.org/podcasts/audio/MAXGEN-06-maxrecognition.mp3 — OCR and handwriting provenance, word-level confidence, labelled inference, and consensus. It describes MAXGEN v1.11; see https://opengenealogyai.org/changelog/#v20-2026-10-16 for what changed since.
 
 
 ---
-## MaxDNA (MAXGEN 2.0 schema)
+## MaxDNA (MAXGEN 2.1 schema)
 
 Page: https://opengenealogyai.org/schemas/maxdna/
 File: https://opengenealogyai.org/schemas/maxgen/v2/dna.schema.json  SHA-256 dc96f9d4d08b8c484a8fb1ac5d8c7a6ae6ffb9e623817fc14b99d63567986bf7

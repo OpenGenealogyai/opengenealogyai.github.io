@@ -57,6 +57,9 @@ V2_KINDS = [
 ]
 GITHUB_REPO = "https://github.com/OpenGenealogyai/opengenealogyai/blob/main/"
 V2_ENTRY_ANCHOR = "/changelog/#v20-2026-10-16"
+V2_PREV_DIR = SITE / "schemas" / "maxgen" / "v2.0"      # the 2.0 release, frozen; 2.1 is compared against it
+V21_ANCHOR_ID = "v21-2026-11-21"
+V21_ANCHOR = f"/changelog/#{V21_ANCHOR_ID}"
 
 NAV = [
     ("The Standard", "/standard/"),
@@ -472,6 +475,73 @@ def fields_table_v2(schema: dict) -> str:
             f"<tbody>{''.join(rows)}</tbody></table></div>" + note)
 
 
+def _schema_index(node, path: tuple, props: set, enums: dict, descs: dict) -> None:
+    if isinstance(node, dict):
+        if isinstance(node.get("description"), str):
+            descs[path] = node["description"]
+        if isinstance(node.get("enum"), list):
+            enums[path] = node["enum"]
+        if isinstance(node.get("properties"), dict):
+            for k in node["properties"]:
+                props.add(path + ("properties", k))
+        for k, v in node.items():
+            if k != "description":
+                _schema_index(v, path + (k,), props, enums, descs)
+    elif isinstance(node, list):
+        for i, v in enumerate(node):
+            _schema_index(v, path + (str(i),), props, enums, descs)
+
+
+def _nice(path: tuple) -> str:
+    keep = [p for p in path if p not in ("properties", "$defs", "items", "allOf", "anyOf", "oneOf", "then", "else", "if")
+            and not p.isdigit()]
+    return ".".join(keep) or "(the document)"
+
+
+def additions_21(file: str) -> list[tuple[str, str, str]]:
+    """What 2.1 adds to one schema file, compared with the frozen 2.0 file: new fields, new allowed values and
+    descriptions that changed, each in the file's own words. Returns (kind, path, text) rows."""
+    prev = V2_PREV_DIR / file
+    if not prev.exists():
+        return []
+    a, b = (set(), {}, {}), (set(), {}, {})
+    _schema_index(json.loads(prev.read_bytes()), (), *a)
+    _schema_index(v2_schema(file), (), *b)
+    new_props = sorted(p for p in b[0] - a[0] if not any(p[:i] in (b[0] - a[0]) for i in range(1, len(p))))
+    rows = [("field", _nice(p), b[2].get(p, "")) for p in new_props]
+    for p, vals in b[1].items():
+        if p in a[1]:
+            added = [v for v in vals if v not in a[1][p]]
+            if added:
+                rows.append(("value", _nice(p), ", ".join(str(v) for v in added)))
+    inside_new = lambda p: any(p[:i] in set(new_props) for i in range(1, len(p) + 1))
+    for p, d in b[2].items():
+        if p in a[2] and a[2][p] != d and not inside_new(p):
+            rows.append(("wording", _nice(p), d))
+    return rows
+
+
+def additions_html(rows) -> str:
+    items = []
+    for kind, path, text in rows:
+        if kind == "field":
+            items.append(f"<li><code>{html.escape(path)}</code> (new field): {html.escape(text)}</li>")
+        elif kind == "value":
+            vals = ", ".join(f"<code>{html.escape(v.strip())}</code>" for v in text.split(","))
+            items.append(f"<li><code>{html.escape(path)}</code>: new allowed value {vals}</li>")
+        else:
+            items.append(f"<li><code>{html.escape(path)}</code> (description updated): {html.escape(text)}</li>")
+    return "<ul class=\"additions\">" + "".join(items) + "</ul>"
+
+
+def additions_text(rows) -> list[str]:
+    out = []
+    for kind, path, text in rows:
+        out.append({"field": f"- {path} (new field): {text}", "value": f"- {path}: new allowed value {text}",
+                    "wording": f"- {path} (description updated): {text}"}[kind])
+    return out
+
+
 def v2_example(kind: str) -> Path:
     return next((V2_PIN / "examples" / kind).glob("*.json"))
 
@@ -490,7 +560,8 @@ def build_versions() -> None:
         else:
             links = " · ".join(f'<a href="/schemas/maxgen/v{ver}/{s}.schema.json">{s}</a>' for s in v["schemas"])
             count = str(len(v["schemas"]))
-        tag = {"current": ' <span class="badge">current</span>', "archived": ' <span class="badge archived">archived</span>'}.get(status, "")
+        tag = {"current": ' <span class="badge">current</span>', "previous": ' <span class="badge archived">earlier 2.x</span>',
+               "archived": ' <span class="badge archived">archived</span>'}.get(status, "")
         rows.append(f"<tr><td><strong>v{ver}</strong>{tag}</td><td>{count}</td><td class=\"links\">{links}</td></tr>")
     table = ('<div class="table-wrap"><table><thead><tr><th>Version</th><th>Schemas</th><th>Files (permanent links)</th></tr></thead>'
              f"<tbody>{''.join(rows)}</tbody></table></div>")
@@ -504,8 +575,21 @@ def build_changelog() -> None:
     text = V2_CHANGELOG.read_text(encoding="utf-8")
     first, rest = text.split("\n", 1)
     h1 = first.lstrip("# ").strip()
+    added = ""
+    if CURRENT == "2.1" and "## v2.1" not in text:
+        # The schema repo has no 2.1 entry yet: list what 2.1 adds, in the schema files' own words, until it does.
+        parts = []
+        for file in [V2_DEFS_FILE] + [f for _, _, f, _, _ in V2_KINDS]:
+            rows = additions_21(file)
+            if rows:
+                parts.append(f"<h3>{html.escape(file)}</h3>" + additions_html(rows))
+        added = (f'<h2 id="{V21_ANCHOR_ID}">v2.1 — 2026-11-21</h2>\n'
+                 '<p>MAXGEN 2.1 adds optional fields and allowed values to six of the twelve files. Nothing was removed '
+                 'or narrowed, so every file valid under 2.0 stays valid under 2.1. The written changelog entry for 2.1 '
+                 'is still to come; until then, this list gives every addition in the schema files\' own words.</p>\n'
+                 + "\n".join(parts) + "\n<hr>\n")
     body = (f'<p class="eyebrow">Releases · current v{CURRENT}</p>\n<h1 id="changelog">{html.escape(h1)}</h1>\n'
-            + md(fix_repo_links(rest, "docs/")))
+            + added + md(fix_repo_links(rest, "docs/")))
     toc = toc_from_html(re.sub(r"<h3 .*?</h3>", "", body, flags=re.S))   # versions only, not every sub-heading
     write(SITE / "changelog" / "index.html",
           layout("Changelog", body, "/versions/", "Every MAXGEN release, what changed in each schema and why, newest first.",
@@ -569,11 +653,16 @@ def build_schemas_v2() -> list:
   <p class="eyebrow">MAXGEN schema · v{CURRENT}{" · new in 2.0" if is_new else ""}</p>
   <h1>{html.escape(title)}</h1>
   <p class="tagline">One {html.escape(title)} is {tag_html(tagline)}.</p>
-  <p class="dl"><a class="btn" href="/schemas/maxgen/v2/{file}">Download {html.escape(title)} (2.0)</a>
+  <p class="dl"><a class="btn" href="/schemas/maxgen/v2/{file}">Download {html.escape(title)} ({CURRENT})</a>
      <a class="btn ghost" href="/versions/">All versions</a>
      <code class="canon">{sid}</code></p>
   <p class="sha">SHA-256 <code>{sha}</code></p>
 </div>"""
+        rows21 = additions_21(file)
+        added_21 = ("<h2 id=\"added-in-21\">Added in 2.1</h2>\n"
+                    f"<p>2.1 only adds; every 2.0 {html.escape(title)} stays valid. In the schema file's own words:</p>\n"
+                    f"{additions_html(rows21)}\n"
+                    f"<p><a href=\"{V21_ANCHOR}\">Everything 2.1 added</a></p>\n") if rows21 else ""
         listen = (player(EPISODES[ep_no]) if not is_new else
                   f'<p>There is no episode for {html.escape(title)} yet: it is new in MAXGEN 2.0. '
                   f'The <a href="/podcasts/#ep0">overview episode</a> explains the ideas it builds on.</p>')
@@ -586,7 +675,7 @@ def build_schemas_v2() -> list:
 <h2 id="example">A made-up example</h2>
 <p>Every example on this site is invented: no real person, family or place. This one is <code>{html.escape(ex.name)}</code> from the standard's test files, copied as it is.</p>
 <pre class="json"><code>{html.escape(ex.read_text(encoding="utf-8"))}</code></pre>
-<h2 id="what-changed">What changed from 1.13</h2>
+{added_21}<h2 id="what-changed">What changed from 1.13</h2>
 {md(fix_repo_links(changed, "docs/"))}
 <p><a href="{V2_ENTRY_ANCHOR}">The whole v2.0 changelog entry</a></p>
 <h2 id="listen">Listen</h2>
@@ -737,6 +826,7 @@ def build_llms_txt(pages) -> None:
     for slug, t, tag, f in pages:
         lines.append(f"- [{t}]({BASE_URL}/schemas/{slug}/): one {t} is {tag} — file: {BASE_URL}/schemas/maxgen/v2/{f}")
     lines += [f"- Shared building blocks (not a record type) — file: {BASE_URL}/schemas/maxgen/v2/{V2_DEFS_FILE}",
+              f"- What 2.1 added: {BASE_URL}{V21_ANCHOR}",
               f"- SHA-256 of every file: {BASE_URL}/schemas/maxgen/v2/SHA256SUMS.txt",
               f"- Machine-readable version index: {BASE_URL}/schemas/maxgen/index.json", "",
               "## Listen", f"- [Podcast episodes]({BASE_URL}/podcasts/) — RSS: {BASE_URL}/podcasts/feed.xml "
@@ -823,7 +913,11 @@ def build_llms_full(pages) -> None:
             parts.append(f"- {name} ({type_of_v2(prop)}{', required' if name in req else ''}): {prop_desc_v2(prop, schema)}")
         ex = v2_example(kind)
         parts += ["", f"### Example (made up; {ex.name})", "", "```json", ex.read_text(encoding="utf-8").rstrip(), "```", "",
-                  "### What changed from 1.13", "", changelog_part(title), "", "### Listen", ""]
+                  "### What changed from 1.13", "", changelog_part(title), ""]
+        rows21 = additions_21(file)
+        if rows21:
+            parts += ["### Added in 2.1", ""] + additions_text(rows21) + [""]
+        parts += ["### Listen", ""]
         if ep_no is None:
             parts.append(f"No episode yet: {title} is new in MAXGEN 2.0.")
         else:

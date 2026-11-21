@@ -55,7 +55,7 @@
 <li><a href="#13-governance">13. Governance</a></li>
 </ul>
 </div>
-</aside><div class="content"><p class="eyebrow">The Maxwell Genealogy Standard · v2.0 · CC0</p>
+</aside><div class="content"><p class="eyebrow">The Maxwell Genealogy Standard · v2.1 · CC0</p>
 <h1 id="the-standard">The Standard</h1>
 <p>MAXGEN is a language for describing family-history evidence. It is not a product, not a database, and not a website. It is a set of eleven record schemas (written rule-sets for data records), plus one shared file of building blocks, that any program can read and write, so that research done in one place can be understood everywhere else. This page explains the standard in plain English. The exact rules live in the <a href="/schemas/">schema files</a>.</p>
 <h2 id="1-what-is-maxgen">1. What is MAXGEN?</h2>
@@ -394,7 +394,7 @@ is used only for their own research — never published, exported or sent anywhe
 <h2 id="9-file-format">9. File format</h2>
 <p>A MAXGEN document is one JSON file of one kind: one MaxPerson, one MaxRecord, and so on. A document's kind is the first of these keys found at its top level: <code>dna_id</code>, <code>recognition_id</code>, <code>name_id</code>, <code>relationship_id</code>, <code>occurrence_id</code>, <code>place_id</code>, <code>group_id</code>, <code>record_id</code>, <code>task_id</code>, <code>source_id</code>, <code>person_id</code>. (MaxDNA also carries <code>person_id</code>, so the order matters.)</p>
 <h2 id="10-versioning">10. Versioning</h2>
-<p>All twelve files share one version number; the current release is v2.0. Every document carries a <code>schema_version</code> stamp. The schemas accept any <code>"2.&lt;n&gt;"</code> stamp (<code>"2.0"</code>, <code>"2.1"</code> and so on, but not <code>"1.13"</code>), and a file keeps the stamp it was written with.</p>
+<p>All twelve files share one version number; the current release is v2.1. Every document carries a <code>schema_version</code> stamp. The schemas accept any <code>"2.&lt;n&gt;"</code> stamp (<code>"2.0"</code>, <code>"2.1"</code> and so on, but not <code>"1.13"</code>), and a file keeps the stamp it was written with.</p>
 <p><strong>Within 2.x, every change is additive:</strong> a new optional property, a new value in a list, a new shared definition in <code>maxgen-defs.schema.json</code>, a new record schema file, or a loosened limit. <strong>Never:</strong> removing or renaming a property, making an optional property required, narrowing a pattern, range or list, or changing what a value means. A file valid under 2.0 stays valid under every 2.x. Breaking changes wait for a new major version, with a new address space; the <a href="/governance/">governance page</a> describes how changes are proposed and decided.</p>
 <p>The 1.x files stay archived at <code>/schemas/maxgen/v1/</code>, with a frozen copy of every 1.x release, and their rules are unchanged. MAXGEN 2.0 does not read 1.x files, and there is no migration from 1.x to 2.0. Every release, with permanent download links, is on the <a href="/versions/">versions page</a>, and the full history is in the <a href="/changelog/">changelog</a>.</p>
 <h2 id="11-why-json">11. Why JSON?</h2>
@@ -416,7 +416,7 @@ is used only for their own research — never published, exported or sent anywhe
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v2.0</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
+    <p><strong>MAXGEN</strong> — the Maxwell Genealogy Standard. Current release <a href="/versions/">v2.1</a>. The standard and its schemas are dedicated to the public domain under <a href="/license/">CC0</a>.</p>
     <p>Stewarded by <a href="/governance/">OpenGenealogyAI</a> · <a href="https://github.com/OpenGenealogyai" rel="noopener">GitHub</a> · <a href="/podcasts/feed.xml">Podcast RSS</a> · <a href="/contribute/">Ask a question</a></p>
     <p class="muted">© 2026 OpenGenealogyAI. Site text CC0. Logo and the names OpenGenealogyAI and MAXGEN are reserved for the canonical standard.</p>
   </div>

@@ -8,7 +8,7 @@ description: MAXGEN schemas and specification text are dedicated to the public d
 
 ## The standard: CC0
 
-The MAXGEN schema files (the twelve files of MAXGEN 2.0 and every archived 1.x file) and the text of the standard on this site are dedicated to the public domain under the [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) dedication. You may copy, change, redistribute and build on them for any purpose, commercial or not, without asking and without attribution.
+The MAXGEN schema files (the twelve files of MAXGEN 2.x and every archived 1.x file) and the text of the standard on this site are dedicated to the public domain under the [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) dedication. You may copy, change, redistribute and build on them for any purpose, commercial or not, without asking and without attribution.
 
 Why CC0 rather than a licence that requires credit? Because a standard only works when adopting it costs nothing, legally or administratively. An archive's counsel should be able to approve MAXGEN in one reading. Credit is welcome, never required.
 

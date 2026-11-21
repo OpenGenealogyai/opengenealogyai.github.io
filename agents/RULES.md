@@ -28,7 +28,9 @@ helper, `maxgen_db.py`, refuses anything else, including MAXGEN 1.x files.
    on the document. A file that leaves it out is refused. When unsure, living. Anything living
    is `tier2-private`. Living people are never published, never put on the shareable page or in
    a shareable export (`export --shareable`), and never sent to any outside service. A plain
-   `export` is a full private backup and stays in the person's folder.
+   `export` is a full private backup and stays in the person's folder. A health condition
+   (`attribute_type: health_condition`) is always private: the helper marks it so, and it can
+   never be made shareable. Temple ordinances (the `lds_*` events) never go into a shared copy.
 7. **Licence every record.** `CC0`: anyone may use it, no conditions. `CC-BY`: anyone may use it
    if they credit the person named in `attribution`. `CC-BY-SA`: the same, and copies keep the
    same licence. `public-domain`: no copyright remains. `all_rights_reserved`: someone owns it;
@@ -75,6 +77,24 @@ Never change a person the owner has locked, nor a family link of theirs: the hel
 (R-34). If a locked person needs a change, tell the person through the Orchestrator and let
 them unlock it. The one thing you may record there is how many records a website holds for a
 person (an `outside_holdings` mark), because that is a finding, not a choice.
+
+**The person may withdraw anything, and bring anything back (R-35).** When the person withdraws
+something you added, their words are kept as their decision; do not add it again unless you find
+new evidence, and then say so. When the person marks a relative as having died on their own word
+(R-38), the kit treats that relative as dead. If you find a record of the death, add it as usual.
+
+**Parents from a brother's or sister's records stay a possibility until the person says yes (BW-1).**
+When a sibling's own records name parents for an ancestor whose parents are not known, you may
+record that couple for the ancestor only as possible parents: `set_kind` `alternative_hypothesis`
+with `set_kind_as_written` "from a sibling: <the sibling's name>", citing the sibling's document as
+indirect evidence about another person's line, at Weak or below. The helper refuses to make such
+a set the main parents, or to let Quality Control pass its links, until the person says yes on
+their Probable Pedigree page to the decision the program wrote for that very set (a yes to any
+other decision, or to a proof of yours, does not count). A proof never retracts such a set,
+changes its kind, moves its links or settles a fact taken from a sibling's record; families are
+never merged so as to combine it with another set; and another set may use its links only on new
+direct evidence from another record. Never give a placeholder parent ("not yet named") a name:
+merge it into the real person instead.
 
 Retract, never delete. Nothing is removed from the database: a wrong claim, document or link is
 withdrawn with `retract` and a reason, and stays visible as withdrawn. Every change you make is
@@ -140,10 +160,53 @@ step-child, ward, foster child or adopted child does not count. If none of these
 example, when the birth year is unknown and no death is on file — assume living. Never infer
 "deceased" from silence — not finding a death record is not a death record.
 
-Only reliable evidence counts here: a document classified `original` or `derivative`, or a
-proof whose latest review is accepted. The family's own account, an online tree, an imported
-file and a note typed on the person page never show that anyone has died. So a grandparent known only
-from the interview stays living until a document shows otherwise.
+For those four rules only reliable evidence counts: a document classified `original` or
+`derivative`, or a proof whose latest review is accepted. The family's own account, an online
+tree, an imported file and a note typed on the person page do not show a death to them.
+
+**R-40 (Probable Pedigree's helper, `DATES_A_ON`, on since 8 November 2026).** The helper's
+living answer also counts recorded dates of any evidence but DNA, imported and unchecked ones
+included: a death, burial or cremation that has a year in its date; a birth whose latest
+possible year is 110 or more years ago; a marriage of theirs 90 or more years ago; or a birth
+child of theirs (through a parent link that stands) whose latest possible birth year is 90 or
+more years ago. (Probable Pedigree's sharing rule R-39 already lets a person with such a birth,
+marriage or child be shared as having died; R-40 lets the living answer read the same dates.)
+Any one of these shows the person as deceased and lets them be shared. A date kept as text only,
+a claim worked out from absence, and anything resting on DNA never count. A marriage in a family
+that Quality Control rejected (found false), or a child through a parent link it rejected, never
+counts either. A stored `true` is a floor that beats the death-year, marriage and child clauses,
+and a stored `false` is still never permission by itself. So a grandparent whose stored flag is
+`false`, known only from the interview with a death year, is shown as deceased; one with no dates
+stays living.
+
+**R-40b (8 November 2026, the same switch).** The birth clause also beats a stored `true`: a
+person whose recorded birth has a latest possible year 110 or more years ago, from any evidence
+but DNA, imported and unchecked included, is shown as deceased even though the flag says living.
+The order is: the person's own word that the relative died (R-38), then this birth clause, then
+the stored `true` floor, then the four rules, the death year and the marriage and child clauses
+as before. A birth that is only "before 1850" (the latest year is not known), births recorded as
+both 1880 and 1990 (the latest is 1990) and a birth in 1963 leave a stored `true` standing, and
+so does a death year, or a marriage or child 90 years ago, alone. The `tier2-private` licence
+that every stored `true` carries is a lock of its own: it still keeps such a person out of a
+shared copy until the flag and the licence are lowered with the person's yes. With `DATES_A_ON`
+off the living answer is the four rules alone, as before R-40 (one fix stays in both modes: a
+family or a parent link Quality Control rejected no longer counts for that sharing rule either).
+
+**Common sense for R-40b (8 November 2026).** The birth clause does not beat a stored `true`
+when the same person's other dated records show them alive more than 110 years after their
+latest recorded birth year: a person recorded as born in 1891 who also has a census in 2020, a
+marriage in 2005 or a child born in 2010 is not 135 years old; the year is most likely mistyped
+(1891 for 1981), and the stored `true` stands. What counts is a dated record of any evidence but
+DNA (imported and unchecked included; not a date kept as text only, nor one worked out from
+absence): an event of theirs that needs them to be there (a census, a residence, a move, military
+service, school, a job ending, a marriage or divorce) in a role other than father, mother, parent
+or deceased, or their occupation, residence, education or military rank; a marriage or divorce
+of a family of theirs that Quality Control has not rejected; or the birth of a child of theirs
+through a parent link that stands. A burial, death, funeral, memorial, will, probate, estate
+division, temple ordinance done for them after death (`lds_*`, `sealing`), pension, photograph or
+adoption never counts, for such a record can be posthumous; nor does a date with an open start
+("before 2005"). The guard keeps only a stored `true`: a person with no stored `true` and a birth
+110 or more years ago is deceased by the birth clause whatever else is recorded.
 
 Set `is_living` **explicitly** on every MaxPerson and every person named in a record, `true` or
 `false`. The helper refuses a file that omits it. **The helper and every page work this out

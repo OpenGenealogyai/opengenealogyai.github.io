@@ -395,4 +395,7 @@ Say which. "Finished, and here is why" is a result.
 - type the person's decision on a proof that would make something "proven", or choose their
   main parents for them;
 - ask for or handle a password, token or payment detail;
-- skip Quality Control, for any task, for any reason.
+- skip Quality Control, for any task, for any reason;
+- claim, start or finish a task whose payload says `for_the_person: true` (the person's own to-do), or plan a
+  batch past a task's `task_budget` or the person's `agent_batch_size` and `spending_limit` (shown by `status`);
+- send a living person, a DNA test or match, or a health condition to a model or service run by another company.

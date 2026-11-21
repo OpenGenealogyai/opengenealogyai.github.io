@@ -1,0 +1,497 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opengenealogyai.org/schemas/maxgen/v2/maxgen-defs.schema.json",
+  "title": "MAXGEN shared building blocks",
+  "description": "MAXGEN 2.0 -- shared definitions used by the eleven MAXGEN record schemas through $ref. Not a record type: no document is valid against this file itself.",
+  "not": {},
+  "$defs": {
+    "uuid": {"type": "string", "format": "uuid"},
+    "label": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "uri": {"type": "string", "format": "uri"},
+    "lang": {"type": "string", "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{1,8})*$"},
+    "schema_version": {"type": "string", "pattern": "^2\\.(0|[1-9][0-9]{0,3})$"},
+    "licence": {"enum": ["CC0", "CC-BY", "CC-BY-SA", "public-domain", "all_rights_reserved", "tier2-private"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "extensions": {"type": "object", "additionalProperties": true},
+    "text": {"type": "string", "minLength": 1, "maxLength": 500000},
+    "system": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]{0,63}$"},
+    "claim_status": {"enum": ["proposed", "proven", "disputed", "disproven", "retracted"]},
+    "lifecycle": {"enum": ["active", "retracted", "merged_away"]},
+    "name_status": {"enum": ["known", "unnamed_at_death", "unrecorded", "withheld_living", "withheld_source", "placeholder_in_source", "relational_only"]},
+
+    "outside_id": {
+      "type": "object", "additionalProperties": false, "required": ["system", "id"],
+      "properties": {
+        "system": {"$ref": "#/$defs/system"},
+        "id": {"type": "string", "minLength": 1, "maxLength": 500},
+        "status": {"enum": ["current", "deprecated", "redirect"], "default": "current"},
+        "type_uri": {"$ref": "#/$defs/uri"},
+        "url": {"$ref": "#/$defs/uri"},
+        "version": {"type": "string", "maxLength": 100},
+        "tree": {"type": "string", "maxLength": 200},
+        "synced_at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    "note": {
+      "type": "object", "additionalProperties": false, "required": ["text"],
+      "properties": {
+        "text": {"$ref": "#/$defs/text"},
+        "lang": {"$ref": "#/$defs/lang"},
+        "note_type": {"enum": ["general", "research", "to_do", "transcription", "translation", "source_comment", "imported", "biography", "other"], "default": "general", "description": "MAXGEN 2.1 (G-07) adds biography: a short life summary on a person, never made or shown for someone who may be living."},
+        "note_type_as_written": {"type": "string", "maxLength": 200},
+        "task_id": {"$ref": "#/$defs/uuid"},
+        "is_private": {"type": "boolean"},
+        "outside_ids": {"type": "array", "items": {"$ref": "#/$defs/outside_id"}},
+        "created_at": {"$ref": "#/$defs/timestamp", "readOnly": true},
+        "note_id": {"$ref": "#/$defs/uuid", "description": "MAXGEN 2.1 (G-24): the note's own identity, so it can be changed as a new version, withdrawn and brought back."},
+        "supersedes_note_id": {"$ref": "#/$defs/uuid", "description": "MAXGEN 2.1 (G-24): the note this one replaces; the replaced note is kept, withdrawn."},
+        "status": {"enum": ["active", "retracted"], "default": "active", "description": "MAXGEN 2.1 (G-24): a withdrawn note is kept, never deleted."},
+        "cited_record_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/uuid"}, "description": "MAXGEN 2.1 (G-07): the documents a biography note rests on; each must exist (R-04)."},
+        "ai_badge": {"type": "object", "additionalProperties": false, "required": ["model_name", "written_at"], "description": "MAXGEN 2.1 (G-07): a biography written by an AI carries its badge: which AI, when, and the person's review of it.", "properties": {"model_name": {"type": "string", "minLength": 1, "maxLength": 200}, "written_at": {"$ref": "#/$defs/timestamp"}, "review": {"enum": ["waiting", "accepted", "rejected"], "default": "waiting"}}}
+      }
+    },
+    "qualifier": {
+      "type": "object", "additionalProperties": false, "required": ["name_uri"],
+      "properties": {"name_uri": {"$ref": "#/$defs/uri"}, "value": {"type": "string", "maxLength": 2000}}
+    },
+    "imported_value": {
+      "type": "object", "additionalProperties": false, "required": ["system", "value_as_written"],
+      "properties": {"system": {"$ref": "#/$defs/system"}, "value_as_written": {"type": "string", "maxLength": 2000}}
+    },
+    "imported_attribution": {
+      "type": "object", "additionalProperties": false, "required": ["system"],
+      "properties": {
+        "system": {"$ref": "#/$defs/system"},
+        "contributor_id": {"type": "string", "maxLength": 500},
+        "contributor_name": {"type": "string", "maxLength": 500},
+        "created": {"type": "string", "maxLength": 100},
+        "modified": {"type": "string", "maxLength": 100},
+        "change_message": {"type": "string", "maxLength": 4000}
+      }
+    },
+    "attribution": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "contributor_name": {"type": "string", "maxLength": 500},
+        "contributor_url": {"$ref": "#/$defs/uri"},
+        "contributor_role": {"enum": ["photographer", "transcriber", "compiler", "manager", "donor", "submitter", "indexer", "translator", "other"]},
+        "contributor_role_as_written": {"type": "string", "maxLength": 200},
+        "source_organization": {"type": "string", "maxLength": 500},
+        "source_organization_url": {"$ref": "#/$defs/uri"}
+      }
+    },
+    "merge_entry": {
+      "type": "object", "additionalProperties": false, "required": ["merged_id", "task_id", "merged_at"],
+      "properties": {
+        "merged_id": {"$ref": "#/$defs/uuid"},
+        "task_id": {"$ref": "#/$defs/uuid"},
+        "merged_at": {"$ref": "#/$defs/timestamp"},
+        "method": {"enum": ["exact_outside_id", "probabilistic_match", "manual", "dna_confirmed", "same_occasion", "duplicate_record", "other"]},
+        "reverted_at": {"$ref": "#/$defs/timestamp"},
+        "revert_task_id": {"$ref": "#/$defs/uuid"},
+        "label_map": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["from_label", "to_label", "kind"],
+          "properties": {"from_label": {"$ref": "#/$defs/label"}, "to_label": {"$ref": "#/$defs/label"}, "kind": {"enum": ["mention", "event", "part"]}}}}
+      }
+    },
+    "split_entry": {
+      "type": "object", "additionalProperties": false, "required": ["other_id", "direction", "task_id"],
+      "properties": {
+        "other_id": {"$ref": "#/$defs/uuid"},
+        "direction": {"enum": ["split_from", "split_into"]},
+        "task_id": {"$ref": "#/$defs/uuid"},
+        "at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    "distinct_entry": {
+      "type": "object", "additionalProperties": false, "required": ["id", "task_id"],
+      "properties": {
+        "id": {"$ref": "#/$defs/uuid"},
+        "task_id": {"$ref": "#/$defs/uuid"},
+        "reason": {"$ref": "#/$defs/text"},
+        "at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+
+    "date_point": {
+      "type": "object", "additionalProperties": false, "required": ["year"],
+      "properties": {
+        "year": {"type": "integer", "minimum": 1, "maximum": 9999},
+        "month": {"type": "integer", "minimum": 1, "maximum": 13},
+        "day": {"type": "integer", "minimum": 1, "maximum": 31},
+        "epoch": {"enum": ["ce", "bce"], "default": "ce"},
+        "season": {"enum": ["spring", "summer", "autumn", "winter"]},
+        "quarter": {"type": "integer", "minimum": 1, "maximum": 4}
+      },
+      "dependentRequired": {"day": ["month"]},
+      "not": {"anyOf": [{"required": ["month", "season"]}, {"required": ["month", "quarter"]}, {"required": ["season", "quarter"]}]}
+    },
+    "date": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "value": {"$ref": "#/$defs/date_point"},
+        "value2": {"$ref": "#/$defs/date_point"},
+        "modifier": {"enum": ["on", "about", "before", "by", "after", "between", "from", "to", "from_to", "or", "text_only"], "default": "on"},
+        "approximate": {"type": "boolean"},
+        "derivation": {"enum": ["as_recorded", "calculated", "estimated", "interpreted"], "default": "as_recorded"},
+        "derivation_note": {"type": "string", "maxLength": 2000},
+        "precision": {"enum": ["day", "month", "quarter", "season", "year", "decade", "century"]},
+        "calendar": {"enum": ["gregorian", "julian", "hebrew", "french_republican", "islamic", "persian", "swedish", "unknown", "other"]},
+        "calendar_uri": {"$ref": "#/$defs/uri"},
+        "new_year": {"enum": ["jan1", "mar25", "mar1", "sep1", "dec25", "unknown", "other"]},
+        "new_year_as_written": {"type": "string", "maxLength": 200},
+        "style": {"enum": ["standard", "quaker_numbered", "regnal", "feast_day", "other"]},
+        "style_as_written": {"type": "string", "maxLength": 200},
+        "dual_dated": {"type": "boolean"},
+        "as_written": {"type": "string", "minLength": 1, "maxLength": 500},
+        "as_written_lang": {"$ref": "#/$defs/lang"},
+        "as_entered": {
+          "type": "object", "additionalProperties": false, "required": ["system", "text"],
+          "properties": {"system": {"$ref": "#/$defs/system"}, "text": {"type": "string", "minLength": 1, "maxLength": 500},
+                         "phrase": {"type": "string", "minLength": 1, "maxLength": 1000}}
+        },
+        "source_hedge": {"enum": ["say", "circa", "probably", "possibly", "likely", "apparently", "reputedly", "perhaps", "certainly", "disputed", "other"]},
+        "source_hedge_as_written": {"type": "string", "maxLength": 200},
+        "time": {"type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?(Z|[+-][0-9]{2}:[0-9]{2})?$"},
+        "sort_hint": {"type": "string", "pattern": "^-?[0-9]{1,4}(-[0-9]{2}(-[0-9]{2})?)?$"}
+      },
+      "allOf": [
+        {"if": {"properties": {"modifier": {"const": "text_only"}}, "required": ["modifier"]},
+         "then": {"anyOf": [{"required": ["as_written"]}, {"required": ["as_entered"]}], "properties": {"value": false, "value2": false}},
+         "else": {"required": ["value"]}},
+        {"if": {"properties": {"modifier": {"enum": ["between", "from_to", "or"]}}, "required": ["modifier"]},
+         "then": {"required": ["value2"]},
+         "else": {"properties": {"value2": false}}},
+        {"if": {"properties": {"derivation": {"const": "as_recorded"}}},
+         "then": {"anyOf": [{"required": ["as_written"]}, {"required": ["as_entered"]}]}},
+        {"if": {"properties": {"calendar": {"const": "other"}}, "required": ["calendar"]},
+         "then": {"required": ["calendar_uri"]}},
+        {"if": {"not": {"properties": {"calendar": {"enum": ["hebrew", "french_republican"]}}, "required": ["calendar"]}},
+         "then": {"properties": {"value": {"properties": {"month": {"maximum": 12}}}, "value2": {"properties": {"month": {"maximum": 12}}}}}},
+        {"if": {"properties": {"dual_dated": {"const": true}}, "required": ["dual_dated"]},
+         "then": {"required": ["as_written", "value", "new_year"],
+                  "properties": {"new_year": {"enum": ["mar25", "mar1", "sep1", "dec25", "unknown", "other"]},
+                                 "value": {"required": ["month"], "properties": {"month": {"enum": [1, 2, 3]}}}}}},
+        {"if": {"properties": {"precision": {"const": "day"}}, "required": ["precision"]},
+         "then": {"properties": {"value": {"required": ["month", "day"]}}}}
+      ]
+    },
+    "year_range": {
+      "type": "object", "additionalProperties": false,
+      "properties": {"year_min": {"type": "integer", "minimum": -9999, "maximum": 9999}, "year_max": {"type": "integer", "minimum": -9999, "maximum": 9999}}
+    },
+    "place_ref": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "place_as_written": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "form_as_written": {"type": "string", "maxLength": 500},
+        "lang": {"$ref": "#/$defs/lang"},
+        "translations": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["text"],
+          "properties": {"text": {"type": "string", "minLength": 1, "maxLength": 1000}, "lang": {"$ref": "#/$defs/lang"}}}},
+        "point": {"type": "object", "additionalProperties": false, "required": ["latitude", "longitude"],
+          "properties": {"latitude": {"type": "number", "minimum": -90, "maximum": 90}, "longitude": {"type": "number", "minimum": -180, "maximum": 180},
+                         "uncertainty_m": {"type": "number", "minimum": 0}}},
+        "address_as_written": {"type": "string", "maxLength": 1000},
+        "place_detail_as_written": {"type": "string", "maxLength": 1000},
+        "place_id": {"$ref": "#/$defs/uuid", "readOnly": true},
+        "place_task_id": {"$ref": "#/$defs/uuid", "readOnly": true},
+        "outside_ids": {"type": "array", "items": {"$ref": "#/$defs/outside_id"}}
+      },
+      "anyOf": [{"required": ["place_as_written"]}, {"required": ["place_id"]}, {"required": ["point"]}, {"required": ["address_as_written"]}],
+      "dependentRequired": {"place_task_id": ["place_id"]}
+    },
+    "locator": {
+      "type": "object", "additionalProperties": false, "required": ["as_written"],
+      "properties": {
+        "as_written": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "series": {"type": "string", "maxLength": 100}, "roll": {"type": "string", "maxLength": 100},
+        "film": {"type": "string", "maxLength": 100}, "volume": {"type": "string", "maxLength": 100},
+        "book": {"type": "string", "maxLength": 100}, "page": {"type": "string", "maxLength": 100},
+        "folio": {"type": "string", "maxLength": 100}, "sheet": {"type": "string", "maxLength": 100},
+        "enumeration_district": {"type": "string", "maxLength": 100}, "district": {"type": "string", "maxLength": 100},
+        "register": {"type": "string", "maxLength": 100}, "dwelling": {"type": "string", "maxLength": 100},
+        "family": {"type": "string", "maxLength": 100}, "entry": {"type": "string", "maxLength": 100},
+        "certificate": {"type": "string", "maxLength": 100}, "item": {"type": "string", "maxLength": 100},
+        "line_first": {"type": "integer", "minimum": 1}, "line_last": {"type": "integer", "minimum": 1},
+        "image": {"type": "integer", "minimum": 1}
+      },
+      "dependentRequired": {"line_last": ["line_first"]}
+    },
+    "region": {
+      "type": "object", "additionalProperties": false, "required": ["region_id", "kind"],
+      "properties": {
+        "region_id": {"$ref": "#/$defs/uuid"},
+        "kind": {"enum": ["line", "entry", "column", "block", "face", "signature", "seal", "photo_area", "other"]},
+        "label": {"type": "string", "maxLength": 200},
+        "page": {"type": "integer", "minimum": 1},
+        "unit": {"enum": ["px", "fraction", "percent"]},
+        "x": {"type": "number", "minimum": 0}, "y": {"type": "number", "minimum": 0},
+        "w": {"type": "number", "minimum": 0}, "h": {"type": "number", "minimum": 0},
+        "start_seconds": {"type": "number", "minimum": 0}, "end_seconds": {"type": "number", "minimum": 0},
+        "status": {"enum": ["active", "retracted"], "default": "active"},
+        "task_id": {"$ref": "#/$defs/uuid"}
+      },
+      "dependentRequired": {"end_seconds": ["start_seconds"]},
+      "allOf": [
+        {"if": {"anyOf": [{"required": ["x"]}, {"required": ["y"]}, {"required": ["w"]}, {"required": ["h"]}, {"required": ["unit"]}]},
+         "then": {"required": ["x", "y", "w", "h", "unit"]}},
+        {"if": {"properties": {"unit": {"const": "fraction"}}, "required": ["unit"]},
+         "then": {"properties": {"x": {"maximum": 1}, "y": {"maximum": 1}, "w": {"maximum": 1}, "h": {"maximum": 1}}}},
+        {"if": {"properties": {"unit": {"const": "percent"}}, "required": ["unit"]},
+         "then": {"properties": {"x": {"maximum": 100}, "y": {"maximum": 100}, "w": {"maximum": 100}, "h": {"maximum": 100}}}}
+      ]
+    },
+    "saved_copy": {
+      "type": "object", "additionalProperties": false, "required": ["copy_kind"],
+      "properties": {
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "pending": {"type": "boolean"},
+        "bytes": {"type": "integer", "minimum": 0},
+        "content_type": {"type": "string", "pattern": "^[a-z]+/[A-Za-z0-9.+_-]+$"},
+        "copy_kind": {"enum": ["page_image", "document_pdf", "web_page", "photograph", "audio", "video", "import_file", "import_rendering", "other"]},
+        "medium_as_written": {"type": "string", "maxLength": 200},
+        "title": {"type": "string", "maxLength": 1000},
+        "caption": {"type": "string", "maxLength": 4000},
+        "alt_text": {"type": "string", "maxLength": 2000},
+        "captured_at": {"$ref": "#/$defs/timestamp"},
+        "capture_task_id": {"$ref": "#/$defs/uuid"},
+        "width": {"type": "integer", "minimum": 1}, "height": {"type": "integer", "minimum": 1},
+        "pages": {"type": "integer", "minimum": 1}, "duration_seconds": {"type": "number", "minimum": 0},
+        "derived_from": {"type": "object", "additionalProperties": false, "required": ["sha256"],
+          "properties": {"sha256": {"$ref": "#/$defs/sha256"}, "region_id": {"$ref": "#/$defs/uuid"},
+                         "how": {"enum": ["crop", "resize", "enhance", "convert", "other"]}, "how_as_written": {"type": "string", "maxLength": 200}}},
+        "regions": {"type": "array", "items": {"$ref": "#/$defs/region"}},
+        "locations": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["uri"],
+          "properties": {"uri": {"$ref": "#/$defs/uri"}, "verified_at": {"$ref": "#/$defs/timestamp"}, "is_public": {"type": "boolean", "default": false}}}},
+        "redistribution_license": {"$ref": "#/$defs/licence"},
+        "rights_uri": {"$ref": "#/$defs/uri"},
+        "outside_ids": {"type": "array", "items": {"$ref": "#/$defs/outside_id"}},
+        "notes": {"type": "array", "items": {"$ref": "#/$defs/note"}},
+        "georeference": {"type": "object", "additionalProperties": false, "required": ["points"],
+          "description": "MAXGEN 2.1 (G-32): where a picture of an old map lies on today's map, from three or more control points: a point on the picture (fractions of its width and height, from the top left) with its latitude and longitude. A descriptive field a replace may change.",
+          "properties": {"points": {"type": "array", "minItems": 3, "maxItems": 50, "items": {"type": "object",
+            "additionalProperties": false, "required": ["x", "y", "latitude", "longitude"],
+            "properties": {"x": {"type": "number", "minimum": 0, "maximum": 1}, "y": {"type": "number", "minimum": 0, "maximum": 1},
+                           "latitude": {"type": "number", "minimum": -90, "maximum": 90},
+                           "longitude": {"type": "number", "minimum": -180, "maximum": 180}}}},
+            "method_as_written": {"type": "string", "maxLength": 500}}}
+      },
+      "allOf": [
+        {"if": {"properties": {"pending": {"const": true}}, "required": ["pending"]},
+         "then": {"required": ["locations"], "properties": {"sha256": false}},
+         "else": {"required": ["sha256"]}}
+      ]
+    },
+    "media_ref": {
+      "type": "object", "additionalProperties": false, "required": ["held_on_record_id"],
+      "properties": {
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "location_uri": {"$ref": "#/$defs/uri"},
+        "held_on_record_id": {"$ref": "#/$defs/uuid"},
+        "region_ids": {"type": "array", "items": {"$ref": "#/$defs/uuid"}}
+      },
+      "allOf": [{"anyOf": [{"required": ["sha256"]}, {"required": ["location_uri"]}]}]
+    },
+    "role": {"enum": ["principal", "father", "mother", "parent", "child", "spouse", "bride", "groom", "partner", "head",
+                      "household_member", "relative", "boarder", "lodger", "servant", "visitor", "inmate", "patient", "pupil",
+                      "passenger", "crew", "captain", "officer", "soldier", "member", "settler", "witness", "informant",
+                      "officiant", "clergy", "celebrant", "registrar", "enumerator", "aide", "godparent", "sponsor",
+                      "bondsman", "grantor", "grantee", "heir", "executor", "testator", "deceased", "enslaver", "enslaved",
+                      "employer", "employee", "neighbour", "friend", "associate", "multiple_birth", "family", "other"]},
+    "event_type": {"enum": ["birth", "stillbirth", "baptism", "christening", "adult_christening", "blessing", "naming",
+                            "circumcision", "confirmation", "first_communion", "bar_bat_mitzvah", "death", "burial",
+                            "cremation", "funeral", "memorial", "will", "probate", "estate_division", "census",
+                            "residence", "emigration", "immigration", "migration", "naturalization", "military_service",
+                            "military_enlistment", "military_discharge", "pension", "land_grant", "land_purchase",
+                            "land_sale", "tax", "court", "education", "graduation", "ordination", "retirement",
+                            "medical", "adoption", "guardianship", "marriage", "marriage_license", "marriage_banns",
+                            "marriage_contract", "marriage_notice", "marriage_settlement", "engagement", "divorce",
+                            "divorce_filing", "annulment", "separation", "sealing", "lds_baptism", "lds_confirmation",
+                            "lds_initiatory", "lds_endowment", "lds_sealing_to_parents", "lds_sealing_to_spouse",
+                            "membership", "interview", "photograph", "other"]},
+    "quote_check": {
+      "type": "object", "additionalProperties": false, "readOnly": true, "required": ["status", "checked_at"],
+      "properties": {
+        "status": {"enum": ["matched", "matched_whole_text", "outside_line", "not_found", "too_short", "not_checkable", "stale"]},
+        "against": {"enum": ["transcription", "saved_copy_file", "import_rendering"]},
+        "transcription_sha256": {"$ref": "#/$defs/sha256"},
+        "copy_sha256": {"$ref": "#/$defs/sha256"},
+        "part_id": {"$ref": "#/$defs/label"},
+        "char_start": {"type": "integer", "minimum": 0},
+        "char_end": {"type": "integer", "minimum": 0},
+        "mode": {"enum": ["exact", "whitespace_folded", "case_folded"]},
+        "checked_at": {"$ref": "#/$defs/timestamp"},
+        "checked_by_task_id": {"$ref": "#/$defs/uuid"}
+      }
+    },
+    "tree_citation": {
+      "type": "object", "additionalProperties": false, "required": ["order"],
+      "properties": {
+        "record_id": {"$ref": "#/$defs/uuid"},
+        "order": {"type": "integer", "minimum": 1},
+        "quality_as_imported": {"type": "string", "maxLength": 200},
+        "event_as_imported": {"type": "string", "maxLength": 200},
+        "role_as_imported": {"type": "string", "maxLength": 200},
+        "where_as_imported": {"type": "string", "maxLength": 2000},
+        "text_as_imported": {"type": "string", "maxLength": 500000},
+        "attribution_as_imported": {"type": "string", "maxLength": 4000},
+        "data_date_as_imported": {"type": "string", "maxLength": 200},
+        "media_refs": {"type": "array", "items": {"$ref": "#/$defs/media_ref"}},
+        "region": {"type": "object", "additionalProperties": false, "required": ["unit", "x", "y", "w", "h"],
+          "properties": {"unit": {"enum": ["px", "fraction", "percent"]}, "x": {"type": "number", "minimum": 0}, "y": {"type": "number", "minimum": 0},
+                         "w": {"type": "number", "minimum": 0}, "h": {"type": "number", "minimum": 0}, "page": {"type": "integer", "minimum": 1}}},
+        "notes": {"type": "array", "items": {"$ref": "#/$defs/note"}},
+        "extensions": {"$ref": "#/$defs/extensions"}
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false, "required": ["basis"],
+      "properties": {
+        "basis": {"enum": ["document", "imported", "dna", "conclusion", "search"]},
+        "source_record_id": {"$ref": "#/$defs/uuid"},
+        "record_event_ref": {"$ref": "#/$defs/label"},
+        "mention_id": {"$ref": "#/$defs/label"},
+        "subject_mention_id": {"$ref": "#/$defs/label"},
+        "quote": {"type": "string", "minLength": 1, "maxLength": 100000},
+        "region_id": {"$ref": "#/$defs/uuid"},
+        "about": {"enum": ["own_mention", "other_mention", "absence"], "default": "own_mention"},
+        "note": {"$ref": "#/$defs/text"},
+        "where": {"type": "string", "maxLength": 500},
+        "kind": {"enum": ["direct", "indirect", "negative"]},
+        "information": {"enum": ["primary", "secondary", "undetermined"], "readOnly": true},
+        "quote_check": {"$ref": "#/$defs/quote_check"},
+        "import_record_id": {"$ref": "#/$defs/uuid"},
+        "tree_citations": {"type": "array", "items": {"$ref": "#/$defs/tree_citation"}},
+        "dna_id": {"$ref": "#/$defs/uuid"},
+        "match_ids": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/uuid"}},
+        "conclusion_task_id": {"$ref": "#/$defs/uuid"},
+        "task_id": {"$ref": "#/$defs/uuid"},
+        "step_no": {"type": "integer", "minimum": 1},
+        "qualifiers": {"type": "array", "items": {"$ref": "#/$defs/qualifier"}},
+        "origin_tree_id": {"$ref": "#/$defs/uuid", "description": "G-03 (MAXGEN 2.1, additive): the other tree this claim came from (a relative's file brought in as suggestions, a findings delivery): its own tree id for a MAXGEN file, else a random id kept with the label the person typed. Lets one tree's facts be taken back together."},
+        "origin_tree_label": {"type": "string", "minLength": 1, "maxLength": 200, "description": "G-03: the person's own words for that tree, such as \"Aunt Ruth's tree\"."},
+        "received_at": {"$ref": "#/$defs/timestamp", "description": "G-03: when the finding holding this claim came into the tree."}
+      },
+      "allOf": [
+        {"if": {"properties": {"basis": {"const": "document"}}, "required": ["basis"]},
+         "then": {"required": ["source_record_id", "kind"], "anyOf": [{"required": ["quote"]}, {"required": ["region_id"]}],
+                  "properties": {"import_record_id": false, "tree_citations": false, "dna_id": false, "match_ids": false,
+                                 "conclusion_task_id": false, "task_id": false, "step_no": false}}},
+        {"if": {"properties": {"basis": {"const": "document"}, "about": {"const": "absence"}}, "required": ["basis", "about"]},
+         "then": {"required": ["note"], "properties": {"mention_id": false, "subject_mention_id": false, "kind": {"const": "negative"}}},
+         "else": {"if": {"properties": {"basis": {"const": "document"}}, "required": ["basis"]},
+                  "then": {"required": ["mention_id"]}}},
+        {"if": {"properties": {"about": {"const": "other_mention"}}, "required": ["about"]},
+         "then": {"required": ["note"]}},
+        {"if": {"required": ["subject_mention_id"]},
+         "then": {"required": ["about"], "properties": {"about": {"const": "other_mention"}}}},
+        {"if": {"properties": {"basis": {"const": "imported"}}, "required": ["basis"]},
+         "then": {"required": ["import_record_id", "quote"],
+                  "properties": {"source_record_id": false, "record_event_ref": false, "mention_id": false, "subject_mention_id": false, "region_id": false,
+                                 "about": false, "kind": false, "dna_id": false, "match_ids": false,
+                                 "conclusion_task_id": false, "task_id": false, "step_no": false}}},
+        {"if": {"properties": {"basis": {"const": "dna"}}, "required": ["basis"]},
+         "then": {"required": ["dna_id", "match_ids"],
+                  "properties": {"source_record_id": false, "record_event_ref": false, "mention_id": false, "subject_mention_id": false, "quote": false,
+                                 "region_id": false, "about": false, "kind": {"const": "indirect"},
+                                 "import_record_id": false, "tree_citations": false, "conclusion_task_id": false,
+                                 "task_id": false, "step_no": false}}},
+        {"if": {"properties": {"basis": {"const": "conclusion"}}, "required": ["basis"]},
+         "then": {"required": ["conclusion_task_id"],
+                  "properties": {"source_record_id": false, "record_event_ref": false, "mention_id": false, "subject_mention_id": false, "quote": false,
+                                 "region_id": false, "about": false, "kind": false, "import_record_id": false,
+                                 "tree_citations": false, "dna_id": false, "match_ids": false, "task_id": false, "step_no": false}}},
+        {"if": {"properties": {"basis": {"const": "search"}}, "required": ["basis"]},
+         "then": {"required": ["task_id", "step_no", "note"],
+                  "properties": {"source_record_id": false, "record_event_ref": false, "mention_id": false, "subject_mention_id": false, "quote": false,
+                                 "region_id": false, "about": false, "kind": {"const": "negative"},
+                                 "import_record_id": false, "tree_citations": false, "dna_id": false, "match_ids": false,
+                                 "conclusion_task_id": false}}}
+      ]
+    },
+    "claim_header": {
+      "type": "object",
+      "properties": {
+        "assertion_id": {"$ref": "#/$defs/uuid", "readOnly": true},
+        "task_id": {"$ref": "#/$defs/uuid"},
+        "status": {"$ref": "#/$defs/claim_status", "readOnly": true, "default": "proposed"},
+        "status_reason": {"$ref": "#/$defs/text", "readOnly": true},
+        "status_task_id": {"$ref": "#/$defs/uuid", "readOnly": true},
+        "status_at": {"$ref": "#/$defs/timestamp", "readOnly": true},
+        "supersedes_assertion_id": {"$ref": "#/$defs/uuid"},
+        "confidence": {"$ref": "#/$defs/confidence"},
+        "evidence": {"$ref": "#/$defs/evidence"},
+        "notes": {"type": "array", "items": {"$ref": "#/$defs/note"}},
+        "is_private": {"type": "boolean"},
+        "imported_attribution": {"$ref": "#/$defs/imported_attribution"},
+        "imported_status": {"$ref": "#/$defs/imported_value"},
+        "imported_quality": {"$ref": "#/$defs/imported_value"},
+        "imported_restriction": {"$ref": "#/$defs/imported_value"},
+        "imported_order": {"type": "integer", "minimum": 1},
+        "outside_ids": {"type": "array", "items": {"$ref": "#/$defs/outside_id"}},
+        "type_uri": {"$ref": "#/$defs/uri"},
+        "qualifiers": {"type": "array", "items": {"$ref": "#/$defs/qualifier"}},
+        "asserted_at": {"$ref": "#/$defs/timestamp", "readOnly": true},
+        "extensions": {"$ref": "#/$defs/extensions"}
+      }
+    },
+    "common_fields": {
+      "type": "object", "required": ["schema_version"],
+      "properties": {
+        "schema_version": {"$ref": "#/$defs/schema_version"},
+        "created_by_task_id": {"$ref": "#/$defs/uuid"},
+        "created_at": {"$ref": "#/$defs/timestamp", "readOnly": true},
+        "updated_at": {"$ref": "#/$defs/timestamp", "readOnly": true},
+        "notes": {"type": "array", "items": {"$ref": "#/$defs/note"}},
+        "outside_ids": {"type": "array", "items": {"$ref": "#/$defs/outside_id"}},
+        "extensions": {"$ref": "#/$defs/extensions"},
+        "imported_attribution": {"$ref": "#/$defs/imported_attribution"},
+        "imported_restriction": {"$ref": "#/$defs/imported_value"},
+        "imported_tags": {"type": "array", "items": {"$ref": "#/$defs/imported_value"}}
+      }
+    },
+    "lifecycle_fields": {
+      "type": "object",
+      "properties": {
+        "lifecycle": {"$ref": "#/$defs/lifecycle", "readOnly": true, "default": "active"},
+        "lifecycle_reason": {"$ref": "#/$defs/text", "readOnly": true},
+        "lifecycle_task_id": {"$ref": "#/$defs/uuid", "readOnly": true},
+        "duplicate_of": {"$ref": "#/$defs/uuid", "readOnly": true},
+        "merge_history": {"type": "array", "readOnly": true, "items": {"$ref": "#/$defs/merge_entry"}},
+        "distinct_from": {"type": "array", "readOnly": true, "items": {"$ref": "#/$defs/distinct_entry"}},
+        "split_history": {"type": "array", "readOnly": true, "items": {"$ref": "#/$defs/split_entry"}}
+      },
+      "allOf": [
+        {"if": {"properties": {"lifecycle": {"const": "merged_away"}}, "required": ["lifecycle"]},
+         "then": {"required": ["duplicate_of"]}}
+      ]
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false, "readOnly": true,
+      "required": ["agent_id", "agent_kind", "role", "party"],
+      "properties": {
+        "agent_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{0,199}$"},
+        "agent_kind": {"enum": ["human", "ai", "ocr_htr", "rule_engine", "importer", "sync_bridge", "organization", "other"]},
+        "role": {"type": "string", "minLength": 1, "maxLength": 100},
+        "party": {"type": "string", "minLength": 1, "maxLength": 200},
+        "operator": {"type": "string", "maxLength": 200},
+        "version": {"type": "string", "maxLength": 100},
+        "run_id": {"type": "string", "minLength": 1, "maxLength": 200},
+        "display_name": {"type": "string", "maxLength": 200},
+        "model": {"type": "object", "additionalProperties": false, "required": ["name", "attested_by"],
+          "properties": {"provider": {"type": "string", "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 200},
+                         "version": {"type": "string", "maxLength": 100},
+                         "attested_by": {"enum": ["platform", "self_reported", "unknown"]}}},
+        "prompt_sha256": {"$ref": "#/$defs/sha256"},
+        "tool_chain": {"type": "array", "items": {"type": "string", "maxLength": 200}},
+        "claimed_at": {"$ref": "#/$defs/timestamp"},
+        "channel": {"enum": ["person_page", "relayed", "cli"], "default": "cli"}
+      },
+      "allOf": [
+        {"if": {"properties": {"agent_kind": {"enum": ["ai", "importer"]}}, "required": ["agent_kind"]}, "then": {"required": ["run_id"]}},
+        {"if": {"properties": {"agent_kind": {"const": "ai"}}, "required": ["agent_kind"]}, "then": {"required": ["model"]}}
+      ]
+    }
+  }
+}

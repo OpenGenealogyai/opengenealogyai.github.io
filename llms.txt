@@ -1,6 +1,6 @@
 # MAXGEN — The Maxwell Genealogy Standard
 
-> MAXGEN is an open, public-domain (CC0) data standard for genealogy, stewarded by OpenGenealogyAI. Current release v2.0: eleven JSON Schema record files plus one shared building-blocks file. Every fact traces to a source document through an evidence link, every claim carries a confidence score, every family link is stored once, and nothing is overwritten; records about living people are private by rule. If you are an AI agent that a person has sent here to build their family tree, start at /agents/START.md and follow it exactly.
+> MAXGEN is an open, public-domain (CC0) data standard for genealogy, stewarded by OpenGenealogyAI. Current release v2.1: eleven JSON Schema record files plus one shared building-blocks file. Every fact traces to a source document through an evidence link, every claim carries a confidence score, every family link is stored once, and nothing is overwritten; records about living people are private by rule. If you are an AI agent that a person has sent here to build their family tree, start at /agents/START.md and follow it exactly.
 
 MAXGEN is designed to work alongside existing genealogy sites, archives and the GEDCOM format, not to replace them.
 
@@ -48,6 +48,7 @@ MAXGEN is designed to work alongside existing genealogy sites, archives and the 
 - [MaxRecognition](https://opengenealogyai.org/schemas/maxrecognition/): one MaxRecognition is one machine reading of an image — file: https://opengenealogyai.org/schemas/maxgen/v2/recognition.schema.json
 - [MaxDNA](https://opengenealogyai.org/schemas/maxdna/): one MaxDNA is one person's DNA test and its matches (always private) — file: https://opengenealogyai.org/schemas/maxgen/v2/dna.schema.json
 - Shared building blocks (not a record type) — file: https://opengenealogyai.org/schemas/maxgen/v2/maxgen-defs.schema.json
+- What 2.1 added: https://opengenealogyai.org/changelog/#v21-2026-11-21
 - SHA-256 of every file: https://opengenealogyai.org/schemas/maxgen/v2/SHA256SUMS.txt
 - Machine-readable version index: https://opengenealogyai.org/schemas/maxgen/index.json
 

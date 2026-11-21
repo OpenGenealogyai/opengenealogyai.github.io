@@ -15,6 +15,14 @@
       "then": {
         "properties": {"redistribution_license": {"const": "tier2-private"}}
       }
+    },
+    {
+      "if": {
+        "required": ["address"]
+      },
+      "then": {
+        "properties": {"source_type": {"enum": ["archive", "library", "other"]}}
+      }
     }
   ],
   "required": ["source_id", "name", "source_type", "redistribution_license", "is_living_flag"],
@@ -54,6 +62,10 @@
     "source_url": {
       "$ref": "maxgen-defs.schema.json#/$defs/uri",
       "description": "The source's own address, when it has one; optional (a book or a family Bible has none) and never invented."
+    },
+    "address": {
+      "$ref": "maxgen-defs.schema.json#/$defs/place_ref",
+      "description": "MAXGEN 2.1 (G-14): where an archive or library is: its postal address in address_as_written, its town in place_as_written, and the MaxPlace in place_id; only on a source whose source_type is archive or library, or other for a church office, government office, cemetery, family papers or a private collection, and never a person's home address."
     },
     "parent_source_id": {
       "$ref": "maxgen-defs.schema.json#/$defs/uuid",

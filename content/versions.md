@@ -22,12 +22,18 @@ description: MAXGEN versioning policy, the 2.x additive-only promise, and every 
 
 MAXGEN 2.0 is the first major version. It reshaped the seven 1.x schemas, added four new ones (MaxRelationship, MaxPlace, MaxGroup and MaxEvent) and a shared building-blocks file, and moved family links out of MaxPerson into MaxRelationship, where each link is stored once. **2.0 does not read 1.x files, and there is no migration from 1.x.** The 1.x files are not deleted: they stay at their permanent addresses, unchanged. The [changelog](/changelog/#v20-2026-10-16) lists what changed in every schema and what breaks.
 
+## What 2.1 added
+
+MAXGEN 2.1 adds optional fields and allowed values to six of the twelve files: where a fact came from, life stories and biographies, notes that keep their history, comparing a reading with an index, health conditions kept private, archive addresses and old-map alignment. Nothing was removed or narrowed, so every 2.0 file stays valid. The [changelog](/changelog/#v21-2026-11-21) lists every addition in the schema files' own words.
+
+2.0 and 2.1 were published without the public comment period described on the [governance page](/governance/), because the standard had no outside users yet.
+
 ## Permanent addresses
 
-- `/schemas/maxgen/v2/<file>` holds the **current 2.x files**. This is the `$id` inside every 2.0 file.
-- `/schemas/maxgen/v2.0/<file>` is a **frozen copy** of the 2.0 release.
+- `/schemas/maxgen/v2/<file>` holds the **current 2.x files** (now 2.1). This is the `$id` inside every 2.x file.
+- `/schemas/maxgen/v2.1/<file>` and `/schemas/maxgen/v2.0/<file>` are **frozen copies** of each release.
 - `/schemas/maxgen/v1/<name>.schema.json` and `/schemas/maxgen/v1.NN/<name>.schema.json` hold the **archived 1.x releases**, unchanged.
-- `/schemas/maxgen/index.json` lists every version, with each 2.0 file's SHA-256, for machines.
+- `/schemas/maxgen/index.json` lists every version, with each 2.x file's SHA-256, for machines.
 
 <!--VERSIONS-->
 

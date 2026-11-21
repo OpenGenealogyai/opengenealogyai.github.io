@@ -35,8 +35,8 @@
   // Build the menu: detect, the eleven 2.0 kinds, then the archived 1.13 schemas.
   sel.innerHTML = "";
   function opt(parent, value, text) { var o = document.createElement("option"); o.value = value; o.textContent = text; parent.appendChild(o); }
-  opt(sel, "auto", "Detect the kind from the record (MAXGEN 2.0)");
-  var g2 = document.createElement("optgroup"); g2.label = "MAXGEN 2.0"; sel.appendChild(g2);
+  opt(sel, "auto", "Detect the kind from the record (MAXGEN 2.1)");
+  var g2 = document.createElement("optgroup"); g2.label = "MAXGEN 2.1"; sel.appendChild(g2);
   KINDS.forEach(function (k) { opt(g2, k[0], k[1] + " (" + k[2] + ")"); });
   var g1 = document.createElement("optgroup"); g1.label = "MAXGEN 1.13 (archived)"; sel.appendChild(g1);
   V1.forEach(function (k) { opt(g1, k[0], k[1] + " 1.13 (" + k[0].slice(3) + ".schema.json)"); });
@@ -127,7 +127,7 @@
       catch (e) { show("bad", "Schema could not be compiled: " + esc(e.message)); return; }
       if (!validate) { show("bad", "Schema " + esc(info[2]) + " is not loaded."); return; }
       validate(data);
-      report(validate, info[1] + " (MAXGEN 2.0)" + (choice === "auto" ? ", detected from the record" : ""));
+      report(validate, info[1] + " (MAXGEN 2.1)" + (choice === "auto" ? ", detected from the record" : ""));
     }).catch(function (e) { show("bad", esc(e.message)); });
   });
 

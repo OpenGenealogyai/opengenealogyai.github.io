@@ -1,13 +1,108 @@
 {
   "standard": "MAXGEN",
-  "current": "2.0",
+  "current": "2.1",
   "canonical_base": "https://opengenealogyai.org/schemas/maxgen/v2/",
   "versions": [
     {
-      "version": "2.0",
-      "released": "2026-10-16",
+      "version": "2.1",
+      "released": "2026-11-21",
       "status": "current",
       "url": "https://opengenealogyai.org/schemas/maxgen/v2/",
+      "frozen_url": "https://opengenealogyai.org/schemas/maxgen/v2.1/",
+      "schemas": [
+        "maxgen-defs",
+        "raw-record",
+        "person",
+        "relationship",
+        "task-queue",
+        "source",
+        "place",
+        "group",
+        "event",
+        "name",
+        "recognition",
+        "dna"
+      ],
+      "files": [
+        {
+          "file": "maxgen-defs.schema.json",
+          "title": "MAXGEN shared building blocks",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/maxgen-defs.schema.json",
+          "sha256": "2689ea1816c69644d8a0bf48ed01acdc3cb85de9a85120d9820b60a18c6eb944"
+        },
+        {
+          "file": "raw-record.schema.json",
+          "title": "MaxRecord",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/raw-record.schema.json",
+          "sha256": "ad38d5a1d421bcd74389c2bddb6887d62a2c66ac88cf092f9af3e0d8d502bd67"
+        },
+        {
+          "file": "person.schema.json",
+          "title": "MaxPerson",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/person.schema.json",
+          "sha256": "33a42e40d29768874c1def2ba9823bc28455a614bf18efe5a0bfb452f2dee700"
+        },
+        {
+          "file": "relationship.schema.json",
+          "title": "MaxRelationship",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/relationship.schema.json",
+          "sha256": "3fe0a82b950eb6fa5b501258cf50c9b41894f7f41039051a16170cc5c5af5d5d"
+        },
+        {
+          "file": "task-queue.schema.json",
+          "title": "MaxTask",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/task-queue.schema.json",
+          "sha256": "0a5d2354506e81bc336cefe3b9af5c387fd5f4e83dc8b255f4e274586ecef457"
+        },
+        {
+          "file": "source.schema.json",
+          "title": "MaxSource",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/source.schema.json",
+          "sha256": "c46fe41a47a681c20634e00d616a31e084db4ba807bac0a80ee58d284f5d6a16"
+        },
+        {
+          "file": "place.schema.json",
+          "title": "MaxPlace",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/place.schema.json",
+          "sha256": "6940b499ea549f8314227906ae120f90fdc90e536e5824b5f34233a9c16fff4d"
+        },
+        {
+          "file": "group.schema.json",
+          "title": "MaxGroup",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/group.schema.json",
+          "sha256": "8dcdd51571717a6ae38eb9c6378ec0ae140423cd8999b548beee78045ba34657"
+        },
+        {
+          "file": "event.schema.json",
+          "title": "MaxEvent",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/event.schema.json",
+          "sha256": "1b69ee119e49ec2ecfaa10010017e93afec2fd79a6ac0e96f88e44c126cd2966"
+        },
+        {
+          "file": "name.schema.json",
+          "title": "MaxName",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/name.schema.json",
+          "sha256": "521b1b28cfba2a121e40a9bb71b08982aa3bacba0d39a62907088c40606bacb1"
+        },
+        {
+          "file": "recognition.schema.json",
+          "title": "MaxRecognition",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/recognition.schema.json",
+          "sha256": "ca72abecd356d4bee9bbc827c3213c231b95931d7884f9122ad744006e0f6e4e"
+        },
+        {
+          "file": "dna.schema.json",
+          "title": "MaxDNA",
+          "$id": "https://opengenealogyai.org/schemas/maxgen/v2/dna.schema.json",
+          "sha256": "dc96f9d4d08b8c484a8fb1ac5d8c7a6ae6ffb9e623817fc14b99d63567986bf7"
+        }
+      ]
+    },
+    {
+      "version": "2.0",
+      "released": "2026-10-16",
+      "status": "previous",
+      "url": "https://opengenealogyai.org/schemas/maxgen/v2.0/",
       "frozen_url": "https://opengenealogyai.org/schemas/maxgen/v2.0/",
       "schemas": [
         "maxgen-defs",

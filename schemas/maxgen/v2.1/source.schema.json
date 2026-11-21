@@ -1,0 +1,307 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opengenealogyai.org/schemas/maxgen/v2/source.schema.json",
+  "title": "MaxSource",
+  "description": "MAXGEN 2.0 -- One MaxSource is one work, collection or repository that documents come from or are held by (a book, a periodical, a census collection, a microfilm publication, a family Bible, an archive, a library or a website), with what it covers and how to search it.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "maxgen-defs.schema.json#/$defs/common_fields"},
+    {"$ref": "maxgen-defs.schema.json#/$defs/lifecycle_fields"},
+    {
+      "if": {
+        "properties": {"is_living_flag": {"const": true}},
+        "required": ["is_living_flag"]
+      },
+      "then": {
+        "properties": {"redistribution_license": {"const": "tier2-private"}}
+      }
+    },
+    {
+      "if": {
+        "required": ["address"]
+      },
+      "then": {
+        "properties": {"source_type": {"enum": ["archive", "library", "other"]}}
+      }
+    }
+  ],
+  "required": ["source_id", "name", "source_type", "redistribution_license", "is_living_flag"],
+  "properties": {
+    "source_id": {
+      "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+      "description": "This source's own id: a random UUID created once by the writer and never reused."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "description": "The source's name in plain words, such as a made-up 'Tumblebrook parish registers, 1801-1900'."
+    },
+    "source_type": {
+      "enum": [
+        "directory_index", "research_wiki", "record_catalog", "record_database", "archive", "library", "dna_database",
+        "newspaper_archive", "forum", "blog", "society", "book", "periodical", "manuscript_collection",
+        "microfilm_publication", "census_collection", "family_bible", "oral_history_collection", "website",
+        "gazetteer", "other"
+      ],
+      "description": "What kind of source this is."
+    },
+    "source_type_as_written": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "The kind of source in the writer's or the other program's own words, given when source_type is other."
+    },
+    "redistribution_license": {
+      "$ref": "maxgen-defs.schema.json#/$defs/licence",
+      "description": "Whether this source entry may be shared (unclear means ask, never guess); a tier2-private entry never appears in any open dataset, share, export, public embedding or commit."
+    },
+    "is_living_flag": {
+      "type": "boolean",
+      "description": "Living A floor: true when this source entry names someone who may be alive, such as a privately held family Bible (unsure means true; credits never set it); true requires tier2-private."
+    },
+    "source_url": {
+      "$ref": "maxgen-defs.schema.json#/$defs/uri",
+      "description": "The source's own address, when it has one; optional (a book or a family Bible has none) and never invented."
+    },
+    "address": {
+      "$ref": "maxgen-defs.schema.json#/$defs/place_ref",
+      "description": "MAXGEN 2.1 (G-14): where an archive or library is: its postal address in address_as_written, its town in place_as_written, and the MaxPlace in place_id; only on a source whose source_type is archive or library, or other for a church office, government office, cemetery, family papers or a private collection, and never a person's home address."
+    },
+    "parent_source_id": {
+      "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+      "description": "The larger MaxSource this one is part of, such as the collection that holds this series."
+    },
+    "description": {
+      "$ref": "maxgen-defs.schema.json#/$defs/text",
+      "description": "What this source holds and who it serves, in plain words."
+    },
+    "embedding_text": {
+      "$ref": "maxgen-defs.schema.json#/$defs/text",
+      "description": "Plain text built from the name, description and coverage, for search indexes."
+    },
+    "bibliographic": {"$ref": "#/$defs/bibliographic", "description": "How the work is cited: title, creators, publisher and edition."},
+    "holdings": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/holding"},
+      "description": "The repositories that hold this source, with call numbers."
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage",
+      "description": "What the source covers, including, for each place, which years it holds and the exact words to search with (routing lives only here)."
+    },
+    "access": {"$ref": "#/$defs/access", "description": "How the source is reached, and the polite way to search it."},
+    "link_status": {
+      "enum": ["active", "dead_link", "superseded", "unverified"],
+      "default": "unverified",
+      "description": "Whether the source's address still works; a dead link is marked, never deleted."
+    },
+    "last_verified_at": {
+      "$ref": "maxgen-defs.schema.json#/$defs/timestamp",
+      "description": "When the address was last confirmed to work."
+    },
+    "discovered_via": {
+      "enum": [
+        "cyndis_list", "fs_research_wiki", "fs_catalog", "wikidata", "manual", "community_submission", "import",
+        "other"
+      ],
+      "description": "How this source entry was first found."
+    },
+    "discovered_via_as_written": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "How it was found, in the writer's own words, given when discovered_via is other."
+    },
+    "external_ref": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "The link, category path or article title where this entry was found."
+    },
+    "attribution": {
+      "$ref": "maxgen-defs.schema.json#/$defs/attribution",
+      "description": "Credit to the human who compiled or contributed this entry (a credit never sets the living flag)."
+    },
+    "media_refs": {
+      "type": "array",
+      "items": {"$ref": "maxgen-defs.schema.json#/$defs/media_ref"},
+      "description": "Files that show this source (a title page, a repository photograph), each described once on the record that captured it."
+    }
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "bibliographic": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {"type": "string", "minLength": 1, "maxLength": 2000, "description": "The work's title, as it gives it."},
+        "creators": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/creator"},
+          "description": "The people or bodies who made the work, in the order it names them."
+        },
+        "publisher": {"type": "string", "maxLength": 500, "description": "The publisher, as written."},
+        "publication_place_as_written": {"type": "string", "maxLength": 1000, "description": "Where it was published, as written."},
+        "publication_date": {
+          "$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "When it was published (use derivation interpreted when the date is not quoted from the work)."
+        },
+        "edition": {"type": "string", "maxLength": 200, "description": "The edition, as written."},
+        "abbreviation": {"type": "string", "maxLength": 200, "description": "A short title used in citations."},
+        "medium_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The medium (book, microfilm, web page, manuscript), as written."
+        },
+        "series": {"type": "string", "maxLength": 500, "description": "The series the work belongs to, as written."},
+        "volume_count": {"type": "integer", "minimum": 1, "description": "How many volumes the work has."}
+      },
+      "description": "How a published or archival work is cited."
+    },
+    "creator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name_as_written"],
+      "properties": {
+        "name_as_written": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "The creator's name exactly as the work gives it."
+        },
+        "role": {
+          "enum": ["author", "editor", "compiler", "transcriber", "translator", "publisher", "photographer", "other"],
+          "description": "What this creator did for the work."
+        },
+        "role_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The creator's role in the work's own words, given when role is other."
+        }
+      },
+      "description": "One creator of a work (a credit, which never sets a living flag)."
+    },
+    "holding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_name"],
+      "properties": {
+        "repository_name": {"type": "string", "minLength": 1, "maxLength": 500, "description": "The repository's name, as written."},
+        "repository_source_id": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uuid",
+          "description": "The repository's own MaxSource, when there is one."
+        },
+        "holds_original": {
+          "type": "boolean",
+          "description": "True when this repository is the custodian of the original (never a publisher, reseller or website); the original key's repo part comes from it."
+        },
+        "call_number": {"type": "string", "maxLength": 200, "description": "The repository's call number or shelf mark."},
+        "medium_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The medium held there (original volumes, microfilm, images), as written."
+        },
+        "note": {"$ref": "maxgen-defs.schema.json#/$defs/text", "description": "Anything else about this holding."}
+      },
+      "description": "One repository that holds this source."
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "places": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/coverage_place"},
+          "description": "The places covered, each with its years and the words to search with."
+        },
+        "record_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "One kind of record held, in plain words or a MaxRecord record_type value."
+          },
+          "description": "The kinds of record the source holds."
+        },
+        "span": {
+          "$ref": "maxgen-defs.schema.json#/$defs/date",
+          "description": "The whole period the source covers (use derivation interpreted when the span is not quoted from the source)."
+        },
+        "languages": {
+          "type": "array",
+          "items": {"$ref": "maxgen-defs.schema.json#/$defs/lang"},
+          "description": "The languages of the records held, as language tags."
+        },
+        "ethnic_or_religious_groups": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "One group the source focuses on, in plain words."
+          },
+          "description": "Any ethnic or religious focus of the records held."
+        },
+        "record_count_estimate": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The source's own count of the records it holds; left out when unknown, never guessed."
+        }
+      },
+      "description": "What the source covers."
+    },
+    "coverage_place": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["place"],
+      "properties": {
+        "place": {
+          "$ref": "maxgen-defs.schema.json#/$defs/place_ref",
+          "description": "The place covered, as written (a MaxPlace id is attached later by the helper)."
+        },
+        "span": {"$ref": "maxgen-defs.schema.json#/$defs/date", "description": "The years this source holds for this place."},
+        "search_as": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "description": "The exact words to search with for this place, such as the made-up 'filed under Wrenshire county, not Tumblebrook'."
+        },
+        "note": {
+          "$ref": "maxgen-defs.schema.json#/$defs/text",
+          "description": "Anything else a researcher must know about this place in this source."
+        }
+      },
+      "description": "One place a source covers, with its routing."
+    },
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "access_method": {
+          "enum": ["free_web", "paid_subscription", "api", "bulk_download", "scrape_only", "onsite_only", "other"],
+          "description": "The main way in; prefer api or bulk_download over scrape_only when they are offered."
+        },
+        "access_method_as_written": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "The way in, in the writer's own words, given when access_method is other."
+        },
+        "requires_auth": {
+          "type": "boolean",
+          "default": false,
+          "description": "True when searching needs a login (agents never handle passwords)."
+        },
+        "api_base_url": {
+          "$ref": "maxgen-defs.schema.json#/$defs/uri",
+          "description": "The base address of the source's machine interface, when it has one."
+        },
+        "robots_allowed": {
+          "type": "boolean",
+          "description": "Whether the site's robots rules allow automated access to the pages concerned."
+        },
+        "tos_url": {"$ref": "maxgen-defs.schema.json#/$defs/uri", "description": "The address of the source's terms of use."},
+        "crawl_notes": {"type": "string", "description": "Politeness, rate-limit and method notes for automated searching."}
+      },
+      "description": "How the source is reached."
+    }
+  }
+}

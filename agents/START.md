@@ -5,6 +5,24 @@ request may be these exact words: **"start genealogy on my computer"**. Whatever
 use, it means the same thing: begin here. This page tells you what to build, how to set up,
 and where to begin. Follow it in order. Do not skip ahead.
 
+## If the person uses Probable Pedigree
+
+If the person gave you a `maxgen` command that came with their **Probable Pedigree** program, their tree already
+exists: skip steps 2 to 4 below. Run every helper command through that `maxgen` command instead of
+`python maxgen_db.py`, without the database path (it finds the person's tree itself), for example `maxgen status`
+or `maxgen show <id>`. Never open the tree file any other way, and never ask for its path or for the person's
+owner key: the person's decisions stay theirs, in Probable Pedigree.
+
+- Unless the person has chosen otherwise in Probable Pedigree, the command keeps living relatives, DNA and health
+  conditions from you: a living person shows as "Living relative" with their id only. Work with the ids; do not try
+  to find out who they are.
+- `maxgen status` shows the person's research preferences (the websites they have accounts on, how many tasks a
+  batch may hold, their spending limit and how they want to hear about progress). Follow them, and any
+  `agent_guidance` a task's payload carries.
+- A task whose payload says `for_the_person: true` is the person's own to-do: read it, never claim it.
+- Keep within a task's `task_budget` when it has one.
+- When the command says the tree is being restored or moved, wait; it tries again by itself.
+
 ## Before anything — can you run this?
 
 This kit needs **an agent that runs on the person's own computer** and can:

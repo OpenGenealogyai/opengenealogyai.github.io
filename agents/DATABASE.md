@@ -56,8 +56,10 @@ shareable export:
   the newest 200,000 changes.
 - `action_log`: one row for every transaction, with a plain summary and an **undo recipe** (the
   steps that would take the change back: withdraw what was added, bring back what was
-  withdrawn, unmerge a merge, put back an owner choice or a meta value). Probable Pedigree uses
-  it for Undo and Recent changes. Recipes are kept 365 days for the person's own changes and 30
+  withdrawn, unmerge a merge, put back an owner choice or a meta value). A replace made with
+  `Gate.add(doc, task, replace=True, expect_sha256=..., restorable=True)` (a person's own edit of a
+  document's words) also carries the earlier version whole (`doc_restore`), put back only while the
+  document is still exactly as that replace left it. Probable Pedigree uses it for Undo and Recent changes. Recipes are kept 365 days for the person's own changes and 30
   days for everyone else's.
 - **The owner tables** (`owner_setting`, `owner_branch`, `owner_rule`, `owner_mark`,
   `owner_tag`, `owner_list`, each with a `..._now` view of what is in force): the person's own
@@ -105,7 +107,9 @@ owns (the writer cannot set them); on `--replace`, match every stored item by it
 (claims by `assertion_id`, mentions by `mention_id`, event entries by `ref` …) and refuse if
 one is changed or missing; put the helper's stored values back; check the schema; apply the
 rules below; check the stored document is complete; commit. A refusal prints `REFUSED:
-<plain sentence> (R-nn)`, exits 1 and changes nothing.
+<plain sentence> (R-nn)`, exits 1 and changes nothing. When another write holds the tree (the person attaching
+thousands of places in Probable Pedigree, say) a command waits 5 seconds, then prints `REFUSED: the tree is busy ...`,
+exits 3 and changes nothing: try again in a minute.
 
 ## The rules the helper enforces
 
@@ -169,6 +173,33 @@ In plain words, with the numbers a refusal prints:
 - **R-34 — A locked person is the person's alone.** An AI, importer or sync session may not
   change a person the owner has locked, nor add or withdraw a family link of theirs. Quality
   Control's reviews and the person's own session still may.
+- **R-35 — The person's decision route.** The person may withdraw anything in their tree, with
+  their own words: what they added themselves is withdrawn as its author, and what someone else
+  added is withdrawn by the person's recorded decision (a review in their words, then the
+  withdrawal). The person may bring back anything that was withdrawn; any other session only what
+  its own task withdrew. These decisions need the person's own session and the tree's owner key.
+  Nothing is deleted: the withdrawn thing stays, marked withdrawn, with the reason.
+- **R-38 — The person's word that a relative died.** The person may mark a relative as having
+  died with no document. The death claim cites the person's own typed record (at most 0.4) under
+  an `owner_death` task carrying the person's yes, and the living answer accepts it everywhere,
+  even over a stored `is_living` true. Withdrawing that claim makes the relative living again.
+- **R-40 — Dated claims count for the living answer.** In the helper's living answer a person is
+  not living when any evidence but DNA (imported and unchecked included) gives a death year, a
+  birth 110 or more years ago, or a marriage 90 or more years ago or a child born 90 or more
+  years ago (the dates the sharing rule R-39 already reads); such a person may be shared. A stored
+  `is_living` true wins over the death year and the marriage and child clauses (only R-38 and
+  R-40b beat it). Text-only dates and claims worked out from absence never count, nor does a
+  marriage in a family, or a child through a parent link, that Quality Control rejected. The
+  switch is `DATES_A_ON` in the helper; with it off the living answer is the four rules alone
+  (the rejected family and link fix stays in both modes, for the sharing rule).
+- **R-40b — A birth 110 or more years ago beats a stored living flag.** Same switch. A recorded
+  birth whose latest possible year is 110 or more years ago (any evidence but DNA, imported and
+  unchecked included) shows the person as deceased, and lets them be shared, even when
+  `is_living` is true. Only R-38 comes before it. A death year, or an old marriage or child,
+  alone still leaves a stored `true` standing. Common-sense guard: the birth does not beat a
+  stored `true` when the same person's other dated records (a census, a residence, a marriage,
+  a child's birth ...; never a burial, probate or other posthumous record) show them alive more
+  than 110 years after that birth, which is most likely a mistyped year; the flag stands.
 
 ## Commands
 
@@ -211,6 +242,7 @@ python maxgen_db.py occurrence genealogy.db <occurrence_id>
 python maxgen_db.py check      genealogy.db
 python maxgen_db.py portal     genealogy.db portal.html [--root <person_id>] [--gens 5] [--shareable-out pedigree_shareable.html]
 python maxgen_db.py kit-hash   genealogy.db            (reads one DNA kit number from standard input)
+python maxgen_db.py store-media genealogy.db <file>     (stores a photo, scan or other file in Media/)
 ```
 
 What the less obvious ones do:
@@ -227,9 +259,14 @@ What the less obvious ones do:
   a `--replace` must name.
 - `retract` withdraws, never deletes: a claim (`<assertion_id>`), a document, a membership, a
   mention (`<record_id>#<mention_id>`), an event entry (`<record_id>#event:<ref>`), a saved copy
-  (`<record_id>#copy:<sha256>`), a partner (`<family_id>#partner:<person_id>`) or a task (it
-  becomes `cancelled`). Only the author, or an accepted review of a whole run
-  (`apply-run-review`, one decision per object), may retract.
+  (`<record_id>#copy:<sha256>`), one marked area of a saved copy, such as a face
+  (`<record_id>#region:<region_id>`), a partner (`<family_id>#partner:<person_id>`) or a task (it
+  becomes `cancelled`). Only the author, or the person's own review of a run (`apply-run-review`,
+  one decision and one reason per object), may retract. A run review is the person's decision
+  alone: the kit refuses `apply-run-review` from Quality Control or any AI agent session (R-35),
+  so the command above is refused to every command-line session; the person's program applies it
+  with the owner key. It also refuses a decision on anything the run did not write, a thing decided
+  twice, and a review that takes back every live finding of the run at once (R-29).
 - `apply-proof` copies an accepted proof's conclusion onto the claims it settles, and its
   parent-set changes (a set's kind, the main set, a parent's link added to a set, a wrong set
   retracted); `withdraw-proof` puts them back to proposed and opens a review. `prefer` records
@@ -243,8 +280,18 @@ What the less obvious ones do:
   places for it as candidates. `check` is a read-only health check. `reindex` rebuilds the
   indexes from the documents and reports any difference.
 - `export --shareable` writes only what may be shown to others (approved documents, no private
-  claim, note or person, the citation only of an all-rights-reserved record), and refuses tasks
-  and DNA.
+  claim, note or person, the citation only of an all-rights-reserved record, no saved copy of a
+  photo that a photo claim ties to someone living, private or held back, and no place on a fact
+  or a document when that place is private: a street, an address, a building, a farm, an estate,
+  a plantation or a place of no known kind that someone who may be living is tied to, by its id
+  or by the same words written without one; a residence at such a place is left out whole), and
+  refuses tasks and DNA.
+- `store-media` stores one file in the tree folder's `Media/ab/<sha256>.<ext>` and prints its
+  fingerprint, so a record can describe it as a saved copy (`saved_copies`, `sha256`). What the
+  file is comes from its contents, never its name: a program, a script, an archive or a kind the
+  kit cannot tell is refused, and so is a file larger than its kind may be (pictures 200 MB, PDF
+  and sound 500 MB, video 4 GB, text and web pages 20 MB). A stored file is never overwritten and
+  nothing is ever deleted; storing the same file again changes nothing.
 - `kit-hash` prints the fingerprint of a DNA kit number for `kit_id_hash` and `match_kit_hash`,
   keyed with this database's own secret; a kit number itself is never written down anywhere.
 - `import-maxgen` brings in the tables another MAXGEN database exported (one
@@ -320,6 +367,106 @@ Other ways to look:
   scroll and search, with no commands at all.
 - `export` writes any table to a `.jsonl` file (one JSON document per line) for backup or for
   another program.
+- **A program that shows the whole tree at once** (Probable Pedigree's speed cache) reads it with
+  `maxgen_db.TreeSnapshot.build(con)`: one read transaction that streams each table once and keeps
+  only compact facts. Its answers equal the per-document readers' (who is living, parent sets, the
+  chosen set, the chart's main parents, names and dates), and `TreeSnapshot.build(con, people=[...])`
+  reads only what the answers about those people need, so a program can keep a copy current after
+  each change. `maxgen_db.checked_view(con, person_id)` gives the claims Quality Control passed for a
+  person sent back to "Waiting for a check" by new claims. Merge redirects are followed backwards
+  through the index `ix_redirect_new`, which `init`, `upgrade` and every write make.
+- **A program that makes trees** (Probable Pedigree's "Start a new tree") calls
+  `maxgen_db.init_tree(path, kind)`, which does `init`'s work without printing and returns the
+  database id. A copy of a tree that is to become a tree of its own gets a new id through the
+  Gate under the person's own session (`Gate.new_tree_id()`); the made-up sample family keeps its id,
+  so it can never become a real tree.
+- **The person's own page** (Probable Pedigree) writes through the Gate under the person's session:
+  `Gate.withdraw(target, words, reason_code)` and `Gate.reinstate(target, words)` (R-35; a target
+  is a claim, a document, a membership, `family#partner:<id>`, `record#<mention>`,
+  `record#region:<region id>` or `document#note:<note id>`), `Gate.note(holder, text, ...)` (a note with its own id; a translation names its language, `lang`; a changed note
+  is a new note naming the one it replaces, which is kept, withdrawn), `Gate.set_private(claim, on)`
+  (anyone may make a claim private; only the person may make it shareable again, with their words)
+  and `Gate.owner_death(person, words)` (R-38). `Gate.decide(task, verdict, words)` records the
+  person's own answer on a task (the yes an adoptive link needs, R-31). Notes and the private switch
+  never send a checked person back for a check. A name the person makes preferred shows first, even
+  beside an older preferred name (`maxgen_db.shown_name`). Undo never withdraws the person's recorded
+  decisions; a task an undo cancelled comes back with `Gate.reinstate(task, words, status=...)`.
+- **Everything that leaves** goes through one filter, `maxgen_db.outgoing_view(ctx, kind, doc, purpose)`.
+  `shareable` gives what `export --shareable` writes: never a person held back (`owner.hold_back`), nor anything
+  naming them. Every piece of text in it (causes, values, notes, quotes, places, dates as written, citations,
+  captions, nicknames; everything but codes, ids, hashes and times) has each name of a person who may not be named
+  (living or possibly living, held back, removed, or merged into one of those) replaced by "(living relative)" or
+  "(a relative)". Names are matched however they are written: invisible characters taken out, accents, strokes and
+  look-alike letters of other alphabets folded, letters also read as commonly spelt out ("Mueller" is "Müller",
+  "Oestergaard" is "Østergaard"), case ignored, plurals and possessives, halves joined or split by any dash or a
+  space, a whole name run together as one word either way round ("WrenCanarywing"), letters spelt out one at a time,
+  and a hidden person's first and last names with initials, middle names or "née" between, in brackets, surname
+  first with a comma or in capitals, with a nickname in quotes, in a list of given names before one surname, or the
+  first name with the surname's initial ("Wren Canarywing", "Wren E. Canarywing", "Canarywing, Wren", "CANARYWING
+  Wren", 'Wren "Birdie" Canarywing', "Wren and Ada Canarywing", "Wren C.") even when each word alone is also a
+  shareable person's. A name that is also an ordinary or a short word ("Grace",
+  "An") counts only with a capital; a word a shareable person also bears is kept unless it is part of a hidden
+  person's whole name, and words written as part of a longer whole name of a shareable person, in its order or surname
+  first with a comma, name that person ("Mary Jane Pettibone", dead, beside a living Jane Pettibone; but "Mary, Jane
+  Pettibone" is two people); text naming someone hidden whose whole name a shareable
+  person shares is left out whole. `person_may_leave(ctx, doc)` answers whether a shareable copy of a person exists at
+  all, without building it. A small place (a street, an address, a building, a farm, an estate, a plantation, or a
+  place of no known kind) where someone who may be living has a fact never leaves, nor a small place holding one
+  ("14 Quill Lane" holding the flat a living person lives in, through every place merged into each), nor one whose
+  name is a run of whole words of a place they write or of their own small place's name ("40 Heron Road Apt 2").
+  `health_report` gives the copy of one person a doctor may see (Probable Pedigree's "Print for a doctor"):
+  nothing for anyone living or possibly living, held back, withdrawn or merged away; for everyone else no name and
+  no id, years only, and only the causes of death and the health conditions. Their words are cut to the year, and
+  printed only when every word is one the doctor's vocabulary knows (`DOCTOR_VOCABULARY`: everyday words and the
+  names of illnesses, body parts and causes of death, and the short illness names it lists in capitals such as
+  "COPD", so initials never pass; a disease called by people's names such as "Huntington's disease" or
+  "Guillain-Barré syndrome", unless that name is also a living or hidden relative's). Words that tell of another
+  person or people ("like her sister", "as her youngest has", "she", "they", "some of the family") are never in it,
+  whatever their ending. They are left out whole ("(words left out: they may
+  name someone)") when any word is unknown, is a living or hidden person's name in any letters, or is anyone
+  else's name with a capital, or when they hold letters of another alphabet, or still give a day, a week, a
+  season with its year, a feast, a month, a day or month as a number ("2019 6 5", "2019-6"), a day by its ordinal ("the
+  fifth"), a part of a year ("early 2019", "the third quarter"), a time of day or a year of another calendar, or
+  when a date finer than the year had no year to keep ("at Christmas"), or was placed by a word such as "before",
+  "after", "into", "over" or "near" ("3 days before Christmas 2019" is not "before 2019"), or when a count of days,
+  weeks, months, nights or hours stands beside a year ("6 months into 1999"; an age such as "aged 3 months, 1890"
+  stays); an initial ("like C.") is never printed. A
+  health condition is private everywhere else and never shared. A temple ordinance (an lds_* event, a marriage
+  with ceremony "sealing", a sealing to parents, an event of type "sealing", in any letters or written as one in any
+  of its words, its evidence quote or its notes such as "temple sealing", "endowed", "proxy baptism" or the short
+  names "BIC", "SP", "SS" and GEDCOM's tags, "LDS" (also "L.D.S."), "Latter-day Saint", "Mormon", "covenant",
+  "anointed", "stake", "eternal marriage", "posthumous baptism", "baptized after death", "post-mortem baptism", "baptized on behalf of", tags such as
+  "BAPTISM_LDS" or "TEMPLE_SEALING" and joined words such as "TempleBaptism", "Slg"; in any claim, a name's or a birth's too), a record that documents one or
+  whose words (its transcription, citation, collection, repository or kind as written) tell of one, a source about
+  them, and anything taken from such a record never leave in a shared copy.
+- **Merging and splitting people** (Probable Pedigree, rule R-28) also go through the Gate under the
+  person's session with the owner key, each by the person's own yes in their own words, which the kit
+  records on a task of the person's own before it changes anything: `Gate.merge_people(survivor,
+  absorbed, words, choices)` (nothing is deleted; the absorbed id forwards to the survivor),
+  `Gate.unmerge_person(absorbed, words)`, `Gate.mark_not_same(a, b, words)` and
+  `Gate.distinct_clear(kind, a, b, words)` ("not the same person" and taking it back, K-11), and
+  `Gate.split_person(person, move_assertion_ids, move_link_ids, words)`. Two sources the person says are
+  the same are merged the same way, on a `resolve_conflict` task of their own: `Gate.merge_sources(survivor,
+  absorbed, words, choices)` and `Gate.unmerge_source(absorbed, words)`. Places too (Probable Pedigree slice 21):
+  `Gate.merge_places(survivor, absorbed, words)` and `Gate.unmerge_place(absorbed, words)`. Each is undone exactly by
+  the Gate's own undo recipe.
+- **Places the person adds or attaches** (Probable Pedigree slice 21, R-24): `Gate.place_task(words)` makes the
+  person's own `build_tree` task for a new place; `Gate.resolve(kind, target, words, claims=..., written=...)`
+  attaches a place or group to the claims named, or to everything that writes it exactly so (the `resolve` command's
+  work, in chunks of 500 documents inside the one transaction). Only the link is added; the words never change. The
+  whole batch is one undo step (`unresolve`), and redo applies it again (`reresolve`).
+- **Stories and life summaries** (Probable Pedigree slice 23, MAXGEN 2.1 G-06, G-07, G-29): a `life_story` record
+  is the person's own words, so its `source_classification.source` is `authored` (facts drawn from it stay at 0.4,
+  R-11); one that names someone who may be living (a person mentioned as living, a linked person living now, a living
+  name in its words in any letters, or a small place of theirs: `names_living_place`) is `tier2-private` with
+  `is_living_flag` true (R-05); its
+  `cited_record_ids` (the documents it draws on) must each be another record in the tree (R-04), and only a life
+  story carries them. A `biography` note (`Gate.note(person, text, note_type="biography", cited_record_ids=...,
+  ai_badge={"model_name": ...})`) is a short life summary: on a person only, never on someone who may be living
+  (R-05, by any session's write). A session writes or changes a note (its words, kind, badge or task) only under
+  a task of its own, and one that is not the person's changes or withdraws only notes it wrote itself, and the words
+  of only the life stories it wrote itself (R-14). An AI agent writing one gives its `ai_badge`; Probable Pedigree treats any summary
+  not written in the person's own session as an AI's, badge or not, and shows it only with its badge.
 
 ## Backups
 

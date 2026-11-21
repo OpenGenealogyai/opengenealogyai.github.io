@@ -27,7 +27,7 @@ MAXGEN is built to sit alongside the archives, record sites, and communities res
 
 ## The eleven record schemas
 
-A schema is a written rule-set that says exactly what fields a record has and what each one means, so that any program can read a record written by any other program. MAXGEN 2.0 has eleven record schemas, plus one shared file of building blocks that they all use, and each record schema has its own page.
+A schema is a written rule-set that says exactly what fields a record has and what each one means, so that any program can read a record written by any other program. Since version 2.0, MAXGEN has eleven record schemas, plus one shared file of building blocks that they all use, and each record schema has its own page.
 
 <!--CARDS-->
 
