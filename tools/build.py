@@ -740,6 +740,7 @@ def build_pages() -> None:
         if f.stem in {"podcasts", "versions", "schemas-index", "changelog-v1", "index"}:   # index.md is the home page (build_home)
             continue
         meta, text = front_matter(f.read_text(encoding="utf-8"))
+        text = expand_rules(text)
         out = meta.get("out", f"{f.stem}/index.html")
         path = "/" + out.replace("index.html", "")
         body, toc = md_toc(text)
@@ -751,6 +752,23 @@ def build_pages() -> None:
             ld_objs.append(faq_ld(body))
         write(SITE / out, layout(meta.get("title", f.stem.title()), body, meta.get("nav", path), meta.get("description", ""),
                                  path=path, ld=jsonld(*ld_objs), toc=toc))
+
+
+def expand_rules(text: str) -> str:
+    """<!--RULES:Section title--> becomes that section of the served /agents/RULES.md, word for word, so the
+    standard page always quotes exactly the rules the kit ships (BuildGenealogy's handoff, section 6)."""
+    rules_path = SITE / "agents" / "RULES.md"
+    if "<!--RULES:" not in text or not rules_path.exists():
+        return text
+    rules = rules_path.read_text(encoding="utf-8")
+
+    def section(m):
+        title = m.group(1).strip()
+        found = re.search(rf"^## {re.escape(title)}\n(.*?)(?=^## |\Z)", rules, flags=re.M | re.S)
+        if not found:
+            raise SystemExit(f"RULES.md has no section {title!r}")
+        return found.group(1).strip("\n")
+    return re.sub(r"<!--RULES:([^>]+?)-->", section, text)
 
 
 def kit_table() -> str:
@@ -896,7 +914,7 @@ def build_llms_full(pages) -> None:
         f = CONTENT / n
         if f.exists():
             meta, text = front_matter(f.read_text(encoding="utf-8"))
-            parts += [f"\n\n---\n## {meta.get('title', f.stem)}\n", plain(text)]
+            parts += [f"\n\n---\n## {meta.get('title', f.stem)}\n", plain(expand_rules(text))]
     one = readme_one_liners()
     for slug, title, file, kind, ep_no in V2_KINDS:
         schema = v2_schema(file)

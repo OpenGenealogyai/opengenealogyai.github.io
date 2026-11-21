@@ -97,102 +97,21 @@ Sections 4 to 7 are the rules that MAXGEN's reference agent kit follows, copied 
 
 ## 4. Who decides
 
-**The kit cannot tell who is typing.** A decision counts as the person's own only when the
-person makes it on their Probable Pedigree page (`probable_pedigree.py`). An answer the
-Orchestrator types for them (`task ... --answer`) is recorded as relayed. A relayed answer is
-enough for a merge, an adoption, lowering a living flag, and for "disputed" or "disproven".
-**"Proven" needs the person's own decision on their page.** So the person-page address is for
-the person's own hands: an agent never opens it, fetches it with a program or presses its
-buttons, and never reuses it after giving it to the person.
-
-**The person's own choices are theirs alone (R-33, R-34).** Who is held back from sharing, what
-is shared, which people are locked, and their bookmarks, tags and saved lists live in the tree's
-owner tables. Only the person changes them, in their own Probable Pedigree, which holds the
-tree's owner key; you never ask for that key, never look for it and never write those tables.
-Never change a person the owner has locked, nor a family link of theirs: the helper refuses it
-(R-34). If a locked person needs a change, tell the person through the Orchestrator and let
-them unlock it. The one thing you may record there is how many records a website holds for a
-person (an `outside_holdings` mark), because that is a finding, not a choice.
-
-Retract, never delete. Nothing is removed from the database: a wrong claim, document or link is
-withdrawn with `retract` and a reason, and stays visible as withdrawn. Every change you make is
-also logged in the tree itself, with your session, so the person can see it and undo it.
+<!--RULES:Who decides-->
 
 ## 5. Evidence standards
 
-MAXGEN's `confidence` number measures how faithfully a fact was read from its source —
-extraction confidence — **not** how good the source is. A clearly printed name copied from a
-clearly printed page is 0.9 even if the page is a hearsay family tree. How much the source is
-worth is a separate question, answered for every MaxRecord by its `source_classification`, a
-required field of the record:
-
-- `source`: `original` (the document made at the time — a register page, a certificate, a
-  stone — or an image of it), `derivative` (a copy, index, transcription or abstract made from
-  an original; it must say what it was copied from, in `copied_from`), `authored` (someone's
-  written conclusions — a compiled history, an online tree, the family's own account), or
-  `undetermined` (only for a citation in an imported tree that nobody has examined yet).
-- `information`: `primary` (the informant was present at the event), `secondary` (the
-  informant heard it from someone else, or wrote it long afterwards), or `undetermined` (a
-  census row, where nobody knows who answered the door). A record that holds several events
-  judges this per event: a death certificate's informant is first-hand for the death and
-  second-hand for the birth.
-
-Every claim also says what kind of evidence it is: `direct` (the words state it), `indirect`
-(it is worked out — a birth year from an age), or `negative` (someone missing from a complete
-list).
-
-These three sets of words follow the evidence analysis process map in Elizabeth Shown Mills's
-*Evidence Explained*
-([QuickLesson 17](https://www.evidenceexplained.com/content/quicklesson-17-evidence-analysis-process-map)),
-described here in our own words.
-
-A claim is called **proven** only when it meets the Genealogical Proof Standard (published by the
-[Board for Certification of Genealogists](https://bcgcertification.org/ethics-standards/)) — a
-reasonably exhaustive search, complete citations, analysis and correlation of the evidence,
-resolution of any conflicts, and a written conclusion. In this kit that written conclusion is a
-proof on a `resolve_conflict` task (or, for a merge, a `merge_person` task), and the status
-"proven" is set only when the person accepts that proof on their own page ("Who decides",
-above). Until then it is a claim with a confidence, and the kit says so. An import can mark a claim disputed or disproven, never proven.
+<!--RULES:Evidence standards-->
 
 ## 6. The confidence score
 
-`confidence` is a number from 0 to 1. It is how strongly *this document* supports *this claim*,
-not how sure you feel. A census row names a person: 0.8 to 0.9. A gravestone with a worn date:
-0.5 to 0.7. A family tree on a website with no citations: never above 0.4, and never alone.
-It is extraction confidence; the weight of the evidence is the source classification above.
-
-Deliberate exception, enforced by the helper: a claim whose evidence is not reliable — the
-family's own account in the interview, something the person typed on their page, an online
-tree, an imported file, a compiled work, a citation nobody has examined — is capped at 0.4 and
-**never stands alone**: it never counts as independent evidence, never supports a proof, and
-never shows that someone has died. Pages label it by where it came from ("From the family's
-account", "From a family tree", "From an imported file", "Added by you"). The cap lifts only
-when a new claim cites a reliable document.
+<!--RULES:Confidence-->
 
 Why this matters for AI: models that read handwriting, match records and draft leads need an honest confidence on every claim, a source they can be checked against, and the losing candidates as well as the winner. That is why every claim cites exactly one piece of evidence (for a document: the record, the line holding the words, the exact quote, and whether the evidence is direct, indirect or negative), why claims are never overwritten, and why a MaxTask can list the evidence its worker must hand back (addresses, exact queries, records saved) and its search log keeps every step, including the searches that found nothing.
 
 ## 7. Who may be living
 
-Treat a person as possibly living unless at least one of these holds: a reliable document
-states their death, burial or cremation (a later record calling their husband or wife a widow
-or widower also counts; being missing from a list never does); their latest possible birth
-year is 110 or more years ago; a marriage of theirs is 90 or more years ago; or a birth child
-of theirs was born 90 or more years ago (always counting the latest year the date allows). A
-step-child, ward, foster child or adopted child does not count. If none of these holds — for
-example, when the birth year is unknown and no death is on file — assume living. Never infer
-"deceased" from silence — not finding a death record is not a death record.
-
-Only reliable evidence counts here: a document classified `original` or `derivative`, or a
-proof whose latest review is accepted. The family's own account, an online tree, an imported
-file and a note typed on the person page never show that anyone has died. So a grandparent known only
-from the interview stays living until a document shows otherwise.
-
-Set `is_living` **explicitly** on every MaxPerson and every person named in a record, `true` or
-`false`. The helper refuses a file that omits it. **The helper and every page work this out
-again every time they read; a stored `false` never makes anyone shareable.** A stored `true` is
-a floor: it stays until the person agrees to lower it (ORCHESTRATOR, "When the documents show
-someone has died"). What the person tells you about living relatives stays `tier2-private` and
-is used only for their own research — never published, exported or sent anywhere.
+<!--RULES:Who may be living-->
 
 ## 8. JSON examples
 
